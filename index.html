@@ -16,56 +16,47 @@
 html,body{height:100%;overflow:hidden;}
 body{font-family:'Barlow',sans-serif;background:var(--surface);color:var(--black);display:flex;flex-direction:column;}
 
-/* ── HEADER ── */
-header{
-  height:var(--header);background:var(--teal);
-  display:flex;align-items:center;justify-content:space-between;
-  padding:0 22px 0 20px;flex-shrink:0;
-  box-shadow:0 2px 14px rgba(0,100,105,.3);
-}
+/* HEADER */
+header{height:var(--header);background:var(--teal);display:flex;align-items:center;
+  justify-content:space-between;padding:0 22px 0 20px;flex-shrink:0;
+  box-shadow:0 2px 14px rgba(0,100,105,.3);}
 .hl{display:flex;align-items:center;gap:14px;}
 .logo{font-family:'Barlow Condensed',sans-serif;font-size:26px;font-weight:700;
-  letter-spacing:5px;color:#fff;text-transform:uppercase;line-height:1;}
+  letter-spacing:5px;color:#fff;text-transform:uppercase;}
 .hdiv{width:1px;height:28px;background:rgba(255,255,255,.3);}
 .htitle{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:600;
   color:#fff;letter-spacing:1.3px;text-transform:uppercase;line-height:1.2;}
 .hsub{font-size:11px;color:rgba(255,255,255,.7);margin-top:1px;}
 .hr{display:flex;align-items:center;gap:11px;}
-.hlbl{font-size:10px;color:rgba(255,255,255,.8);text-transform:uppercase;letter-spacing:.7px;}
 .hsel{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);color:#fff;
-  font-family:'Barlow',sans-serif;font-size:12px;padding:5px 10px;border-radius:5px;
-  cursor:pointer;outline:none;}
+  font-family:'Barlow',sans-serif;font-size:12px;padding:5px 10px;border-radius:5px;cursor:pointer;outline:none;}
 .hsel option{background:var(--teal);}
+.hlbl{font-size:10px;color:rgba(255,255,255,.8);text-transform:uppercase;letter-spacing:.7px;}
 .live{display:flex;align-items:center;gap:7px;background:rgba(255,255,255,.15);
   border:1px solid rgba(255,255,255,.3);border-radius:20px;padding:4px 13px;}
 .pdot{width:8px;height:8px;border-radius:50%;background:#fff;animation:blink 2s infinite;}
 @keyframes blink{0%,100%{opacity:1;}50%{opacity:.25;}}
 .live-t{font-size:11px;font-weight:700;color:#fff;letter-spacing:.5px;}
 .live-c{font-size:11px;color:rgba(255,255,255,.7);min-width:32px;}
-.btn-pbi{display:flex;align-items:center;gap:6px;background:rgba(255,255,255,.2);
+.btn-ref{display:flex;align-items:center;gap:6px;background:rgba(255,255,255,.2);
   border:1px solid rgba(255,255,255,.4);color:#fff;font-family:'Barlow',sans-serif;
   font-size:11px;font-weight:700;letter-spacing:.5px;padding:6px 14px;
-  border-radius:5px;cursor:pointer;text-transform:uppercase;transition:background .2s;
-  text-decoration:none;}
-.btn-pbi:hover{background:rgba(255,255,255,.32);}
-.btn-pbi svg{width:12px;height:12px;flex-shrink:0;}
+  border-radius:5px;cursor:pointer;text-transform:uppercase;transition:background .2s;}
+.btn-ref:hover{background:rgba(255,255,255,.32);}
+.btn-ref svg{width:13px;height:13px;flex-shrink:0;}
 
-/* ── LAYOUT ── */
+/* LAYOUT */
 .wrap{display:flex;flex:1;overflow:hidden;}
 
-/* ── SIDEBAR ── */
-aside{
-  width:var(--sidebar);background:var(--white);
-  display:flex;flex-direction:column;flex-shrink:0;
-  overflow-y:auto;overflow-x:hidden;
-  border-right:2px solid var(--teal);
-}
+/* SIDEBAR */
+aside{width:var(--sidebar);background:var(--white);display:flex;flex-direction:column;
+  flex-shrink:0;overflow-y:auto;overflow-x:hidden;border-right:2px solid var(--teal);}
 aside::-webkit-scrollbar{width:3px;}
 aside::-webkit-scrollbar-thumb{background:var(--teal);border-radius:2px;}
 .ssec{font-size:9px;font-weight:700;letter-spacing:2px;color:var(--teal);
   text-transform:uppercase;padding:15px 18px 6px;}
-.ni{display:flex;align-items:center;gap:10px;padding:9px 16px;
-  cursor:pointer;border-left:3px solid transparent;transition:background .15s,border-color .15s;}
+.ni{display:flex;align-items:center;gap:10px;padding:9px 16px;cursor:pointer;
+  border-left:3px solid transparent;transition:background .15s,border-color .15s;}
 .ni:hover{background:rgba(0,156,163,.06);border-left-color:rgba(0,156,163,.35);}
 .ni.on{background:#E6F6F7;border-left-color:var(--teal);}
 .nico{width:28px;height:28px;border-radius:6px;background:rgba(0,156,163,.1);
@@ -87,8 +78,16 @@ aside::-webkit-scrollbar-thumb{background:var(--teal);border-radius:2px;}
 .pcd{background:rgba(242,148,0,.12);color:#A06800;}
 .sdiv{height:1px;background:var(--teal);opacity:.18;margin:5px 14px;}
 
-/* ── MAIN ── */
+/* MAIN */
 main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
+
+/* GLOBAL LOADING */
+.gload{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;}
+.gload.hide{display:none;}
+.spin{width:48px;height:48px;border:3px solid rgba(0,156,163,.15);border-top-color:var(--teal);
+  border-radius:50%;animation:sp .75s linear infinite;}
+@keyframes sp{to{transform:rotate(360deg);}}
+.spin-t{font-size:13px;color:var(--gray);font-weight:500;}
 
 /* OVERVIEW */
 .ov{flex:1;overflow-y:auto;padding:20px 22px;display:none;}
@@ -107,7 +106,6 @@ main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
 .oc-name{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;color:var(--black);margin:3px 0 1px;}
 .oc-owner{font-size:10px;color:var(--gray);margin-bottom:8px;}
 .oc-v{font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:700;color:var(--black);}
-.oc-l{font-size:10px;color:var(--gray);text-transform:uppercase;letter-spacing:.4px;}
 .ch{font-size:11px;font-weight:700;padding:2px 6px;border-radius:4px;margin-left:5px;}
 .chp{background:rgba(151,191,13,.12);color:#4D7200;}
 .chn{background:rgba(242,148,0,.1);color:#A06800;}
@@ -116,8 +114,6 @@ main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
 /* PRODUCT PANEL */
 .pp{flex:1;display:none;flex-direction:column;overflow:hidden;}
 .pp.vis{display:flex;}
-
-/* topbar */
 .ptop{background:#fff;border-bottom:1px solid rgba(0,0,0,.07);
   padding:11px 22px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;gap:12px;}
 .pi{display:flex;align-items:center;gap:11px;}
@@ -130,27 +126,19 @@ main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
 .mv{font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:700;color:var(--black);}
 .ml{font-size:9px;color:var(--gray);text-transform:uppercase;letter-spacing:.4px;}
 .ms{width:1px;height:30px;background:rgba(0,0,0,.08);}
-
-/* kpi strip */
 .kstrip{background:#fff;border-bottom:1px solid rgba(0,0,0,.06);
   padding:7px 22px;display:flex;gap:7px;flex-wrap:wrap;align-items:center;flex-shrink:0;}
 .kl{font-size:9.5px;font-weight:700;color:var(--gray);text-transform:uppercase;letter-spacing:.8px;margin-right:3px;}
-.kc{display:flex;align-items:center;gap:4px;background:var(--surface);
-  border:1px solid rgba(0,0,0,.07);border-radius:20px;padding:3px 10px;
-  font-size:11px;font-weight:500;color:var(--black);}
+.kc{display:flex;align-items:center;gap:4px;background:var(--surface);border:1px solid rgba(0,0,0,.07);
+  border-radius:20px;padding:3px 10px;font-size:11px;font-weight:500;color:var(--black);}
 .kd{width:6px;height:6px;border-radius:50%;flex-shrink:0;}
-
-/* ts */
 .ts{font-size:10px;color:var(--gray);padding:3px 22px 4px;text-align:right;flex-shrink:0;}
 .ts span{color:var(--teal);font-weight:600;}
-
-/* SCROLLABLE CONTENT */
 .pcont{flex:1;overflow-y:auto;padding:14px 18px 20px;display:flex;flex-direction:column;gap:14px;}
 
-/* metric cards */
+/* METRIC CARDS */
 .mrow{display:grid;grid-template-columns:repeat(auto-fill,minmax(145px,1fr));gap:10px;}
-.mc{background:#fff;border:1px solid rgba(0,156,163,.18);border-top:3px solid var(--teal);
-  border-radius:9px;padding:14px 15px;}
+.mc{background:#fff;border:1px solid rgba(0,156,163,.18);border-top:3px solid var(--teal);border-radius:9px;padding:14px 15px;}
 .mc-l{font-size:9.5px;font-weight:600;color:var(--gray);text-transform:uppercase;letter-spacing:.6px;margin-bottom:5px;}
 .mc-v{font-family:'Barlow Condensed',sans-serif;font-size:23px;font-weight:700;color:var(--black);}
 .mc-var{font-size:11px;font-weight:700;padding:2px 6px;border-radius:4px;margin-top:4px;display:inline-block;}
@@ -158,16 +146,15 @@ main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
 .vn{background:rgba(242,148,0,.1);color:#A06800;}
 .mc-s{font-size:10px;color:var(--gray);margin-top:3px;}
 
-/* charts */
+/* CHARTS */
 .cgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
 .cgrid.one{grid-template-columns:1fr;}
 .cb{background:#fff;border:1px solid rgba(0,0,0,.07);border-radius:10px;padding:15px;}
-.cb-t{font-family:'Barlow Condensed',sans-serif;font-size:13.5px;font-weight:700;
-  color:var(--black);margin-bottom:4px;letter-spacing:.2px;}
+.cb-t{font-family:'Barlow Condensed',sans-serif;font-size:13.5px;font-weight:700;color:var(--black);margin-bottom:4px;}
 .cb-s{font-size:10px;color:var(--gray);margin-bottom:10px;}
 .cw{position:relative;height:190px;}
 
-/* clients */
+/* CLIENTS */
 .ctb{background:#fff;border:1px solid rgba(0,0,0,.07);border-radius:10px;padding:15px;}
 .ctb h3{font-family:'Barlow Condensed',sans-serif;font-size:13.5px;font-weight:700;color:var(--black);margin-bottom:10px;}
 .ct{width:100%;border-collapse:collapse;font-size:12px;}
@@ -178,7 +165,7 @@ main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
 .ct tr:hover td{background:var(--surface);}
 .ct td:last-child{text-align:right;font-weight:600;color:var(--teal);}
 
-/* kpi status */
+/* KPI STATUS */
 .ksb{background:#fff;border:1px solid rgba(0,0,0,.07);border-radius:10px;padding:15px;}
 .ksb h3{font-family:'Barlow Condensed',sans-serif;font-size:13.5px;font-weight:700;color:var(--black);margin-bottom:12px;}
 .ksg{display:flex;gap:24px;flex-wrap:wrap;}
@@ -189,19 +176,10 @@ main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
 .kdd{width:6px;height:6px;border-radius:50%;flex-shrink:0;}
 .kdg{background:var(--green);}.kdo{background:var(--orange);}.kdt{background:var(--teal);}
 
-/* PBI link banner */
-.pbi-banner{background:#fff;border:1.5px solid var(--teal);border-radius:10px;
-  padding:14px 18px;display:flex;align-items:center;justify-content:space-between;gap:14px;}
-.pbi-info{}
-.pbi-info-t{font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:700;color:var(--black);}
-.pbi-info-s{font-size:11px;color:var(--gray);margin-top:2px;}
-.pbi-btn{display:flex;align-items:center;gap:7px;background:var(--teal);
-  border:none;color:#fff;font-family:'Barlow',sans-serif;
-  font-size:12px;font-weight:700;letter-spacing:.5px;padding:9px 18px;
-  border-radius:7px;cursor:pointer;text-transform:uppercase;white-space:nowrap;
-  text-decoration:none;transition:background .2s;}
-.pbi-btn:hover{background:var(--teal2);}
-.pbi-btn svg{width:14px;height:14px;flex-shrink:0;}
+/* DATA SOURCE BADGE */
+.src-badge{background:#fff;border:1.5px solid var(--teal);border-radius:10px;
+  padding:10px 16px;display:flex;align-items:center;gap:10px;font-size:11px;color:var(--gray);}
+.src-badge strong{color:var(--teal);}
 </style>
 </head>
 <body>
@@ -212,26 +190,27 @@ main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
     <div class="hdiv"></div>
     <div>
       <div class="htitle">Comité de Performance de Producto</div>
-      <div class="hsub">Dashboard Ejecutivo · Feb 2025 – Ene 2026</div>
+      <div class="hsub" id="hperiodo">Dashboard Ejecutivo · Cargando datos…</div>
     </div>
   </div>
   <div class="hr">
-    <span class="hlbl">UN</span>
-    <select class="hsel" id="fUN" onchange="filterUN()">
-      <option value="">Todas</option>
-      <option value="Última Milla">Última Milla</option>
-      <option value="Supply Chain">Supply Chain</option>
-      <option value="Cross Dock">Cross Dock</option>
+    <span class="hlbl">Escenario</span>
+    <select class="hsel" id="fEsc" onchange="reloadAll()">
+      <option value="">Todos</option>
+      <option value="Real">Real</option>
+      <option value="Presupuesto">Presupuesto</option>
     </select>
     <div class="live">
       <div class="pdot"></div>
-      <span class="live-t">EN VIVO</span>
+      <span class="live-t">SUPABASE</span>
       <span class="live-c" id="cd">5:00</span>
     </div>
-    <a class="btn-pbi" href="https://app.powerbi.com/groups/me/reports/53c5f262-ade9-4c6b-9953-cb04515099ed" target="_blank">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-      Ver Power BI
-    </a>
+    <button class="btn-ref" onclick="reloadAll()">
+      <svg id="refIco" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
+      </svg>
+      Actualizar
+    </button>
   </div>
 </header>
 
@@ -244,65 +223,54 @@ main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
   </div>
   <div class="sdiv"></div>
   <div class="ssec">Productos</div>
-  <div class="ni" data-id="crossdock" onclick="go('crossdock',this)">
+  <div class="ni" data-id="Cross Docking" onclick="go('Cross Docking',this)">
     <div class="nico">📦</div>
     <div class="nt"><div class="nn">Cross Docking</div><div class="nu"><span class="pill pcd">Cross Dock</span></div></div>
-    <span class="nb nbp">+17%</span>
   </div>
-  <div class="ni" data-id="paqueteria" onclick="go('paqueteria',this)">
+  <div class="ni" data-id="Paqueteria E-Commerce B2C" onclick="go('Paqueteria E-Commerce B2C',this)">
     <div class="nico">🛍️</div>
     <div class="nt"><div class="nn">Paquetería E-Commerce B2C</div><div class="nu"><span class="pill pum">Última Milla</span></div></div>
-    <span class="nb nbn">-6.8%</span>
   </div>
-  <div class="ni" data-id="warehousing" onclick="go('warehousing',this)">
+  <div class="ni" data-id="Warehousing" onclick="go('Warehousing',this)">
     <div class="nico">🏭</div>
     <div class="nt"><div class="nn">Warehousing</div><div class="nu"><span class="pill psc">Supply Chain</span></div></div>
-    <span class="nb nbp">+76%</span>
   </div>
-  <div class="ni" data-id="tarjetas" onclick="go('tarjetas',this)">
+  <div class="ni" data-id="Distribución de Tarjetas Valoradas" onclick="go('Distribución de Tarjetas Valoradas',this)">
     <div class="nico">💳</div>
     <div class="nt"><div class="nn">Tarjetas Valorizadas</div><div class="nu"><span class="pill pum">Última Milla</span></div></div>
-    <span class="nb nbp">+90%</span>
   </div>
-  <div class="ni" data-id="postal" onclick="go('postal',this)">
+  <div class="ni" data-id="Postal" onclick="go('Postal',this)">
     <div class="nico">✉️</div>
     <div class="nt"><div class="nn">Postal</div><div class="nu"><span class="pill pum">Última Milla</span></div></div>
-    <span class="nb nbp">+68%</span>
   </div>
-  <div class="ni" data-id="saludwh" onclick="go('saludwh',this)">
+  <div class="ni" data-id="Salud Warehousing" onclick="go('Salud Warehousing',this)">
     <div class="nico">🏥</div>
     <div class="nt"><div class="nn">Salud Warehousing</div><div class="nu"><span class="pill psc">Supply Chain</span></div></div>
-    <span class="nb nbp">+10%</span>
   </div>
-  <div class="ni" data-id="saluddist" onclick="go('saluddist',this)">
+  <div class="ni" data-id="Salud Distribucion" onclick="go('Salud Distribucion',this)">
     <div class="nico">💊</div>
     <div class="nt"><div class="nn">Salud Distribución</div><div class="nu"><span class="pill psc">Supply Chain</span></div></div>
-    <span class="nb nbp">+22%</span>
   </div>
-  <div class="ni" data-id="cdd" onclick="go('cdd',this)">
-    <div class="nico">📋</div>
-    <div class="nt"><div class="nn">CDD</div><div class="nu"><span class="pill pcd">Cross Dock</span></div></div>
-  </div>
-  <div class="ni" data-id="cartadoc" onclick="go('cartadoc',this)">
+  <div class="ni" data-id="Carta Documento Digital" onclick="go('Carta Documento Digital',this)">
     <div class="nico">📄</div>
     <div class="nt"><div class="nn">Carta Documento Digital</div><div class="nu"><span class="pill pum">Última Milla</span></div></div>
     <span class="nb nbw">NUEVO</span>
   </div>
   <div class="sdiv"></div>
   <div style="padding:8px 18px 16px;font-size:10.5px;color:#666;line-height:1.8;">
-    📅 Feb 2025 – Ene 2026<br>📊 29 productos en cartera<br>🔍 9 productos analizados
+    🔗 Datos en tiempo real<br>📊 Fuente: Supabase<br>🔄 Auto-refresh: 5 min
   </div>
 </aside>
 
 <main>
+  <div class="gload" id="gload">
+    <div class="spin"></div>
+    <div class="spin-t" id="gload-t">Conectando a Supabase…</div>
+  </div>
+
   <!-- OVERVIEW -->
-  <div class="ov vis" id="pov">
-    <div class="ostats">
-      <div class="osc"><div class="osc-l">Última Milla</div><div class="osc-v" style="color:var(--teal)">USD 126M</div><div class="osc-s">5 productos</div></div>
-      <div class="osc"><div class="osc-l">Supply Chain</div><div class="osc-v" style="color:var(--green)">USD 58M</div><div class="osc-s">3 productos</div></div>
-      <div class="osc"><div class="osc-l">Cross Dock</div><div class="osc-v" style="color:var(--orange)">USD 69M</div><div class="osc-s">1 producto</div></div>
-      <div class="osc"><div class="osc-l">Total analizado</div><div class="osc-v">USD 253M</div><div class="osc-s">9 productos</div></div>
-    </div>
+  <div class="ov" id="pov">
+    <div class="ostats" id="ovStats"></div>
     <div class="ogrid" id="og"></div>
   </div>
 
@@ -316,14 +284,21 @@ main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
       <div class="pmeta" id="pmeta"></div>
     </div>
     <div class="kstrip" id="ks"></div>
-    <div class="ts">Última actualización: <span id="ts">—</span></div>
+    <div class="ts">Última actualización: <span id="tsv">—</span></div>
     <div class="pcont" id="pc"></div>
   </div>
 </main>
 </div>
 
 <script>
-const MO=['Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic','Ene'];
+// ── SUPABASE CONFIG ──
+const SB_URL = 'https://rdfdefkhsbjpaukesnto.supabase.co';
+const SB_KEY = 'sb_publishable_qNz5DKgtDfFTzj-EIsy8Cw_S8mamGPk';
+
+const MONTHS_ORDER = ['ENERO','FEBRERO','MARZO','ABRIL','MAYO','JUNIO',
+                      'JULIO','AGOSTO','SEPTIEMBRE','OCTUBRE','NOVIEMBRE','DICIEMBRE'];
+const MONTHS_SHORT = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+
 const T='#009CA3',T2='#1DB4C2',G='#97BF0D',O='#F29400';
 Chart.defaults.font.family="'Barlow',sans-serif";
 Chart.defaults.font.size=11;
@@ -348,164 +323,183 @@ function mk(id,type,labels,datasets,opts={}){
   });
 }
 
-const PBI_LINK='https://app.powerbi.com/groups/me/reports/53c5f262-ade9-4c6b-9953-cb04515099ed';
-
-const P={
-  crossdock:{num:'01',name:'Cross Docking',un:'Cross Dock',owner:'M. Bosch / F. Repetto',
-    desc:'Clasificación y consolidación de mercadería: recepción, ordenamiento y redespacho.',
-    fac:'USD 69.7M',vol:'66.756.471 eq.',varP:'+17.05%',vt:'pos',
-    kpis:{m:['Facturación','Volúmenes','NPS','Margen Bruto','SLA'],c:['Penalidades','Backlog'],e:['Errores','Churn Rate','Time to market']},
-    metrics:[
-      {l:'Facturación total',v:'USD 69.7M',var:'+17.05%',vt:'pos',s:'Feb 25 – Ene 26'},
-      {l:'Volumen total',v:'66.7M eq.',var:'+4.19%',vt:'pos',s:'Feb 25 – Ene 26'},
-      {l:'Variación Ene 26/25',v:'+17%',var:'Facturación',vt:'pos',s:'Interanual'},
-    ],
-    fac12:[3.8,4.2,4.5,4.8,5.1,5.6,6.1,6.4,6.8,7.0,7.2,8.0],
-    vol12:[4.2,4.5,4.8,5.0,5.3,5.6,5.9,6.1,6.4,6.6,6.8,7.0],
-    sla:null,ef:null,
-    cli:[{n:'Mercado Créditos SRL',f:'USD 69.7M'}],
-  },
-  paqueteria:{num:'02',name:'Paquetería E-Commerce B2C',un:'Última Milla',owner:'Fiorella Taffarel',
-    desc:'Distribución de paquetes y documentos a consumidor final, red logística capilar.',
-    fac:'USD 44.5M',vol:'7.025.739 eq.',varP:'-6.8%',vt:'neg',
-    kpis:{m:['Facturación','Volúmenes','NPS','SLA','Efectividad'],c:['ARPU','Penalidades'],e:['Churn Rate','Tickets','Time to market']},
-    metrics:[
-      {l:'Facturación total',v:'USD 44.5M',var:'-6.8%',vt:'neg',s:'Feb 25 – Ene 26'},
-      {l:'Volumen total',v:'7.0M eq.',var:'-10%',vt:'neg',s:'Ene 26 vs Ene 25'},
-      {l:'Clientes',v:'35',var:'+8 vs Ene 25',vt:'pos',s:'Ene 2026'},
-      {l:'ARPU',v:'-28.1%',var:'Ene 26 vs Ene 25',vt:'neg',s:'Más clientes, menor ticket'},
-    ],
-    fac12:[4.2,4.1,3.9,3.8,3.6,3.5,3.7,3.6,3.8,3.9,3.5,3.9],
-    vol12:[680,660,640,610,590,580,600,590,610,620,575,630],
-    sla:[88,87,86,85,83,84,85,86,87,85,84,86],
-    ef:[78,77,76,75,74,73,75,76,77,75,72,76],
-    cli:[{n:'Mercado Créditos S.R.L.',f:'USD 18.2M'},{n:'N24 Internacional S.A.',f:'USD 12.4M'},{n:'Mailamericas S.R.L.',f:'USD 8.6M'},{n:'Brandlive',f:'USD 5.3M'}],
-  },
-  warehousing:{num:'03',name:'Warehousing',un:'Supply Chain',owner:'German Gallarini',
-    desc:'Almacenamiento y gestión integral de inventario dentro de un depósito.',
-    fac:'USD 31.1M',vol:'2.421.662 líneas',varP:'+76.44%',vt:'pos',
-    kpis:{m:['Facturación','Volúmenes','Margen Bruto','SLA Prep.'],c:['ARPU','Clientes'],e:['Churn Rate','Tickets','Time to market']},
-    metrics:[
-      {l:'Facturación total',v:'USD 31.1M',var:'+76.44%',vt:'pos',s:'Ene 25 – Ene 26'},
-      {l:'Vol. líneas pedidos',v:'2.42M',var:'+30%',vt:'pos',s:'Ene 26 vs Ene 25'},
-      {l:'Vol. posiciones',v:'934.746',var:'+266%',vt:'pos',s:'Ene 26 vs Ene 25'},
-      {l:'Clientes',v:'26',var:'-3 vs Ene 25',vt:'neg',s:'Ene 2026'},
-      {l:'ARPU',v:'+95.4%',var:'Ene 26 vs Ene 25',vt:'pos',s:''},
-    ],
-    fac12:[1.2,1.4,1.6,1.9,2.1,2.4,2.7,3.0,3.3,3.6,3.8,4.1],
-    vol12:[110,125,140,160,175,190,210,230,250,265,280,300],
-    sla:[82,84,85,86,87,88,89,90,91,90,89,91],ef:null,
-    cli:[{n:'Pilisar S.A.',f:'USD 8.2M'},{n:'Directv',f:'USD 7.1M'},{n:'S.A.F.M. Finanzas',f:'USD 5.4M'},{n:'ALOT S.A.',f:'USD 4.8M'},{n:'Grupo Modo S.A.',f:'USD 3.6M'}],
-  },
-  tarjetas:{num:'04',name:'Distribución Tarjetas Valorizadas',un:'Última Milla',owner:'Victoria Duque',
-    desc:'Distribución de tarjetas y documentación personal a consumidor final.',
-    fac:'USD 30.1M',vol:'6.358.477 eq.',varP:'+90.4%',vt:'pos',
-    kpis:{m:['Facturación','Volúmenes','SLA','Efectividad'],c:['ARPU','Clientes','Margen Bruto'],e:['Tickets','Churn Rate','Time to market']},
-    metrics:[
-      {l:'Facturación total',v:'USD 30.1M',var:'+90.4%',vt:'pos',s:'Feb 25 – Ene 26'},
-      {l:'Volumen total',v:'6.36M eq.',var:'+83.2%',vt:'pos',s:'Ene 26 vs Ene 25'},
-      {l:'Clientes',v:'41',var:'+20 vs Ene 25',vt:'pos',s:'Ene 2026'},
-      {l:'ARPU',v:'-2.4%',var:'Ene 26 vs Ene 25',vt:'neg',s:'Mayor base de clientes'},
-    ],
-    fac12:[1.2,1.3,1.4,1.5,1.8,2.1,2.8,3.2,3.4,3.3,3.1,3.0],
-    vol12:[180,195,210,230,280,350,480,560,590,580,560,548],
-    sla:[91,91,92,92,91,93,94,94,95,94,93,94],
-    ef:[72,73,72,74,73,74,72,73,74,73,70,72],
-    cli:[{n:'RENAPER',f:'USD 12.4M'},{n:'Banco Macro S.A.',f:'USD 8.2M'},{n:'Banco Pcia. Córdoba',f:'USD 4.8M'},{n:'Banco Ciudad Bs.As.',f:'USD 4.7M'}],
-  },
-  postal:{num:'05',name:'Postal',un:'Última Milla',owner:'Victoria Duque',
-    desc:'Distribución de piezas postales y correspondencia.',
-    fac:'USD 28.9M',vol:'20.858.499 eq.',varP:'+68.6%',vt:'pos',
-    kpis:{m:['Facturación','Volúmenes','SLA','Efectividad'],c:['ARPU','Clientes','Margen Bruto'],e:['Tickets','Churn Rate','Time to market']},
-    metrics:[
-      {l:'Facturación total',v:'USD 28.9M',var:'+68.6%',vt:'pos',s:'Ene 25 – Ene 26'},
-      {l:'Volumen total',v:'20.9M eq.',var:'+83.2%',vt:'pos',s:'Ene 26 vs Ene 25'},
-      {l:'Clientes',v:'26',var:'+11 vs Ene 25',vt:'pos',s:'Ene 2026'},
-      {l:'Margen bruto',v:'~44%',var:'Estable',vt:'pos',s:'USD 12M+ total'},
-    ],
-    fac12:[1.4,1.6,1.8,2.0,2.2,2.5,2.8,3.1,2.6,2.3,2.9,3.7],
-    vol12:[600,720,850,980,1100,1250,1450,1700,1300,1200,1650,2200],
-    sla:[78,80,82,79,83,82,85,84,80,78,82,85],ef:null,
-    cli:[{n:'Gobierno Ciudad Bs.As.',f:'USD 11.2M'},{n:'Banco Macro S.A.',f:'USD 6.4M'},{n:'Emp. Prov. Energía Cba.',f:'USD 4.8M'},{n:'BBVA Banco Francés',f:'USD 4.1M'}],
-  },
-  saludwh:{num:'06',name:'Salud Warehousing',un:'Supply Chain',owner:'German Gallarini',
-    desc:'Almacenamiento especializado para logística sanitaria.',
-    fac:'USD 16M',vol:'1.038.368 líneas',varP:'+10.6%',vt:'pos',
-    kpis:{m:['Facturación','Volúmenes','SLA','Margen Bruto'],c:['ARPU','Clientes'],e:['Churn Rate','Tickets']},
-    metrics:[
-      {l:'Facturación total',v:'USD 16M',var:'+10.6%',vt:'pos',s:'Feb 25 – Ene 26'},
-      {l:'Vol. líneas pedidos',v:'1.04M',var:'-1.42%',vt:'neg',s:'Ene 26 vs Ene 25'},
-      {l:'Vol. posiciones',v:'154.295',var:'+3.2%',vt:'pos',s:'Ene 26 vs Ene 25'},
-      {l:'Clientes',v:'22',var:'+5 vs Ene 25',vt:'pos',s:'Ene 2026'},
-      {l:'ARPU',v:'-10.3%',var:'Mayor base clientes',vt:'neg',s:''},
-    ],
-    fac12:[1.1,1.15,1.18,1.2,1.22,1.25,1.28,1.30,1.32,1.35,1.38,1.42],
-    vol12:[82,84,86,85,87,88,86,87,88,89,88,90],
-    sla:[88,89,90,89,91,90,91,92,91,92,91,93],ef:null,
-    cli:[{n:'Gobierno Ciudad Bs.As.',f:'USD 5.2M'},{n:'S.A.F.M. Finanzas - Salta',f:'USD 3.8M'},{n:'Min. Gabinete Chubut',f:'USD 2.9M'},{n:'Tuteur Sacifia',f:'USD 2.1M'}],
-  },
-  saluddist:{num:'07',name:'Salud Distribución',un:'Supply Chain',owner:'German Gallarini',
-    desc:'Transporte y distribución de medicamentos y material sanitario.',
-    fac:'USD 11.2M',vol:'392.360 eq.',varP:'+22.27%',vt:'pos',
-    kpis:{m:['Facturación','Volúmenes','SLA','Efectividad'],c:['ARPU','Clientes'],e:['Tickets','Churn Rate','Time to market']},
-    metrics:[
-      {l:'Facturación total',v:'USD 11.2M',var:'+22.27%',vt:'pos',s:'Feb 25 – Ene 26'},
-      {l:'Volumen total',v:'392.360 eq.',var:'+26.6%',vt:'pos',s:'Ene 26 vs Ene 25'},
-      {l:'Clientes',v:'46',var:'-2 vs Ene 25',vt:'neg',s:'Ene 2026'},
-      {l:'ARPU',v:'+22.6%',var:'Ene 26 vs Ene 25',vt:'pos',s:'Menos clientes, mayor ticket'},
-    ],
-    fac12:[0.65,0.7,0.72,0.75,0.8,0.85,0.88,0.92,0.95,0.98,1.0,1.1],
-    vol12:[22,24,25,26,28,30,31,33,34,35,36,38],
-    sla:[85,86,87,88,87,89,90,91,90,91,92,93],
-    ef:[78,79,78,80,79,81,82,81,80,82,83,82],
-    cli:[{n:'S.A.F.M. Finanzas - Salta',f:'USD 3.2M'},{n:'Fresenius Medical Care',f:'USD 2.8M'},{n:'Min. Gabinete Chubut',f:'USD 2.1M'},{n:'Tuteur Sacifia',f:'USD 1.8M'}],
-  },
-  cdd:{num:'08',name:'CDD',un:'Cross Dock',owner:'—',
-    desc:'Centro de Distribución y Despacho.',
-    fac:'—',vol:'—',varP:'—',vt:'pos',
-    kpis:{m:['Facturación','Volúmenes'],c:['SLA'],e:['Time to market']},
-    metrics:[{l:'Estado',v:'En desarrollo',var:'En curso',vt:'pos',s:'Datos próximamente'}],
-    fac12:null,vol12:null,sla:null,ef:null,cli:[],
-  },
-  cartadoc:{num:'09',name:'Carta Documento Digital',un:'Última Milla',owner:'Victoria Duque',
-    desc:'Cartas documento digitales: emitidas, impresas, ensobradas y distribuidas físicamente.',
-    fac:'USD 22.682',vol:'3.299 eq.',varP:'NUEVO',vt:'new',
-    kpis:{m:['Facturación','Volúmenes','SLA','Efectividad'],c:['Margen Bruto'],e:['Tickets','Time to market']},
-    metrics:[
-      {l:'Facturación total',v:'USD 22.682',var:'Lanzamiento Oct',vt:'pos',s:'Oct 25 – Feb 26'},
-      {l:'Volumen total',v:'3.299 eq.',var:'Creciendo',vt:'pos',s:'Desde Oct 2025'},
-      {l:'Margen bruto',v:'~37%',var:'Buena base',vt:'pos',s:''},
-    ],
-    moShort:['Oct','Nov','Dic','Ene','Feb'],
-    fac12:[2800,4200,6800,8900,22682],
-    vol12:[180,290,520,700,3299],
-    sla:[95,93,91,88,82],
-    ef:[82,80,78,75,70],
-    cli:[{n:'GCABA Talleres',f:'USD 11.5K'},{n:'GCABA Cementerios',f:'USD 11.2K'}],
-  },
+// Metadata estática por producto (desc, kpis, num)
+const META={
+  'Cross Docking':                  {num:'01',desc:'Clasificación y consolidación de mercadería.',kpis:{m:['Facturación','Volúmenes','NPS','Margen Bruto','SLA'],c:['Penalidades','Backlog'],e:['Errores','Churn Rate']}},
+  'Paqueteria E-Commerce B2C':      {num:'02',desc:'Distribución de paquetes a consumidor final, red logística capilar.',kpis:{m:['Facturación','Volúmenes','SLA','Efectividad'],c:['ARPU','Penalidades'],e:['Churn Rate','Tickets']}},
+  'Warehousing':                    {num:'03',desc:'Almacenamiento y gestión integral de inventario dentro de un depósito.',kpis:{m:['Facturación','Volúmenes','Margen Bruto','SLA'],c:['ARPU','Clientes'],e:['Churn Rate','Tickets']}},
+  'Distribución de Tarjetas Valoradas':{num:'04',desc:'Distribución de tarjetas y documentación personal a consumidor final.',kpis:{m:['Facturación','Volúmenes','SLA','Efectividad'],c:['ARPU','Clientes'],e:['Tickets','Churn Rate']}},
+  'Postal':                         {num:'05',desc:'Distribución de piezas postales y correspondencia.',kpis:{m:['Facturación','Volúmenes','SLA','Efectividad'],c:['ARPU','Clientes'],e:['Tickets','Churn Rate']}},
+  'Salud Warehousing':              {num:'06',desc:'Almacenamiento especializado para logística sanitaria.',kpis:{m:['Facturación','Volúmenes','SLA','Margen Bruto'],c:['ARPU','Clientes'],e:['Churn Rate','Tickets']}},
+  'Salud Distribucion':             {num:'07',desc:'Transporte y distribución de medicamentos y material sanitario.',kpis:{m:['Facturación','Volúmenes','SLA','Efectividad'],c:['ARPU','Clientes'],e:['Tickets','Churn Rate']}},
+  'Carta Documento Digital':        {num:'09',desc:'Cartas documento digitales: emitidas, impresas y distribuidas físicamente.',kpis:{m:['Facturación','Volúmenes','SLA','Efectividad'],c:['Margen Bruto'],e:['Tickets']}},
 };
 
-// ── OVERVIEW CARDS ──
-(()=>{
-  const g=document.getElementById('og');
-  Object.entries(P).forEach(([id,p])=>{
-    const d=document.createElement('div');d.className='ocard';
-    const cc=p.vt==='pos'?'chp':p.vt==='neg'?'chn':'chw';
-    d.innerHTML=`<div class="oc-num">${p.num} · ${p.un}</div>
-<div class="oc-name">${p.name}</div>
-<div class="oc-owner">👤 ${p.owner}</div>
-<div><span class="oc-v">${p.fac}</span><span class="ch ${cc}">${p.varP}</span></div>
-<div class="oc-l">Facturación · Feb 25–Ene 26</div>`;
-    d.onclick=()=>go(id,document.querySelector(`.ni[data-id="${id}"]`));
-    g.appendChild(d);
+// ── SUPABASE QUERY ──
+async function sbQuery(table, select='*', filters={}){
+  let url=`${SB_URL}/rest/v1/${table}?select=${encodeURIComponent(select)}`;
+  for(const [k,v] of Object.entries(filters)){
+    url+=`&${k}=${encodeURIComponent(v)}`;
+  }
+  const res=await fetch(url,{headers:{
+    'apikey':SB_KEY,'Authorization':`Bearer ${SB_KEY}`,
+    'Content-Type':'application/json'
+  }});
+  if(!res.ok) throw new Error(await res.text());
+  return res.json();
+}
+
+// ── GLOBAL DATA ──
+let allVentas=[], matProd=[], cur='overview';
+
+async function loadAll(){
+  document.getElementById('gload').classList.remove('hide');
+  document.getElementById('gload-t').textContent='Conectando a Supabase…';
+  document.getElementById('pov').classList.remove('vis');
+  document.getElementById('pp').classList.remove('vis');
+  document.getElementById('pp').style.display='none';
+  try{
+    document.getElementById('gload-t').textContent='Descargando ventas…';
+    const esc=document.getElementById('fEsc').value;
+    // Traer solo columnas necesarias
+    const vSelect='anio,mes,cliente,unidad_negocio,cod_material,material,cantidad,venta_norm,escenario';
+    let vUrl=`${SB_URL}/rest/v1/ventas?select=${vSelect}&limit=100000`;
+    if(esc) vUrl+=`&escenario=eq.${encodeURIComponent(esc)}`;
+    const vRes=await fetch(vUrl,{headers:{'apikey':SB_KEY,'Authorization':`Bearer ${SB_KEY}`}});
+    allVentas=await vRes.json();
+
+    document.getElementById('gload-t').textContent='Descargando lookup materiales…';
+    const mRes=await fetch(`${SB_URL}/rest/v1/material_producto?select=cod_material,producto,owner`,
+      {headers:{'apikey':SB_KEY,'Authorization':`Bearer ${SB_KEY}`}});
+    matProd=await mRes.json();
+
+    // Enriquecer ventas con producto/owner
+    const matMap={};
+    matProd.forEach(m=>{ matMap[m.cod_material]={producto:m.producto,owner:m.owner}; });
+    allVentas.forEach(v=>{
+      const m=matMap[v.cod_material]||{};
+      v.producto=m.producto||'Otros';
+      v.owner=m.owner||'—';
+    });
+
+    document.getElementById('gload').classList.add('hide');
+    buildOverview();
+    if(cur!=='overview') render(cur);
+    setTs();
+    updatePeriodo();
+  } catch(e){
+    document.getElementById('gload-t').textContent='Error: '+e.message+'. Verificá las credenciales de Supabase.';
+  }
+}
+
+function updatePeriodo(){
+  const years=[...new Set(allVentas.map(v=>v.anio))].sort();
+  const months=[...new Set(allVentas.map(v=>v.mes))];
+  if(years.length) document.getElementById('hperiodo').textContent=
+    `Dashboard Ejecutivo · ${years[0]} – ${years[years.length-1]} · ${allVentas.length.toLocaleString()} registros`;
+}
+
+// ── AGGREGATE ──
+function ventasByProducto(){
+  const out={};
+  allVentas.forEach(v=>{
+    const p=v.producto;
+    if(!out[p]) out[p]={fac:0,vol:0,clientes:new Set(),owner:v.owner};
+    out[p].fac+=v.venta_norm||0;
+    out[p].vol+=v.cantidad||0;
+    if(v.cliente) out[p].clientes.add(v.cliente);
+    if(v.owner&&v.owner!=='—') out[p].owner=v.owner;
   });
-})();
+  return out;
+}
 
-let cur='overview';
+function ventasPorMes(producto){
+  const byMes={};
+  allVentas.filter(v=>v.producto===producto).forEach(v=>{
+    const k=v.mes?.toUpperCase()||'';
+    if(!byMes[k]) byMes[k]={fac:0,vol:0};
+    byMes[k].fac+=v.venta_norm||0;
+    byMes[k].vol+=v.cantidad||0;
+  });
+  // Sort by month order
+  const sorted=MONTHS_ORDER.filter(m=>byMes[m]);
+  return {
+    labels:sorted.map(m=>MONTHS_SHORT[MONTHS_ORDER.indexOf(m)]),
+    fac:sorted.map(m=>+(byMes[m].fac/1e6).toFixed(2)),
+    vol:sorted.map(m=>Math.round(byMes[m].vol)),
+  };
+}
 
+function topClientes(producto,n=5){
+  const by={};
+  allVentas.filter(v=>v.producto===producto).forEach(v=>{
+    if(!v.cliente)return;
+    by[v.cliente]=(by[v.cliente]||0)+(v.venta_norm||0);
+  });
+  return Object.entries(by).sort((a,b)=>b[1]-a[1]).slice(0,n)
+    .map(([n,f])=>({n,f}));
+}
+
+function fmtM(v){
+  if(v>=1e6) return 'USD '+(v/1e6).toFixed(1)+'M';
+  if(v>=1e3) return 'USD '+(v/1e3).toFixed(0)+'K';
+  return 'USD '+Math.round(v).toLocaleString();
+}
+function fmtARS(v){
+  if(Math.abs(v)>=1e9) return '$'+(v/1e9).toFixed(1)+'B';
+  if(Math.abs(v)>=1e6) return '$'+(v/1e6).toFixed(1)+'M';
+  return '$'+Math.round(v).toLocaleString();
+}
+
+// ── OVERVIEW ──
+function buildOverview(){
+  // Stats top
+  const byUN={};
+  allVentas.forEach(v=>{
+    const u=v.unidad_negocio||'Otros';
+    byUN[u]=(byUN[u]||0)+(v.venta_norm||0);
+  });
+  const statsEl=document.getElementById('ovStats');
+  statsEl.innerHTML='';
+  const unColors={'Ultima Milla':T,'Supply Chain':G,'Cross Dock':O,'Pharma':T2};
+  const mainUNs=['Ultima Milla','Supply Chain','Cross Dock'];
+  let total=0; Object.values(byUN).forEach(v=>total+=v);
+  mainUNs.forEach(u=>{
+    const v=byUN[u]||0;
+    statsEl.innerHTML+=`<div class="osc">
+      <div class="osc-l">${u}</div>
+      <div class="osc-v" style="color:${unColors[u]||T}">${fmtARS(v)}</div>
+      <div class="osc-s">Venta normalizada</div></div>`;
+  });
+  statsEl.innerHTML+=`<div class="osc">
+    <div class="osc-l">Total</div>
+    <div class="osc-v">${fmtARS(total)}</div>
+    <div class="osc-s">${Object.keys(META).length} productos</div></div>`;
+
+  // Cards
+  const byP=ventasByProducto();
+  const grid=document.getElementById('og');
+  grid.innerHTML='';
+  Object.entries(META).forEach(([prod,m])=>{
+    const d=byP[prod]||{fac:0,vol:0,clientes:new Set(),owner:'—'};
+    const card=document.createElement('div');card.className='ocard';
+    card.innerHTML=`<div class="oc-num">${m.num}</div>
+<div class="oc-name">${prod}</div>
+<div class="oc-owner">👤 ${d.owner||'—'}</div>
+<div><span class="oc-v">${fmtARS(d.fac)}</span></div>
+<div style="font-size:10px;color:var(--gray);margin-top:3px;">${Math.round(d.vol).toLocaleString()} unidades · ${d.clientes.size} clientes</div>`;
+    card.onclick=()=>go(prod,document.querySelector(`.ni[data-id="${prod}"]`));
+    grid.appendChild(card);
+  });
+
+  document.getElementById('pov').classList.add('vis');
+  document.getElementById('pov').style.display='';
+}
+
+// ── NAVIGATE ──
 function go(id,el){
   document.querySelectorAll('.ni').forEach(n=>n.classList.remove('on'));
-  if(el)el.classList.add('on');
+  if(el) el.classList.add('on');
   cur=id;
   if(id==='overview'){
     document.getElementById('pov').classList.add('vis');
@@ -521,141 +515,116 @@ function go(id,el){
   render(id);
 }
 
-function render(id){
-  const p=P[id];
-  document.getElementById('pn').textContent=p.num;
-  document.getElementById('pname').textContent=p.name;
-  document.getElementById('pdesc').textContent=p.desc;
-  const cc=p.vt==='pos'?'chp':p.vt==='neg'?'chn':'chw';
-  document.getElementById('pmeta').innerHTML=`
-    <div class="mi"><div class="mv">${p.fac}</div><div class="ml">Facturación</div></div>
-    <div class="ms"></div>
-    <div class="mi"><div class="mv">${p.vol}</div><div class="ml">Volumen</div></div>
-    <div class="ms"></div>
-    <div class="mi"><div class="mv"><span class="ch ${cc}">${p.varP}</span></div><div class="ml">Var. interanual</div></div>
-    <div class="ms"></div>
-    <div class="mi"><div class="mv" style="font-size:12px;font-weight:500">${p.owner}</div><div class="ml">Owner</div></div>`;
+// ── RENDER PRODUCT ──
+function render(prod){
+  const m=META[prod]||{num:'—',desc:'—',kpis:{m:[],c:[],e:[]}};
+  const byP=ventasByProducto();
+  const d=byP[prod]||{fac:0,vol:0,clientes:new Set(),owner:'—'};
 
+  document.getElementById('pn').textContent=m.num;
+  document.getElementById('pname').textContent=prod;
+  document.getElementById('pdesc').textContent=m.desc;
+
+  document.getElementById('pmeta').innerHTML=`
+    <div class="mi"><div class="mv">${fmtARS(d.fac)}</div><div class="ml">Facturación</div></div>
+    <div class="ms"></div>
+    <div class="mi"><div class="mv">${Math.round(d.vol).toLocaleString()}</div><div class="ml">Volumen</div></div>
+    <div class="ms"></div>
+    <div class="mi"><div class="mv">${d.clientes.size}</div><div class="ml">Clientes</div></div>
+    <div class="ms"></div>
+    <div class="mi"><div class="mv" style="font-size:12px;font-weight:500">${d.owner||'—'}</div><div class="ml">Owner</div></div>`;
+
+  // KPI chips
   const ks=document.getElementById('ks');
   ks.innerHTML='<span class="kl">KPIs:</span>';
-  p.kpis.m.forEach(k=>{const c=document.createElement('div');c.className='kc';c.innerHTML=`<span class="kd" style="background:${G}"></span>${k}`;ks.appendChild(c);});
-  p.kpis.c.forEach(k=>{const c=document.createElement('div');c.className='kc';c.innerHTML=`<span class="kd" style="background:${O}"></span>${k}`;ks.appendChild(c);});
-  p.kpis.e.slice(0,2).forEach(k=>{const c=document.createElement('div');c.className='kc';c.innerHTML=`<span class="kd" style="background:${T}"></span>${k}`;ks.appendChild(c);});
+  m.kpis.m.forEach(k=>{const c=document.createElement('div');c.className='kc';c.innerHTML=`<span class="kd" style="background:${G}"></span>${k}`;ks.appendChild(c);});
+  m.kpis.c.forEach(k=>{const c=document.createElement('div');c.className='kc';c.innerHTML=`<span class="kd" style="background:${O}"></span>${k}`;ks.appendChild(c);});
+  m.kpis.e.slice(0,2).forEach(k=>{const c=document.createElement('div');c.className='kc';c.innerHTML=`<span class="kd" style="background:${T}"></span>${k}`;ks.appendChild(c);});
 
-  const now=new Date();
-  document.getElementById('ts').textContent=now.toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
-
+  setTs();
   const pc=document.getElementById('pc');
   pc.innerHTML='';
 
-  // METRICS
-  if(p.metrics){
-    const row=document.createElement('div');row.className='mrow';
-    p.metrics.forEach(m=>{
-      const vc=m.vt==='pos'?'vp':'vn';
-      row.innerHTML+=`<div class="mc">
-        <div class="mc-l">${m.l}</div>
-        <div class="mc-v">${m.v}</div>
-        ${m.var?`<div class="mc-var ${vc}">${m.var}</div>`:''}
-        ${m.s?`<div class="mc-s">${m.s}</div>`:''}
-      </div>`;
-    });
-    pc.appendChild(row);
-  }
+  // Métricas
+  const ts=topClientes(prod,1);
+  const topFac=ts.length?fmtARS(ts[0].f):'—';
+  const row=document.createElement('div');row.className='mrow';
+  row.innerHTML=`
+    <div class="mc"><div class="mc-l">Facturación total</div><div class="mc-v">${fmtARS(d.fac)}</div><div class="mc-s">Venta normalizada</div></div>
+    <div class="mc"><div class="mc-l">Volumen total</div><div class="mc-v">${Math.round(d.vol).toLocaleString()}</div><div class="mc-s">Unidades / equipos</div></div>
+    <div class="mc"><div class="mc-l">Clientes activos</div><div class="mc-v">${d.clientes.size}</div><div class="mc-s">Con facturación</div></div>
+    <div class="mc"><div class="mc-l">Top cliente</div><div class="mc-v" style="font-size:16px">${topFac}</div><div class="mc-s">${ts.length?ts[0].n:'—'}</div></div>`;
+  pc.appendChild(row);
 
-  const mo=p.moShort||MO;
-
-  // CHARTS
-  if(p.fac12&&p.fac12.length){
-    const isCDD=id==='cartadoc';
+  // Gráficos
+  const series=ventasPorMes(prod);
+  if(series.labels.length){
     const cg=document.createElement('div');cg.className='cgrid';
     cg.innerHTML=`
-      <div class="cb">
-        <div class="cb-t">Facturación ${isCDD?'(USD)':'(USD M)'}</div>
-        <div class="cb-s">${mo[0]} 2025 – ${mo[mo.length-1]} ${isCDD?'2026':'2026'}</div>
-        <div class="cw"><canvas id="cf"></canvas></div>
-      </div>
-      <div class="cb">
-        <div class="cb-t">Volumen</div>
-        <div class="cb-s">${mo[0]} – ${mo[mo.length-1]} 2026</div>
-        <div class="cw"><canvas id="cv"></canvas></div>
-      </div>`;
+      <div class="cb"><div class="cb-t">Facturación mensual</div><div class="cb-s">Venta normalizada (ARS M)</div><div class="cw"><canvas id="cf"></canvas></div></div>
+      <div class="cb"><div class="cb-t">Volumen mensual</div><div class="cb-s">Unidades / equipos</div><div class="cw"><canvas id="cv"></canvas></div></div>`;
     pc.appendChild(cg);
     requestAnimationFrame(()=>{
-      mk('cf','bar',mo,[{data:p.fac12,backgroundColor:T,borderRadius:5,hoverBackgroundColor:T2}],
-        {yf:isCDD?v=>v>=1000?'$'+(v/1000).toFixed(0)+'K':'$'+v:v=>'$'+v+'M'});
-      mk('cv','line',mo,[{data:p.vol12,borderColor:G,backgroundColor:'rgba(151,191,13,.08)',tension:.4,fill:true,pointRadius:3,pointBackgroundColor:G}]);
+      mk('cf','bar',series.labels,[{data:series.fac,backgroundColor:T,borderRadius:5,hoverBackgroundColor:T2}],
+        {yf:v=>'$'+v+'M'});
+      mk('cv','line',series.labels,[{data:series.vol,borderColor:G,backgroundColor:'rgba(151,191,13,.08)',
+        tension:.4,fill:true,pointRadius:3,pointBackgroundColor:G}],
+        {yf:v=>v>=1e6?(v/1e6).toFixed(1)+'M':v>=1e3?(v/1e3).toFixed(0)+'K':v});
     });
   }
 
-  if(p.sla||p.ef){
-    const cg2=document.createElement('div');
-    cg2.className=p.sla&&p.ef?'cgrid':'cgrid one';
-    let inner='';
-    if(p.sla) inner+=`<div class="cb"><div class="cb-t">SLA (%)</div><div class="cb-s">${mo[0]} – ${mo[mo.length-1]} 2026</div><div class="cw"><canvas id="cs"></canvas></div></div>`;
-    if(p.ef)  inner+=`<div class="cb"><div class="cb-t">Efectividad General (%)</div><div class="cb-s">${mo[0]} – ${mo[mo.length-1]} 2026</div><div class="cw"><canvas id="ce"></canvas></div></div>`;
-    cg2.innerHTML=inner;
-    pc.appendChild(cg2);
-    requestAnimationFrame(()=>{
-      if(p.sla) mk('cs','line',mo,[{data:p.sla,borderColor:G,backgroundColor:'rgba(151,191,13,.07)',tension:.4,fill:true,pointRadius:3}],{yf:v=>v+'%',ex:{scales:{y:{min:60,max:100}}}});
-      if(p.ef)  mk('ce','line',mo,[{data:p.ef,borderColor:O,backgroundColor:'rgba(242,148,0,.07)',tension:.4,fill:true,pointRadius:3}],{yf:v=>v+'%',ex:{scales:{y:{min:60,max:100}}}});
-    });
-  }
-
-  // CLIENTS
-  if(p.cli&&p.cli.length){
+  // Top clientes
+  const tcli=topClientes(prod,8);
+  if(tcli.length){
     const ct=document.createElement('div');ct.className='ctb';
     ct.innerHTML=`<h3>Top Clientes por Facturación</h3>
     <table class="ct">
-      <thead><tr><th>Cliente</th><th>Facturación</th></tr></thead>
-      <tbody>${p.cli.map((c,i)=>`<tr><td>${i+1}. ${c.n}</td><td>${c.f}</td></tr>`).join('')}</tbody>
+      <thead><tr><th>Cliente</th><th>Facturación (ARS)</th></tr></thead>
+      <tbody>${tcli.map((c,i)=>`<tr><td>${i+1}. ${c.n}</td><td>${fmtARS(c.f)}</td></tr>`).join('')}</tbody>
     </table>`;
     pc.appendChild(ct);
   }
 
-  // KPI STATUS
+  // KPI Status
   const kb=document.createElement('div');kb.className='ksb';
   kb.innerHTML=`<h3>Plan de Medición de Indicadores</h3>
   <div class="ksg">
-    <div class="ksgg"><div class="ksg-t tg">● KPIs Medidos</div>${p.kpis.m.map(k=>`<div class="ksi"><span class="kdd kdg"></span>${k}</div>`).join('')}</div>
-    <div class="ksgg"><div class="ksg-t to">● KPIs En Curso</div>${p.kpis.c.map(k=>`<div class="ksi"><span class="kdd kdo"></span>${k}</div>`).join('')}</div>
-    <div class="ksgg"><div class="ksg-t tt">● KPIs Evolutivos</div>${p.kpis.e.map(k=>`<div class="ksi"><span class="kdd kdt"></span>${k}</div>`).join('')}</div>
+    <div class="ksgg"><div class="ksg-t tg">● KPIs Medidos</div>${m.kpis.m.map(k=>`<div class="ksi"><span class="kdd kdg"></span>${k}</div>`).join('')}</div>
+    <div class="ksgg"><div class="ksg-t to">● KPIs En Curso</div>${m.kpis.c.map(k=>`<div class="ksi"><span class="kdd kdo"></span>${k}</div>`).join('')}</div>
+    <div class="ksgg"><div class="ksg-t tt">● KPIs Evolutivos</div>${m.kpis.e.map(k=>`<div class="ksi"><span class="kdd kdt"></span>${k}</div>`).join('')}</div>
   </div>`;
   pc.appendChild(kb);
 
-  // PBI BANNER
-  const banner=document.createElement('div');banner.className='pbi-banner';
-  banner.innerHTML=`
-    <div class="pbi-info">
-      <div class="pbi-info-t">📊 Ver reporte completo en Power BI</div>
-      <div class="pbi-info-s">Requiere acceso corporativo Ocasa · Datos actualizados en tiempo real</div>
-    </div>
-    <a class="pbi-btn" href="${PBI_LINK}" target="_blank">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
-        <polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/>
-      </svg>
-      Abrir Power BI
-    </a>`;
-  pc.appendChild(banner);
+  // Fuente
+  const src=document.createElement('div');src.className='src-badge';
+  src.innerHTML=`<span>🔗 Fuente: <strong>Supabase</strong> · Tabla ventas · ${allVentas.filter(v=>v.producto===prod).length.toLocaleString()} registros para este producto</span>`;
+  pc.appendChild(src);
 }
 
-function filterUN(){
-  const v=document.getElementById('fUN').value;
-  document.querySelectorAll('.ni[data-id]').forEach(el=>{
-    const id=el.dataset.id;
-    if(id==='overview'){el.style.display='';return;}
-    el.style.display=(!v||P[id].un===v)?'':'none';
-  });
+function setTs(){
+  document.getElementById('tsv').textContent=
+    new Date().toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
 }
 
+// ── COUNTDOWN & AUTO-REFRESH ──
 let secs=300;
 setInterval(()=>{
   secs--;
-  if(secs<=0){secs=300;if(cur!=='overview')render(cur);}
-  const m=Math.floor(secs/60),s=String(secs%60).padStart(2,'0');
-  document.getElementById('cd').textContent=`${m}:${s}`;
+  if(secs<=0){secs=300;reloadAll();}
+  const mm=Math.floor(secs/60),ss=String(secs%60).padStart(2,'0');
+  document.getElementById('cd').textContent=`${mm}:${ss}`;
 },1000);
+
+function reloadAll(){
+  secs=300;
+  const ic=document.getElementById('refIco');
+  ic.style.transition='transform .6s';ic.style.transform='rotate(360deg)';
+  setTimeout(()=>{ic.style.transition='';ic.style.transform='';},650);
+  loadAll();
+}
+
+// ── INIT ──
+loadAll();
 </script>
 </body>
 </html>
