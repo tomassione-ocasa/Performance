@@ -92,8 +92,9 @@ main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
 /* OVERVIEW */
 .ov{flex:1;overflow-y:auto;padding:20px 22px;display:none;}
 .ov.vis{display:block;}
-.ostats{display:flex;flex-wrap:nowrap;gap:11px;margin-bottom:18px;overflow-x:auto;padding-bottom:4px;}
-.ostats .osc{flex:1;min-width:130px;}
+.ostats{display:flex;flex-wrap:nowrap;gap:11px;margin-bottom:18px;overflow-x:auto;padding-bottom:4px;align-items:stretch;}
+.ostats .osc{flex:1;min-width:130px;display:flex;flex-direction:column;justify-content:flex-end;}
+.ostats .osc-l{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .osc{background:#fff;border:1px solid rgba(0,156,163,.2);border-top:3px solid var(--teal);
   border-radius:10px;padding:15px 16px;}
 .osc-l{font-size:9.5px;font-weight:700;color:var(--gray);text-transform:uppercase;letter-spacing:.7px;margin-bottom:5px;}
@@ -473,12 +474,15 @@ function buildOverview(){
   statsEl.innerHTML='';
   const unColors={'Ultima Milla':T,'Supply Chain':G,'Cross Dock':O,'Pharma':T2,'X Border Transactions':'#8B5CF6','Global Forwarding':'#6B7280'};
   // Mostrar todas las unidades de negocio presentes en los datos
+  // Renombrar Xdock → Cross Dock para mostrar
+  const unLabels={'Xdock':'Cross Dock','X Border Transactions':'X Border','Global Forwarding':'Global Fwd'};
   const allUNs=Object.keys(byUN).sort((a,b)=>(byUN[b]||0)-(byUN[a]||0));
   let total=0; Object.values(byUN).forEach(v=>total+=v);
   allUNs.forEach(u=>{
     const v=byUN[u]||0;
+    const label=unLabels[u]||u;
     statsEl.innerHTML+=`<div class="osc">
-      <div class="osc-l">${u}</div>
+      <div class="osc-l">${label}</div>
       <div class="osc-v" style="color:${unColors[u]||T}">${fmtARS(v)}</div>
       <div class="osc-s">Venta normalizada</div></div>`;
   });
