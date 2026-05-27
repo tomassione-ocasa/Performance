@@ -92,7 +92,8 @@ main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
 /* OVERVIEW */
 .ov{flex:1;overflow-y:auto;padding:20px 22px;display:none;}
 .ov.vis{display:block;}
-.ostats{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:11px;margin-bottom:18px;}
+.ostats{display:flex;flex-wrap:nowrap;gap:11px;margin-bottom:18px;overflow-x:auto;padding-bottom:4px;}
+.ostats .osc{flex:1;min-width:130px;}
 .osc{background:#fff;border:1px solid rgba(0,156,163,.2);border-top:3px solid var(--teal);
   border-radius:10px;padding:15px 16px;}
 .osc-l{font-size:9.5px;font-weight:700;color:var(--gray);text-transform:uppercase;letter-spacing:.7px;margin-bottom:5px;}
@@ -360,12 +361,22 @@ async function loadAll(){
   try{
     document.getElementById('gload-t').textContent='Descargando ventas…';
     const esc=document.getElementById('fEsc').value;
-    // Traer solo columnas necesarias
     const vSelect='anio,mes,cliente,unidad_negocio,cod_material,material,cantidad,venta_norm,escenario';
-    let vUrl=`${SB_URL}/rest/v1/ventas?select=${vSelect}&limit=100000`;
-    if(esc) vUrl+=`&escenario=eq.${encodeURIComponent(esc)}`;
-    const vRes=await fetch(vUrl,{headers:{'apikey':SB_KEY,'Authorization':`Bearer ${SB_KEY}`}});
-    allVentas=await vRes.json();
+    // Paginación para traer todos los registros
+    allVentas=[];
+    const PAGE=5000;
+    let offset=0, page=1;
+    while(true){
+      let vUrl=`${SB_URL}/rest/v1/ventas?select=${vSelect}&limit=${PAGE}&offset=${offset}`;
+      if(esc) vUrl+=`&escenario=eq.${encodeURIComponent(esc)}`;
+      document.getElementById('gload-t').textContent=`Descargando ventas… (${allVentas.length.toLocaleString()} registros)`;
+      const vRes=await fetch(vUrl,{headers:{'apikey':SB_KEY,'Authorization':`Bearer ${SB_KEY}`,'Prefer':'count=none'}});
+      const batch=await vRes.json();
+      if(!Array.isArray(batch)||batch.length===0) break;
+      allVentas=allVentas.concat(batch);
+      if(batch.length<PAGE) break;
+      offset+=PAGE; page++;
+    }
 
     document.getElementById('gload-t').textContent='Descargando lookup materiales…';
     const mRes=await fetch(`${SB_URL}/rest/v1/material_producto?select=cod_material,producto,owner`,
