@@ -481,8 +481,8 @@ function buildOverview(){
   const unColors={'Ultima Milla':T,'Supply Chain':G,'Cross Dock':O,'Pharma':T2,'X Border Transactions':'#8B5CF6','Global Forwarding':'#6B7280'};
   // Mostrar todas las unidades de negocio presentes en los datos
   // Solo mostrar las 3 unidades principales
-  const mainUNs=['Ultima Milla','Xdock','Supply Chain'];
-  const unLabels={'Xdock':'Cross Dock'};
+  const mainUNs=['Ultima Milla','Cross Dock','Supply Chain'];
+  const unLabels={};
   let total=0;
   mainUNs.forEach(u=>{ total+=(byUN[u]||0); });
   mainUNs.forEach(u=>{
