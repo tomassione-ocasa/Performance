@@ -365,18 +365,24 @@ async function loadAll(){
     const vSelect='anio,mes,cliente,unidad_negocio,cod_material,material,cantidad,venta_norm,escenario';
     // Paginación para traer todos los registros
     allVentas=[];
-    const PAGE=5000;
-    let offset=0, page=1;
+    const PAGE=1000;
+    let offset=0;
     while(true){
-      let vUrl=`${SB_URL}/rest/v1/ventas?select=${vSelect}&limit=${PAGE}&offset=${offset}`;
+      const from=offset, to=offset+PAGE-1;
+      let vUrl=`${SB_URL}/rest/v1/ventas?select=${vSelect}`;
       if(esc) vUrl+=`&escenario=eq.${encodeURIComponent(esc)}`;
       document.getElementById('gload-t').textContent=`Descargando ventas… (${allVentas.length.toLocaleString()} registros)`;
-      const vRes=await fetch(vUrl,{headers:{'apikey':SB_KEY,'Authorization':`Bearer ${SB_KEY}`,'Prefer':'count=none'}});
+      const vRes=await fetch(vUrl,{headers:{
+        'apikey':SB_KEY,'Authorization':`Bearer ${SB_KEY}`,
+        'Range':`${from}-${to}`,
+        'Range-Unit':'items',
+        'Prefer':'count=none'
+      }});
       const batch=await vRes.json();
       if(!Array.isArray(batch)||batch.length===0) break;
       allVentas=allVentas.concat(batch);
       if(batch.length<PAGE) break;
-      offset+=PAGE; page++;
+      offset+=PAGE;
     }
 
     document.getElementById('gload-t').textContent='Descargando lookup materiales…';
@@ -474,11 +480,12 @@ function buildOverview(){
   statsEl.innerHTML='';
   const unColors={'Ultima Milla':T,'Supply Chain':G,'Cross Dock':O,'Pharma':T2,'X Border Transactions':'#8B5CF6','Global Forwarding':'#6B7280'};
   // Mostrar todas las unidades de negocio presentes en los datos
-  // Renombrar Xdock → Cross Dock para mostrar
-  const unLabels={'Xdock':'Cross Dock','X Border Transactions':'X Border','Global Forwarding':'Global Fwd'};
-  const allUNs=Object.keys(byUN).sort((a,b)=>(byUN[b]||0)-(byUN[a]||0));
-  let total=0; Object.values(byUN).forEach(v=>total+=v);
-  allUNs.forEach(u=>{
+  // Solo mostrar las 3 unidades principales
+  const mainUNs=['Ultima Milla','Xdock','Supply Chain'];
+  const unLabels={'Xdock':'Cross Dock'};
+  let total=0;
+  mainUNs.forEach(u=>{ total+=(byUN[u]||0); });
+  mainUNs.forEach(u=>{
     const v=byUN[u]||0;
     const label=unLabels[u]||u;
     statsEl.innerHTML+=`<div class="osc">
