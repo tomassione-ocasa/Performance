@@ -460,17 +460,18 @@ function buildOverview(){
   });
   const statsEl=document.getElementById('ovStats');
   statsEl.innerHTML='';
-  const unColors={'Ultima Milla':T,'Supply Chain':G,'Cross Dock':O,'Pharma':T2};
-  const mainUNs=['Ultima Milla','Supply Chain','Cross Dock'];
+  const unColors={'Ultima Milla':T,'Supply Chain':G,'Cross Dock':O,'Pharma':T2,'X Border Transactions':'#8B5CF6','Global Forwarding':'#6B7280'};
+  // Mostrar todas las unidades de negocio presentes en los datos
+  const allUNs=Object.keys(byUN).sort((a,b)=>(byUN[b]||0)-(byUN[a]||0));
   let total=0; Object.values(byUN).forEach(v=>total+=v);
-  mainUNs.forEach(u=>{
+  allUNs.forEach(u=>{
     const v=byUN[u]||0;
     statsEl.innerHTML+=`<div class="osc">
       <div class="osc-l">${u}</div>
       <div class="osc-v" style="color:${unColors[u]||T}">${fmtARS(v)}</div>
       <div class="osc-s">Venta normalizada</div></div>`;
   });
-  statsEl.innerHTML+=`<div class="osc">
+  statsEl.innerHTML+=`<div class="osc" style="border-top-color:var(--black)">
     <div class="osc-l">Total</div>
     <div class="osc-v">${fmtARS(total)}</div>
     <div class="osc-s">${Object.keys(META).length} productos</div></div>`;
