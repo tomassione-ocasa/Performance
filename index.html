@@ -31,6 +31,7 @@ header{height:var(--header);background:var(--teal);display:flex;align-items:cent
 .hsel{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);color:#fff;
   font-family:'Barlow',sans-serif;font-size:12px;padding:5px 10px;border-radius:5px;cursor:pointer;outline:none;}
 .hsel option{background:var(--teal);}
+.hsel::placeholder{color:rgba(255,255,255,.6);}
 .hlbl{font-size:10px;color:rgba(255,255,255,.8);text-transform:uppercase;letter-spacing:.7px;}
 .live{display:flex;align-items:center;gap:7px;background:rgba(255,255,255,.15);
   border:1px solid rgba(255,255,255,.3);border-radius:20px;padding:4px 13px;}
@@ -177,6 +178,40 @@ main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
 .kdg{background:var(--green);}.kdo{background:var(--orange);}.kdt{background:var(--teal);}
 
 /* DATA SOURCE BADGE */
+/* TABS */
+.tabs-bar{display:flex;gap:2px;background:#fff;border-bottom:2px solid rgba(0,156,163,.12);
+  padding:0 20px;flex-shrink:0;}
+.tab-btn{padding:9px 16px;font-size:12px;font-weight:600;color:var(--gray);cursor:pointer;
+  border-bottom:2px solid transparent;margin-bottom:-2px;transition:color .15s,border-color .15s;
+  white-space:nowrap;user-select:none;}
+.tab-btn:hover{color:var(--teal);}
+.tab-btn.on{color:var(--teal);border-bottom-color:var(--teal);}
+.tab-panel{display:none;flex-direction:column;gap:14px;padding:14px 18px 20px;}
+.tab-panel.on{display:flex;}
+/* COMPARATIVA / RANKING */
+.comp-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.comp-card{background:#fff;border:1px solid rgba(0,0,0,.07);border-radius:10px;padding:15px;}
+.comp-card h4{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;
+  color:var(--black);margin-bottom:4px;}
+.comp-sub{font-size:10px;color:var(--gray);margin-bottom:10px;}
+.rank-box{background:#fff;border:1px solid rgba(0,0,0,.07);border-radius:10px;padding:15px;}
+.rank-box h4{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;
+  color:var(--black);margin-bottom:12px;}
+.rank-item{display:flex;align-items:center;gap:10px;padding:6px 0;
+  border-bottom:1px solid rgba(0,0,0,.04);}
+.rank-item:last-child{border-bottom:none;}
+.rank-pos{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;
+  color:var(--teal);width:22px;flex-shrink:0;opacity:.5;}
+.rank-name{flex:1;font-size:12px;font-weight:500;color:var(--black);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.rank-bar-wrap{width:100px;height:6px;background:rgba(0,156,163,.12);border-radius:3px;flex-shrink:0;}
+.rank-bar{height:6px;border-radius:3px;background:var(--teal);}
+.rank-val{font-size:11px;font-weight:700;color:var(--black);width:72px;text-align:right;flex-shrink:0;}
+.rank-delta{font-size:10px;font-weight:700;padding:1px 5px;border-radius:3px;flex-shrink:0;}
+.rd-p{background:rgba(151,191,13,.12);color:#4D7200;}
+.rd-n{background:rgba(242,148,0,.1);color:#A06800;}
+.rd-0{background:rgba(177,177,177,.15);color:#888;}
+
 .src-badge{background:#fff;border:1.5px solid var(--teal);border-radius:10px;
   padding:10px 16px;display:flex;align-items:center;gap:10px;font-size:11px;color:var(--gray);}
 .src-badge strong{color:var(--teal);}
@@ -217,9 +252,8 @@ main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
       <option value="DICIEMBRE">Diciembre</option>
     </select>
     <span class="hlbl">Cliente</span>
-    <select class="hsel" id="fCliente" onchange="applyClienteFilter()" style="max-width:160px;">
-      <option value="">Todos</option>
-    </select>
+    <input class="hsel" id="fCliente" list="clist" placeholder="Buscar…" oninput="applyClienteFilter()" autocomplete="off" style="max-width:165px;cursor:text;">
+    <datalist id="clist"></datalist>
     <div class="live">
       <div class="pdot"></div>
       <span class="live-t">SUPABASE</span>
@@ -306,8 +340,17 @@ main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
       <div class="pmeta" id="pmeta"></div>
     </div>
     <div class="kstrip" id="ks"></div>
+    <div class="tabs-bar">
+      <div class="tab-btn on" onclick="switchTab('resumen',this)" data-tab="resumen">📊 Resumen</div>
+      <div class="tab-btn" onclick="switchTab('comparativa',this)" data-tab="comparativa">📈 Comparativa Anual</div>
+      <div class="tab-btn" onclick="switchTab('ranking',this)" data-tab="ranking">🏆 Ranking Clientes</div>
+    </div>
     <div class="ts">Última actualización: <span id="tsv">—</span></div>
-    <div class="pcont" id="pc"></div>
+    <div class="pcont" id="pc">
+      <div class="tab-panel on" id="tab-resumen"></div>
+      <div class="tab-panel" id="tab-comparativa"></div>
+      <div class="tab-panel" id="tab-ranking"></div>
+    </div>
   </div>
 </main>
 </div>
@@ -423,7 +466,6 @@ async function loadAll(){
     });
 
     document.getElementById('gload').classList.add('hide');
-    populateClienteSelect();
     buildOverview();
     if(cur!=='overview') render(cur);
     setTs();
@@ -494,7 +536,7 @@ function updatePeriodo(){
 // ── AGGREGATE ──
 function ventasByProducto(){
   const out={};
-  allVentas.forEach(v=>{
+  getVentas().forEach(v=>{
     const p=v.producto;
     if(!out[p]) out[p]={fac:0,vol:0,clientes:new Set(),owner:v.owner};
     out[p].fac+=v.venta_norm||0;
@@ -507,7 +549,7 @@ function ventasByProducto(){
 
 function ventasPorMes(producto){
   const byMes={};
-  allVentas.filter(v=>v.producto===producto).forEach(v=>{
+  getVentas().filter(v=>v.producto===producto).forEach(v=>{
     const k=v.mes?.toUpperCase()||'';
     if(!byMes[k]) byMes[k]={fac:0,vol:0};
     byMes[k].fac+=v.venta_norm||0;
@@ -524,7 +566,7 @@ function ventasPorMes(producto){
 
 function topClientes(producto,n=5){
   const by={};
-  allVentas.filter(v=>v.producto===producto).forEach(v=>{
+  getVentas().filter(v=>v.producto===producto).forEach(v=>{
     if(!v.cliente)return;
     by[v.cliente]=(by[v.cliente]||0)+(v.venta_norm||0);
   });
@@ -544,37 +586,6 @@ function fmtARS(v){
 }
 
 // ── OVERVIEW ──
-function populateClienteSelect(){
-  const sel = document.getElementById('fCliente');
-  if(!sel) return;
-  const current = sel.value;
-  // Clientes únicos ordenados
-  const clientes = [...new Set(allVentas.map(v=>v.cliente).filter(Boolean))].sort();
-  sel.innerHTML = '<option value="">Todos (' + clientes.length + ')</option>';
-  clientes.forEach(c => {
-    const opt = document.createElement('option');
-    opt.value = c; opt.textContent = c.length > 25 ? c.substring(0,25)+'…' : c;
-    if(c === current) opt.selected = true;
-    sel.appendChild(opt);
-  });
-}
-
-function applyClienteFilter(){
-  // Re-renderizar con filtro de cliente aplicado en memoria
-  const cli = document.getElementById('fCliente').value;
-  if(cli){
-    // Filtrar temporalmente
-    const original = allVentas;
-    allVentas = allVentas.filter(v => v.cliente === cli);
-    buildOverview();
-    if(cur !== 'overview') render(cur);
-    allVentas = original;
-  } else {
-    buildOverview();
-    if(cur !== 'overview') render(cur);
-  }
-}
-
 function buildOverview(){
   // Stats top
   const byUN={};
@@ -612,8 +623,8 @@ function buildOverview(){
     const mesFiltroAct = document.getElementById('fMes').value?.toUpperCase();
     const ultimoReal = getUltimoMesReal();
     const anioRef = ultimoReal ? ultimoReal.anio : maxAnioProd;
-    // colorPorAnio definida arriba
-    const borderColor = maxAnioProd ? colorPorAnio(maxAnioProd) : '#009CA3';
+    function colorAnio(a){ return a>=2026?'#97BF0D':a===2025?'#F29400':'#B1B1B1'; }
+    const borderColor = maxAnioProd ? colorAnio(maxAnioProd) : '#009CA3';
     const anioLabel = maxAnioProd ? `<span style="font-size:9px;font-weight:700;padding:1px 6px;border-radius:10px;background:${borderColor}22;color:${borderColor};margin-left:5px;">${maxAnioProd}</span>` : '';
 
     const card=document.createElement('div');card.className='ocard';
@@ -627,8 +638,12 @@ function buildOverview(){
     grid.appendChild(card);
   });
 
-  document.getElementById('pov').classList.add('vis');
-  document.getElementById('pov').style.display='';
+  if(cur==='overview'){
+    document.getElementById('pov').classList.add('vis');
+    document.getElementById('pov').style.display='';
+    document.getElementById('pp').classList.remove('vis');
+    document.getElementById('pp').style.display='none';
+  }
 }
 
 // ── NAVIGATE ──
@@ -661,7 +676,7 @@ function render(prod){
   const aniosProd2=allVentas.filter(v=>v.producto===prod&&v.escenario==='Actual');
   const maxAnioP=aniosProd2.length?Math.max(...aniosProd2.map(v=>v.anio)):null;
   const pnEl=document.getElementById('pn');
-  pnEl.style.color=maxAnioP?colorPorAnio(maxAnioP):'#009CA3';
+  pnEl.style.color=maxAnioP?(maxAnioP>=2026?'#97BF0D':maxAnioP===2025?'#F29400':'#B1B1B1'):'#009CA3';
   pnEl.style.opacity='0.6';
   document.getElementById('pname').textContent=prod;
   document.getElementById('pdesc').textContent=m.desc;
@@ -683,7 +698,14 @@ function render(prod){
   m.kpis.e.slice(0,2).forEach(k=>{const c=document.createElement('div');c.className='kc';c.innerHTML=`<span class="kd" style="background:${T}"></span>${k}`;ks.appendChild(c);});
 
   setTs();
-  const pc=document.getElementById('pc');
+  // Reset tabs
+  document.querySelectorAll('.tab-btn').forEach(t=>t.classList.remove('on'));
+  document.querySelectorAll('.tab-panel').forEach(p=>{p.classList.remove('on');p.innerHTML='';});
+  const firstBtn=document.querySelector('.tab-btn[data-tab="resumen"]');
+  if(firstBtn) firstBtn.classList.add('on');
+  const tabR=document.getElementById('tab-resumen');
+  if(tabR) tabR.classList.add('on');
+  const pc=tabR||document.getElementById('pc');
   pc.innerHTML='';
   // Aviso de datos en producto
   const ultimo=getUltimoMesReal();
@@ -762,6 +784,145 @@ function render(prod){
   const src=document.createElement('div');src.className='src-badge';
   src.innerHTML=`<span>🔗 Fuente: <strong>Supabase</strong> · Tabla ventas · ${allVentas.filter(v=>v.producto===prod).length.toLocaleString()} registros para este producto</span>`;
   pc.appendChild(src);
+
+  // Render comparativa y ranking
+  const tabC=document.getElementById('tab-comparativa');
+  const tabK=document.getElementById('tab-ranking');
+  if(tabC){tabC.innerHTML='';renderComparativa(prod,tabC);}
+  if(tabK){tabK.innerHTML='';renderRanking(prod,tabK);}
+}
+
+
+function switchTab(tab,el){
+  document.querySelectorAll('.tab-btn').forEach(t=>t.classList.remove('on'));
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('on'));
+  if(el) el.classList.add('on');
+  const p=document.getElementById('tab-'+tab);
+  if(p) p.classList.add('on');
+}
+
+function getVentas(){
+  const cli=(document.getElementById('fCliente')?.value||'').trim();
+  if(!cli) return allVentas;
+  const exact=allVentas.filter(v=>v.cliente===cli);
+  return exact.length?exact:allVentas.filter(v=>v.cliente?.toLowerCase().includes(cli.toLowerCase()));
+}
+
+function populateClienteSelect(){
+  const dl=document.getElementById('clist');
+  if(!dl) return;
+  const clientes=[...new Set(allVentas.map(v=>v.cliente).filter(Boolean))].sort();
+  dl.innerHTML=clientes.map(c=>`<option value="${c}">`).join('');
+}
+
+function applyClienteFilter(){
+  if(cur==='overview') buildOverview();
+  else render(cur);
+}
+
+function colorPorAnio(a){ return a>=2026?'#97BF0D':'#F29400'; }
+
+function renderComparativa(prod,container){
+  const ventas=allVentas.filter(v=>v.producto===prod&&v.escenario==='Actual');
+  if(!ventas.length){container.innerHTML='<div style="padding:20px;color:var(--gray)">Sin datos suficientes.</div>';return;}
+  const byAM={};
+  ventas.forEach(v=>{const k=v.anio+'|'+(v.mes||'').toUpperCase();byAM[k]=(byAM[k]||0)+(Number(v.venta_norm)||0);});
+  const years=[...new Set(ventas.map(v=>v.anio))].sort();
+  const yr1=years[0],yr2=years[years.length-1];
+  const MO=MONTHS_ORDER;
+  const d1=MO.map(m=>byAM[yr1+'|'+m]||0);
+  const d2=years.length>1?MO.map(m=>byAM[yr2+'|'+m]||0):null;
+  const t1=d1.reduce((a,b)=>a+b,0),t2=d2?d2.reduce((a,b)=>a+b,0):0;
+  const vp=t1>0&&t2>0?((t2-t1)/t1*100):null;
+  const smo=MO.map(m=>m.substring(0,3));
+
+  const cards=document.createElement('div');cards.className='comp-row';
+  cards.innerHTML=`
+    <div class="comp-card"><h4>${yr1} — Total acumulado</h4>
+      <div style="font-family:'Barlow Condensed',sans-serif;font-size:26px;font-weight:700;color:#F29400">${fmtARS(t1)}</div>
+    </div>
+    ${d2?`<div class="comp-card"><h4>${yr2} — Total acumulado</h4>
+      <div style="font-family:'Barlow Condensed',sans-serif;font-size:26px;font-weight:700;color:#97BF0D">${fmtARS(t2)}</div>
+      <div style="font-size:11px;margin-top:4px">vs ${yr1}: <strong style="color:${vp>=0?'#4D7200':'#A06800'}">${vp>=0?'+':''}${vp?.toFixed(1)}%</strong></div>
+    </div>`:''}`;
+  container.appendChild(cards);
+
+  const cg=document.createElement('div');cg.className='comp-card';
+  cg.style.gridColumn='1/-1';
+  cg.innerHTML=`<h4>Facturación mensual — ${yr1}${d2?' vs '+yr2:''}</h4>
+    <div class="comp-sub">Venta normalizada (ARS M)</div>
+    <div style="position:relative;height:210px"><canvas id="cc-comp"></canvas></div>`;
+  container.appendChild(cg);
+
+  const datasets=[{label:String(yr1),data:d1.map(v=>+(v/1e6).toFixed(1)),backgroundColor:'rgba(242,148,0,.75)',borderRadius:4}];
+  if(d2) datasets.push({label:String(yr2),data:d2.map(v=>+(v/1e6).toFixed(1)),backgroundColor:'rgba(151,191,13,.75)',borderRadius:4});
+  requestAnimationFrame(()=>{
+    dc('cc-comp');const ctx=document.getElementById('cc-comp');if(!ctx)return;
+    CI['cc-comp']=new Chart(ctx.getContext('2d'),{type:'bar',data:{labels:smo,datasets},
+      options:{responsive:true,maintainAspectRatio:false,
+        plugins:{legend:{display:true,position:'top',labels:{font:{size:11},boxWidth:12}}},
+        scales:{x:{grid:{display:false}},y:{grid:{color:'rgba(0,0,0,.04)'},ticks:{callback:v=>'$'+v+'M'}}}}});
+  });
+}
+
+function renderRanking(prod,container){
+  const ventas=allVentas.filter(v=>v.producto===prod&&v.escenario==='Actual');
+  if(!ventas.length){container.innerHTML='<div style="padding:20px;color:var(--gray)">Sin datos suficientes.</div>';return;}
+  const years=[...new Set(ventas.map(v=>v.anio))].sort();
+  const yr1=years[0],yr2=years[years.length-1];
+  const byC2={},byC1={};
+  ventas.filter(v=>v.anio===yr2).forEach(v=>{if(!v.cliente)return;byC2[v.cliente]=(byC2[v.cliente]||0)+(Number(v.venta_norm)||0);});
+  if(years.length>1) ventas.filter(v=>v.anio===yr1).forEach(v=>{if(!v.cliente)return;byC1[v.cliente]=(byC1[v.cliente]||0)+(Number(v.venta_norm)||0);});
+  const sorted=Object.entries(byC2).sort((a,b)=>b[1]-a[1]).filter(([,v])=>v>0);
+  if(!sorted.length){container.innerHTML='<div style="padding:20px;color:var(--gray)">Sin datos para '+yr2+'.</div>';return;}
+  const top20=sorted.slice(0,20),maxF=top20[0][1];
+  const totalF=sorted.reduce((a,b)=>a+b[1],0);
+  const top3p=top20.slice(0,3).reduce((a,b)=>a+b[1],0)/totalF*100;
+
+  const rsm=document.createElement('div');rsm.className='comp-row';
+  rsm.innerHTML=`
+    <div class="comp-card"><h4>Concentración Top 3</h4>
+      <div style="font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:700;color:var(--teal)">${top3p.toFixed(1)}%</div>
+      <div style="font-size:10px;color:var(--gray);margin-top:3px">del total de facturación</div>
+    </div>
+    <div class="comp-card"><h4>Clientes activos en ${yr2}</h4>
+      <div style="font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:700;color:var(--black)">${sorted.length}</div>
+      <div style="font-size:10px;color:var(--gray);margin-top:3px">con facturación > $0</div>
+    </div>`;
+  container.appendChild(rsm);
+
+  const rb=document.createElement('div');rb.className='rank-box';
+  rb.innerHTML=`<h4>Top 20 Clientes · ${yr2}</h4>`;
+  top20.forEach(([name,fac],i)=>{
+    const pct=(fac/maxF*100).toFixed(0);
+    const prev=byC1[name]||0;
+    const delta=prev>0?((fac-prev)/prev*100):null;
+    const dh=years.length>1?(delta!=null?`<span class="rank-delta ${delta>5?'rd-p':delta<-5?'rd-n':'rd-0'}">${delta>=0?'+':''}${delta.toFixed(0)}%</span>`:'<span class="rank-delta rd-0">nuevo</span>'):'';
+    const row=document.createElement('div');row.className='rank-item';
+    row.innerHTML=`<span class="rank-pos">${i+1}</span>
+      <span class="rank-name" title="${name}">${name}</span>
+      <div class="rank-bar-wrap"><div class="rank-bar" style="width:${pct}%"></div></div>
+      <span class="rank-val">${fmtARS(fac)}</span>${dh}`;
+    rb.appendChild(row);
+  });
+  container.appendChild(rb);
+
+  // Dona top5
+  const top5=top20.slice(0,5),resto=sorted.slice(5).reduce((a,b)=>a+b[1],0);
+  const pie=document.createElement('div');pie.className='comp-card';
+  pie.innerHTML=`<h4>Distribución top 5 + resto</h4>
+    <div style="position:relative;height:200px"><canvas id="cc-pie"></canvas></div>`;
+  container.appendChild(pie);
+  requestAnimationFrame(()=>{
+    dc('cc-pie');const ctx=document.getElementById('cc-pie');if(!ctx)return;
+    CI['cc-pie']=new Chart(ctx.getContext('2d'),{type:'doughnut',
+      data:{labels:[...top5.map(([n])=>n.length>20?n.substring(0,20)+'…':n),'Resto'],
+        datasets:[{data:[...top5.map(([,v])=>+(v/1e6).toFixed(1)),+(resto/1e6).toFixed(1)],
+          backgroundColor:['#009CA3','#1DB4C2','#97BF0D','#F29400','#231F20','#B1B1B1'],borderWidth:2,borderColor:'#fff'}]},
+      options:{responsive:true,maintainAspectRatio:false,
+        plugins:{legend:{display:true,position:'right',labels:{font:{size:10},boxWidth:10}},
+          tooltip:{callbacks:{label:c=>' '+c.label+': $'+c.raw+'M'}}}}});
+  });
 }
 
 function setTs(){
