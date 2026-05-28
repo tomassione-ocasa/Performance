@@ -92,9 +92,7 @@ main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
 /* OVERVIEW */
 .ov{flex:1;overflow-y:auto;padding:20px 22px;display:none;}
 .ov.vis{display:block;}
-.ostats{display:flex;flex-wrap:nowrap;gap:11px;margin-bottom:18px;overflow-x:auto;padding-bottom:4px;align-items:stretch;}
-.ostats .osc{flex:1;min-width:130px;display:flex;flex-direction:column;justify-content:flex-end;}
-.ostats .osc-l{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.ostats{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:11px;margin-bottom:18px;}
 .osc{background:#fff;border:1px solid rgba(0,156,163,.2);border-top:3px solid var(--teal);
   border-radius:10px;padding:15px 16px;}
 .osc-l{font-size:9.5px;font-weight:700;color:var(--gray);text-transform:uppercase;letter-spacing:.7px;margin-bottom:5px;}
@@ -202,9 +200,26 @@ main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
       <option value="Actual">Actual</option>
       <option value="Presupuesto">Presupuesto</option>
     </select>
+    <span class="hlbl">Mes</span>
+    <select class="hsel" id="fMes" onchange="reloadAll()">
+      <option value="">Todos</option>
+      <option value="ENERO">Enero</option>
+      <option value="FEBRERO">Febrero</option>
+      <option value="MARZO">Marzo</option>
+      <option value="ABRIL">Abril</option>
+      <option value="MAYO">Mayo</option>
+      <option value="JUNIO">Junio</option>
+      <option value="JULIO">Julio</option>
+      <option value="AGOSTO">Agosto</option>
+      <option value="SEPTIEMBRE">Septiembre</option>
+      <option value="OCTUBRE">Octubre</option>
+      <option value="NOVIEMBRE">Noviembre</option>
+      <option value="DICIEMBRE">Diciembre</option>
+    </select>
     <div class="live">
       <div class="pdot"></div>
       <span class="live-t">SUPABASE</span>
+      <span class="live-c" id="cd">5:00</span>
     </div>
     <button class="btn-ref" onclick="reloadAll()">
       <svg id="refIco" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -259,7 +274,7 @@ main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
   </div>
   <div class="sdiv"></div>
   <div style="padding:8px 18px 16px;font-size:10.5px;color:#666;line-height:1.8;">
-    🔗 Datos en tiempo real<br>📊 Fuente: Supabase<br>🔄 Actualizá con el botón
+    🔗 Datos en tiempo real<br>📊 Fuente: Supabase<br>🔄 Auto-refresh: 5 min
   </div>
 </aside>
 
@@ -362,28 +377,14 @@ async function loadAll(){
   try{
     document.getElementById('gload-t').textContent='Descargando ventas…';
     const esc=document.getElementById('fEsc').value;
+    // Traer solo columnas necesarias
     const vSelect='anio,mes,cliente,unidad_negocio,cod_material,material,cantidad,venta_norm,escenario';
-    // Paginación para traer todos los registros
-    allVentas=[];
-    const PAGE=1000;
-    let offset=0;
-    while(true){
-      const from=offset, to=offset+PAGE-1;
-      let vUrl=`${SB_URL}/rest/v1/ventas?select=${vSelect}`;
-      if(esc) vUrl+=`&escenario=eq.${encodeURIComponent(esc)}`;
-      document.getElementById('gload-t').textContent=`Descargando ventas… (${allVentas.length.toLocaleString()} registros)`;
-      const vRes=await fetch(vUrl,{headers:{
-        'apikey':SB_KEY,'Authorization':`Bearer ${SB_KEY}`,
-        'Range':`${from}-${to}`,
-        'Range-Unit':'items',
-        'Prefer':'count=none'
-      }});
-      const batch=await vRes.json();
-      if(!Array.isArray(batch)||batch.length===0) break;
-      allVentas=allVentas.concat(batch);
-      if(batch.length<PAGE) break;
-      offset+=PAGE;
-    }
+    const mes=document.getElementById('fMes').value;
+    let vUrl=`${SB_URL}/rest/v1/ventas?select=${vSelect}&limit=100000`;
+    if(esc) vUrl+=`&escenario=eq.${encodeURIComponent(esc)}`;
+    if(mes) vUrl+=`&mes=eq.${encodeURIComponent(mes)}`;
+    const vRes=await fetch(vUrl,{headers:{'apikey':SB_KEY,'Authorization':`Bearer ${SB_KEY}`}});
+    allVentas=await vRes.json();
 
     document.getElementById('gload-t').textContent='Descargando lookup materiales…';
     const mRes=await fetch(`${SB_URL}/rest/v1/material_producto?select=cod_material,producto,owner`,
@@ -412,8 +413,13 @@ async function loadAll(){
 function updatePeriodo(){
   const years=[...new Set(allVentas.map(v=>v.anio))].sort();
   const months=[...new Set(allVentas.map(v=>v.mes))];
-  if(years.length) document.getElementById('hperiodo').textContent=
-    `Dashboard Ejecutivo · ${years[0]} – ${years[years.length-1]} · ${allVentas.length.toLocaleString()} registros`;
+  if(years.length){
+    const mesActual=document.getElementById('fMes').value;
+    const escActual=document.getElementById('fEsc').value;
+    const filtros=[mesActual,escActual].filter(Boolean).join(' · ');
+    document.getElementById('hperiodo').textContent=
+      `Dashboard Ejecutivo · ${years[0]}–${years[years.length-1]}${filtros?' · '+filtros:''} · ${allVentas.length.toLocaleString()} registros`;
+  }
 }
 
 // ── AGGREGATE ──
@@ -463,8 +469,8 @@ function fmtM(v){
   return 'USD '+Math.round(v).toLocaleString();
 }
 function fmtARS(v){
-  if(Math.abs(v)>=1e9) return '$'+(v/1e9).toFixed(1)+' MM';
-  if(Math.abs(v)>=1e6) return '$'+(v/1e6).toFixed(1)+' M';
+  if(Math.abs(v)>=1e9) return '$'+(v/1e9).toFixed(1)+'B';
+  if(Math.abs(v)>=1e6) return '$'+(v/1e6).toFixed(1)+'M';
   return '$'+Math.round(v).toLocaleString();
 }
 
@@ -478,22 +484,17 @@ function buildOverview(){
   });
   const statsEl=document.getElementById('ovStats');
   statsEl.innerHTML='';
-  const unColors={'Ultima Milla':T,'Supply Chain':G,'Cross Dock':O,'Pharma':T2,'X Border Transactions':'#8B5CF6','Global Forwarding':'#6B7280'};
-  // Mostrar todas las unidades de negocio presentes en los datos
-  // Solo mostrar las 3 unidades principales
-  const mainUNs=['Ultima Milla','Cross Dock','Supply Chain'];
-  const unLabels={};
-  let total=0;
-  mainUNs.forEach(u=>{ total+=(byUN[u]||0); });
+  const unColors={'Ultima Milla':T,'Supply Chain':G,'Cross Dock':O,'Pharma':T2};
+  const mainUNs=['Ultima Milla','Supply Chain','Cross Dock'];
+  let total=0; Object.values(byUN).forEach(v=>total+=v);
   mainUNs.forEach(u=>{
     const v=byUN[u]||0;
-    const label=unLabels[u]||u;
     statsEl.innerHTML+=`<div class="osc">
-      <div class="osc-l">${label}</div>
+      <div class="osc-l">${u}</div>
       <div class="osc-v" style="color:${unColors[u]||T}">${fmtARS(v)}</div>
       <div class="osc-s">Venta normalizada</div></div>`;
   });
-  statsEl.innerHTML+=`<div class="osc" style="border-top-color:var(--black)">
+  statsEl.innerHTML+=`<div class="osc">
     <div class="osc-l">Total</div>
     <div class="osc-v">${fmtARS(total)}</div>
     <div class="osc-s">${Object.keys(META).length} productos</div></div>`;
@@ -628,8 +629,14 @@ function setTs(){
     new Date().toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
 }
 
-// ── MANUAL REFRESH ONLY ──
-// Auto-refresh desactivado: usá el botón "Actualizar"
+// ── COUNTDOWN & AUTO-REFRESH ──
+let secs=300;
+setInterval(()=>{
+  secs--;
+  if(secs<=0){secs=300;reloadAll();}
+  const mm=Math.floor(secs/60),ss=String(secs%60).padStart(2,'0');
+  document.getElementById('cd').textContent=`${mm}:${ss}`;
+},1000);
 
 function reloadAll(){
   secs=300;
