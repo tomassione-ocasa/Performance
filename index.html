@@ -437,14 +437,28 @@ const MONTHS_LABEL = {
 };
 
 function getUltimoMesReal(){
-  // Solo escenario Actual, año más reciente
-  const reales = allVentas.filter(v => v.escenario === 'Actual' && v.venta_norm && v.venta_norm !== 0);
+  // Solo Actual, agrupar por anio+mes y sumar venta_norm
+  const reales = allVentas.filter(v => v.escenario === 'Actual');
   if(!reales.length) return null;
-  const maxAnio = Math.max(...reales.map(v=>v.anio));
-  const mesesAnio = [...new Set(reales.filter(v=>v.anio===maxAnio).map(v=>v.mes?.toUpperCase()))];
-  // Ordenar por calendario y tomar el último
-  const sorted = MONTHS_ORDER_ES.filter(m => mesesAnio.includes(m));
-  return sorted.length ? { mes: sorted[sorted.length-1], anio: maxAnio } : null;
+  // Sumar venta por anio+mes
+  const sumaPorMes = {};
+  reales.forEach(v => {
+    const m = v.mes?.toUpperCase();
+    if(!m) return;
+    const k = `${v.anio}|${m}`;
+    sumaPorMes[k] = (sumaPorMes[k]||0) + Math.abs(v.venta_norm||0);
+  });
+  // Filtrar solo los que tienen venta significativa (> 1000 para evitar ruido)
+  const conDatos = Object.entries(sumaPorMes)
+    .filter(([k,v]) => v > 1000)
+    .map(([k]) => ({ anio: parseInt(k.split('|')[0]), mes: k.split('|')[1] }));
+  if(!conDatos.length) return null;
+  // Ordenar: primero por año, luego por posición en el calendario
+  conDatos.sort((a,b) => {
+    if(a.anio !== b.anio) return a.anio - b.anio;
+    return MONTHS_ORDER_ES.indexOf(a.mes) - MONTHS_ORDER_ES.indexOf(b.mes);
+  });
+  return conDatos[conDatos.length-1];
 }
 
 function updatePeriodo(){
@@ -471,13 +485,15 @@ function updatePeriodo(){
       const mesFiltroLabel = MONTHS_LABEL[mesFiltro] || mesFiltro;
       banner.style.cssText='display:flex;align-items:center;gap:10px;background:#FFF0F0;border:1.5px solid #E05A5A;border-radius:8px;padding:12px 16px;margin-bottom:14px;font-size:12px;color:#231F20;line-height:1.5;';
       banner.innerHTML=`<span style="font-size:16px;">⚠️</span>
-        <span>Los datos de <strong>${mesFiltroLabel} ${ultimo.anio}</strong> aún no fueron cargados.<br>
-        <span style="color:#666;">Último mes disponible: <strong style="color:#231F20;">${mesLabel} ${ultimo.anio}</strong> — 
-        Para ver ${mesFiltroLabel}, cargá el archivo correspondiente en Supabase.</span></span>`;
+        <span>Los datos de <strong>${mesFiltroLabel} ${ultimo.anio}</strong> todavía no están cargados.<br>
+        <span style="color:#666;">Para verlos, actualizá la base de datos en Supabase con el archivo de ${mesFiltroLabel}. 
+        Último mes disponible: <strong style="color:#231F20;">${mesLabel} ${ultimo.anio}</strong>.</span></span>`;
     } else {
-      banner.style.cssText='display:flex;align-items:center;gap:10px;background:#F0FAF0;border:1.5px solid #97BF0D;border-radius:8px;padding:12px 16px;margin-bottom:14px;font-size:12px;color:#231F20;line-height:1.5;';
-      const desde = mesFiltro ? (MONTHS_LABEL[mesFiltro]||mesFiltro) : 'Enero';
-      banner.innerHTML=`<span style="font-size:16px;">✅</span>
+      const bcOk = ultimo.anio>=2026?'#97BF0D':'#F29400';
+      const bcOkBg = ultimo.anio>=2026?'#F0FAF0':'#FFF8E6';
+      const bcIcon = ultimo.anio>=2026?'✅':'📅';
+      banner.style.cssText=`display:flex;align-items:center;gap:10px;background:${bcOkBg};border:1.5px solid ${bcOk};border-radius:8px;padding:12px 16px;margin-bottom:14px;font-size:12px;color:#231F20;line-height:1.5;`;
+      banner.innerHTML=`<span style="font-size:16px;">${bcIcon}</span>
         <span>Datos cargados hasta <strong>${mesLabel} ${ultimo.anio}</strong>.
         ${mesFiltro ? '' : ' Usá el filtro <strong>MES</strong> para ver un mes específico.'}</span>`;
     }
@@ -567,12 +583,15 @@ function buildOverview(){
   grid.innerHTML='';
   Object.entries(META).forEach(([prod,m])=>{
     const d=byP[prod]||{fac:0,vol:0,clientes:new Set(),owner:'—'};
-    // Detectar año predominante de este producto
+    // Color por año: 2026+ = verde, 2025 = naranja, anterior = gris
     const aniosProd = allVentas.filter(v=>v.producto===prod&&v.escenario==='Actual');
     const maxAnioProd = aniosProd.length ? Math.max(...aniosProd.map(v=>v.anio)) : null;
-    const allAnios = allVentas.filter(v=>v.escenario==='Actual').map(v=>v.anio);
-    const maxAnioGlobal = allAnios.length ? Math.max(...allAnios) : null;
-    const borderColor = maxAnioProd && maxAnioProd === maxAnioGlobal ? '#97BF0D' : '#F29400';
+    // Año del filtro activo
+    const mesFiltroAct = document.getElementById('fMes').value?.toUpperCase();
+    const ultimoReal = getUltimoMesReal();
+    const anioRef = ultimoReal ? ultimoReal.anio : maxAnioProd;
+    function colorAnio(a){ return a>=2026?'#97BF0D':a===2025?'#F29400':'#B1B1B1'; }
+    const borderColor = maxAnioProd ? colorAnio(maxAnioProd) : '#009CA3';
     const anioLabel = maxAnioProd ? `<span style="font-size:9px;font-weight:700;padding:1px 6px;border-radius:10px;background:${borderColor}22;color:${borderColor};margin-left:5px;">${maxAnioProd}</span>` : '';
 
     const card=document.createElement('div');card.className='ocard';
@@ -619,10 +638,9 @@ function render(prod){
   // Color año en top bar
   const aniosProd2=allVentas.filter(v=>v.producto===prod&&v.escenario==='Actual');
   const maxAnioP=aniosProd2.length?Math.max(...aniosProd2.map(v=>v.anio)):null;
-  const allA=allVentas.filter(v=>v.escenario==='Actual').map(v=>v.anio);
-  const maxAnioG=allA.length?Math.max(...allA):null;
   const pnEl=document.getElementById('pn');
-  pnEl.style.color=maxAnioP&&maxAnioP===maxAnioG?'#97BF0D':'#F29400';
+  pnEl.style.color=maxAnioP?(maxAnioP>=2026?'#97BF0D':maxAnioP===2025?'#F29400':'#B1B1B1'):'#009CA3';
+  pnEl.style.opacity='0.6';
   document.getElementById('pname').textContent=prod;
   document.getElementById('pdesc').textContent=m.desc;
 
@@ -657,10 +675,13 @@ function render(prod){
     if(sinDatos){
       const mesFiltroLabel=MONTHS_LABEL[mesFiltro]||mesFiltro;
       av.style.cssText='background:#FFF0F0;border:1.5px solid #E05A5A;border-radius:8px;padding:10px 14px;font-size:11.5px;color:#231F20;display:flex;align-items:center;gap:8px;line-height:1.5;';
-      av.innerHTML=`<span>⚠️</span><span>Los datos de <strong>${mesFiltroLabel} ${ultimo.anio}</strong> aún no fueron cargados.<br><span style="color:#666;">Para verlos, cargá el archivo de ${mesFiltroLabel} en Supabase. Último disponible: <strong style="color:#231F20;">${mesLabel} ${ultimo.anio}</strong>.</span></span>`;
+      av.innerHTML=`<span>⚠️</span><span>Los datos de <strong>${mesFiltroLabel} ${ultimo.anio}</strong> todavía no están cargados.<br><span style="color:#666;">Para verlos, actualizá Supabase con el archivo de ${mesFiltroLabel}. Último disponible: <strong style="color:#231F20;">${mesLabel} ${ultimo.anio}</strong>.</span></span>`;
     } else {
-      av.style.cssText='background:#F0FAF0;border:1.5px solid #97BF0D;border-radius:8px;padding:10px 14px;font-size:11.5px;color:#231F20;display:flex;align-items:center;gap:8px;';
-      av.innerHTML=`<span>✅</span><span>Datos cargados hasta <strong>${mesLabel} ${ultimo.anio}</strong>.</span>`;
+      const pcOk=ultimo.anio>=2026?'#97BF0D':'#F29400';
+      const pcBg=ultimo.anio>=2026?'#F0FAF0':'#FFF8E6';
+      const pcIcon=ultimo.anio>=2026?'✅':'📅';
+      av.style.cssText=`background:${pcBg};border:1.5px solid ${pcOk};border-radius:8px;padding:10px 14px;font-size:11.5px;color:#231F20;display:flex;align-items:center;gap:8px;`;
+      av.innerHTML=`<span>${pcIcon}</span><span>Datos cargados hasta <strong>${mesLabel} ${ultimo.anio}</strong>.</span>`;
     }
     pc.appendChild(av);
   }
