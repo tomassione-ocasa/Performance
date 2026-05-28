@@ -216,6 +216,10 @@ main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
       <option value="NOVIEMBRE">Noviembre</option>
       <option value="DICIEMBRE">Diciembre</option>
     </select>
+    <span class="hlbl">Cliente</span>
+    <select class="hsel" id="fCliente" onchange="applyClienteFilter()" style="max-width:160px;">
+      <option value="">Todos</option>
+    </select>
     <div class="live">
       <div class="pdot"></div>
       <span class="live-t">SUPABASE</span>
@@ -419,6 +423,7 @@ async function loadAll(){
     });
 
     document.getElementById('gload').classList.add('hide');
+    populateClienteSelect();
     buildOverview();
     if(cur!=='overview') render(cur);
     setTs();
@@ -539,6 +544,37 @@ function fmtARS(v){
 }
 
 // ── OVERVIEW ──
+function populateClienteSelect(){
+  const sel = document.getElementById('fCliente');
+  if(!sel) return;
+  const current = sel.value;
+  // Clientes únicos ordenados
+  const clientes = [...new Set(allVentas.map(v=>v.cliente).filter(Boolean))].sort();
+  sel.innerHTML = '<option value="">Todos (' + clientes.length + ')</option>';
+  clientes.forEach(c => {
+    const opt = document.createElement('option');
+    opt.value = c; opt.textContent = c.length > 25 ? c.substring(0,25)+'…' : c;
+    if(c === current) opt.selected = true;
+    sel.appendChild(opt);
+  });
+}
+
+function applyClienteFilter(){
+  // Re-renderizar con filtro de cliente aplicado en memoria
+  const cli = document.getElementById('fCliente').value;
+  if(cli){
+    // Filtrar temporalmente
+    const original = allVentas;
+    allVentas = allVentas.filter(v => v.cliente === cli);
+    buildOverview();
+    if(cur !== 'overview') render(cur);
+    allVentas = original;
+  } else {
+    buildOverview();
+    if(cur !== 'overview') render(cur);
+  }
+}
+
 function buildOverview(){
   // Stats top
   const byUN={};
@@ -576,8 +612,8 @@ function buildOverview(){
     const mesFiltroAct = document.getElementById('fMes').value?.toUpperCase();
     const ultimoReal = getUltimoMesReal();
     const anioRef = ultimoReal ? ultimoReal.anio : maxAnioProd;
-    function colorAnio(a){ return a>=2026?'#97BF0D':a===2025?'#F29400':'#B1B1B1'; }
-    const borderColor = maxAnioProd ? colorAnio(maxAnioProd) : '#009CA3';
+    // colorPorAnio definida arriba
+    const borderColor = maxAnioProd ? colorPorAnio(maxAnioProd) : '#009CA3';
     const anioLabel = maxAnioProd ? `<span style="font-size:9px;font-weight:700;padding:1px 6px;border-radius:10px;background:${borderColor}22;color:${borderColor};margin-left:5px;">${maxAnioProd}</span>` : '';
 
     const card=document.createElement('div');card.className='ocard';
@@ -625,7 +661,7 @@ function render(prod){
   const aniosProd2=allVentas.filter(v=>v.producto===prod&&v.escenario==='Actual');
   const maxAnioP=aniosProd2.length?Math.max(...aniosProd2.map(v=>v.anio)):null;
   const pnEl=document.getElementById('pn');
-  pnEl.style.color=maxAnioP?(maxAnioP>=2026?'#97BF0D':maxAnioP===2025?'#F29400':'#B1B1B1'):'#009CA3';
+  pnEl.style.color=maxAnioP?colorPorAnio(maxAnioP):'#009CA3';
   pnEl.style.opacity='0.6';
   document.getElementById('pname').textContent=prod;
   document.getElementById('pdesc').textContent=m.desc;
