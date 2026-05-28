@@ -379,11 +379,27 @@ async function loadAll(){
     // Traer solo columnas necesarias
     const vSelect='anio,mes,cliente,unidad_negocio,cod_material,material,cantidad,venta_norm,escenario';
     const mes=document.getElementById('fMes').value;
-    let vUrl=`${SB_URL}/rest/v1/ventas?select=${vSelect}&limit=100000`;
+    let vUrl=`${SB_URL}/rest/v1/ventas?select=${vSelect}`;
     if(esc) vUrl+=`&escenario=eq.${encodeURIComponent(esc)}`;
     if(mes) vUrl+=`&mes=eq.${encodeURIComponent(mes)}`;
-    const vRes=await fetch(vUrl,{headers:{'apikey':SB_KEY,'Authorization':`Bearer ${SB_KEY}`}});
-    allVentas=await vRes.json();
+    // Paginación: Supabase devuelve máx 1000 por vez, pedimos en bloques
+    let allRows=[], offset=0, pageSize=1000;
+    while(true){
+      const pageUrl=vUrl+`&offset=${offset}&limit=${pageSize}`;
+      const vRes=await fetch(pageUrl,{headers:{
+        'apikey':SB_KEY,'Authorization':`Bearer ${SB_KEY}`,
+        'Range':`${offset}-${offset+pageSize-1}`,
+        'Range-Unit':'items'
+      }});
+      const page=await vRes.json();
+      if(!Array.isArray(page)||page.length===0) break;
+      allRows.push(...page);
+      if(page.length<pageSize) break;
+      offset+=pageSize;
+    }
+    // reemplazar variable para el resto del código
+    const _ventasData=allRows;
+    allVentas=_ventasData;
 
     document.getElementById('gload-t').textContent='Descargando lookup materiales…';
     const mRes=await fetch(`${SB_URL}/rest/v1/material_producto?select=cod_material,producto,owner`,
