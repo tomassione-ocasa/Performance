@@ -437,28 +437,14 @@ const MONTHS_LABEL = {
 };
 
 function getUltimoMesReal(){
-  // Solo Actual, agrupar por anio+mes y sumar venta_norm
-  const reales = allVentas.filter(v => v.escenario === 'Actual');
+  // Solo escenario Actual, año más reciente
+  const reales = allVentas.filter(v => v.escenario === 'Actual' && v.venta_norm && v.venta_norm !== 0);
   if(!reales.length) return null;
-  // Sumar venta por anio+mes
-  const sumaPorMes = {};
-  reales.forEach(v => {
-    const m = v.mes?.toUpperCase();
-    if(!m) return;
-    const k = `${v.anio}|${m}`;
-    sumaPorMes[k] = (sumaPorMes[k]||0) + Math.abs(v.venta_norm||0);
-  });
-  // Filtrar solo los que tienen venta significativa (> 1000 para evitar ruido)
-  const conDatos = Object.entries(sumaPorMes)
-    .filter(([k,v]) => v > 1000)
-    .map(([k]) => ({ anio: parseInt(k.split('|')[0]), mes: k.split('|')[1] }));
-  if(!conDatos.length) return null;
-  // Ordenar: primero por año, luego por posición en el calendario
-  conDatos.sort((a,b) => {
-    if(a.anio !== b.anio) return a.anio - b.anio;
-    return MONTHS_ORDER_ES.indexOf(a.mes) - MONTHS_ORDER_ES.indexOf(b.mes);
-  });
-  return conDatos[conDatos.length-1];
+  const maxAnio = Math.max(...reales.map(v=>v.anio));
+  const mesesAnio = [...new Set(reales.filter(v=>v.anio===maxAnio).map(v=>v.mes?.toUpperCase()))];
+  // Ordenar por calendario y tomar el último
+  const sorted = MONTHS_ORDER_ES.filter(m => mesesAnio.includes(m));
+  return sorted.length ? { mes: sorted[sorted.length-1], anio: maxAnio } : null;
 }
 
 function updatePeriodo(){
