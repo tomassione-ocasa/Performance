@@ -11,7 +11,6 @@
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 html,body{height:100%;overflow:hidden;}
 body{font-family:'Barlow',sans-serif;background:var(--surface);color:var(--black);display:flex;flex-direction:column;}
-/* HEADER */
 header{height:64px;background:var(--teal);display:flex;align-items:center;justify-content:space-between;padding:0 20px;flex-shrink:0;box-shadow:0 2px 12px rgba(0,100,105,.3);}
 .hl{display:flex;align-items:center;gap:14px;}
 .logo{font-family:'Barlow Condensed',sans-serif;font-size:26px;font-weight:700;letter-spacing:5px;color:#fff;text-transform:uppercase;}
@@ -29,18 +28,15 @@ header{height:64px;background:var(--teal);display:flex;align-items:center;justif
 .live-t{font-size:11px;font-weight:700;color:#fff;}
 .btn-ref{display:flex;align-items:center;gap:6px;background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.4);color:#fff;font-family:'Barlow',sans-serif;font-size:11px;font-weight:700;padding:6px 14px;border-radius:5px;cursor:pointer;text-transform:uppercase;}
 .btn-ref:hover{background:rgba(255,255,255,.3);}
-/* CLIENTE DROPDOWN */
 .cli-wrap{position:relative;display:inline-block;}
-.cli-arrow{position:absolute;right:8px;top:50%;transform:translateY(-50%);color:rgba(255,255,255,.7);cursor:pointer;font-size:10px;pointer-events:none;}
+.cli-arrow{position:absolute;right:8px;top:50%;transform:translateY(-50%);color:rgba(255,255,255,.7);font-size:10px;pointer-events:none;}
 .cli-drop{display:none;position:absolute;top:calc(100% + 4px);left:0;min-width:230px;background:#fff;border:1.5px solid var(--teal);border-radius:7px;max-height:220px;overflow-y:auto;z-index:9999;box-shadow:0 4px 20px rgba(0,0,0,.15);}
 .cli-drop.open{display:block;}
 .cli-item{padding:8px 12px;font-size:12px;color:var(--black);cursor:pointer;border-bottom:1px solid rgba(0,0,0,.05);}
 .cli-item:last-child{border-bottom:none;}
 .cli-item:hover,.cli-item.sel{background:#E6F6F7;color:var(--teal);}
 .cli-item.all{font-weight:700;color:var(--teal);border-bottom:2px solid rgba(0,156,163,.2);}
-/* LAYOUT */
 .wrap{display:flex;flex:1;overflow:hidden;}
-/* SIDEBAR */
 aside{width:262px;background:#fff;display:flex;flex-direction:column;flex-shrink:0;overflow-y:auto;overflow-x:hidden;border-right:2px solid var(--teal);}
 aside::-webkit-scrollbar{width:3px;}
 aside::-webkit-scrollbar-thumb{background:var(--teal);border-radius:2px;}
@@ -55,22 +51,18 @@ aside::-webkit-scrollbar-thumb{background:var(--teal);border-radius:2px;}
 .ni.on .nn{color:var(--teal);font-weight:700;}
 .nu{font-size:9.5px;color:#999;margin-top:1px;}
 .nb{font-size:10px;font-weight:700;padding:2px 6px;border-radius:10px;white-space:nowrap;flex-shrink:0;}
-.nbp{background:rgba(151,191,13,.13);color:#4D7200;}
-.nbn{background:rgba(242,148,0,.1);color:#A06800;}
 .nbw{background:rgba(0,156,163,.15);color:var(--teal);}
 .pill{display:inline-block;font-size:9px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;padding:1px 5px;border-radius:3px;margin-top:1px;}
 .pum{background:rgba(0,156,163,.12);color:#007980;}
 .psc{background:rgba(151,191,13,.12);color:#4D7200;}
 .pcd{background:rgba(242,148,0,.12);color:#A06800;}
 .sdiv{height:1px;background:var(--teal);opacity:.18;margin:5px 14px;}
-/* MAIN */
 main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
 .gload{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;}
 .gload.hide{display:none;}
 .spin{width:48px;height:48px;border:3px solid rgba(0,156,163,.15);border-top-color:var(--teal);border-radius:50%;animation:sp .75s linear infinite;}
 @keyframes sp{to{transform:rotate(360deg);}}
 .spin-t{font-size:13px;color:var(--gray);}
-/* OVERVIEW */
 .ov{flex:1;overflow-y:auto;padding:18px 20px;display:none;}
 .ov.vis{display:block;}
 .ostats{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin-bottom:16px;}
@@ -81,16 +73,16 @@ main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
 .ogrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px;}
 .ocard{background:#fff;border:1px solid rgba(0,0,0,.07);border-top:3px solid var(--teal);border-radius:10px;padding:14px;cursor:pointer;transition:box-shadow .18s,transform .18s;}
 .ocard:hover{box-shadow:0 5px 18px rgba(0,156,163,.15);transform:translateY(-2px);}
-.oc-num{font-size:10px;font-weight:700;color:var(--teal);letter-spacing:.7px;text-transform:uppercase;}
+.oc-num{font-size:10px;font-weight:700;color:var(--teal);letter-spacing:.7px;text-transform:uppercase;margin-bottom:2px;}
 .oc-name{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;color:var(--black);margin:3px 0 1px;}
 .oc-owner{font-size:10px;color:var(--gray);margin-bottom:8px;}
 .oc-v{font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:700;color:var(--black);}
-/* PRODUCT */
+/* PRODUCT PANEL */
 .pp{flex:1;display:none;flex-direction:column;overflow:hidden;}
 .pp.vis{display:flex;}
 .ptop{background:#fff;border-bottom:1px solid rgba(0,0,0,.07);padding:10px 20px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;gap:12px;}
 .pi{display:flex;align-items:center;gap:11px;}
-.pnum{font-family:'Barlow Condensed',sans-serif;font-size:38px;font-weight:700;color:var(--teal);opacity:.25;line-height:1;}
+.pnum{font-family:'Barlow Condensed',sans-serif;font-size:38px;font-weight:700;opacity:.25;line-height:1;}
 .pname{font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:700;color:var(--black);}
 .pdesc{font-size:11px;color:var(--gray);margin-top:2px;max-width:400px;}
 .pmeta{display:flex;align-items:center;gap:14px;flex-shrink:0;}
@@ -98,48 +90,83 @@ main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
 .mv{font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:700;color:var(--black);}
 .ml{font-size:9px;color:var(--gray);text-transform:uppercase;letter-spacing:.4px;}
 .ms{width:1px;height:30px;background:rgba(0,0,0,.08);}
-.kstrip{background:#fff;border-bottom:1px solid rgba(0,0,0,.06);padding:6px 20px;display:flex;gap:7px;flex-wrap:wrap;align-items:center;flex-shrink:0;}
+.kstrip{background:#fff;border-bottom:1px solid rgba(0,0,0,.06);padding:5px 20px;display:flex;gap:6px;flex-wrap:wrap;align-items:center;flex-shrink:0;}
 .kl{font-size:9.5px;font-weight:700;color:var(--gray);text-transform:uppercase;letter-spacing:.8px;margin-right:3px;}
-.kc{display:flex;align-items:center;gap:4px;background:var(--surface);border:1px solid rgba(0,0,0,.07);border-radius:20px;padding:3px 10px;font-size:11px;font-weight:500;}
+.kc{display:flex;align-items:center;gap:4px;background:var(--surface);border:1px solid rgba(0,0,0,.07);border-radius:20px;padding:2px 9px;font-size:10.5px;font-weight:500;}
 .kd{width:6px;height:6px;border-radius:50%;flex-shrink:0;}
 /* TABS */
-.tabs-bar{display:flex;background:#fff;border-bottom:2px solid rgba(0,156,163,.12);padding:0 20px;flex-shrink:0;}
-.tab-btn{padding:9px 16px;font-size:12px;font-weight:600;color:var(--gray);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;white-space:nowrap;transition:color .15s,border-color .15s;user-select:none;}
+.tabs-bar{display:flex;background:#fff;border-bottom:2px solid rgba(0,156,163,.12);padding:0 20px;flex-shrink:0;overflow-x:auto;}
+.tabs-bar::-webkit-scrollbar{height:0;}
+.tab-btn{padding:9px 15px;font-size:11.5px;font-weight:600;color:var(--gray);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;white-space:nowrap;transition:color .15s,border-color .15s;user-select:none;}
 .tab-btn:hover{color:var(--teal);}
 .tab-btn.on{color:var(--teal);border-bottom-color:var(--teal);}
 .ts{font-size:10px;color:var(--gray);padding:3px 20px 4px;text-align:right;flex-shrink:0;}
 .ts span{color:var(--teal);font-weight:600;}
-.pcont{flex:1;overflow:hidden;}
-.tab-panel{display:none;height:100%;overflow-y:auto;flex-direction:column;gap:14px;padding:14px 18px 20px;}
+.pcont{flex:1;overflow:hidden;position:relative;}
+.tab-panel{display:none;height:100%;overflow-y:auto;flex-direction:column;gap:12px;padding:14px 18px 20px;}
 .tab-panel.on{display:flex;}
-/* CONTENT CARDS */
+.tab-full{display:none;position:absolute;inset:0;}
+.tab-full.on{display:flex;flex-direction:column;}
+/* CARDS */
 .mrow{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;}
-.mc{background:#fff;border:1px solid rgba(0,156,163,.18);border-top:3px solid var(--teal);border-radius:9px;padding:13px 14px;}
-.mc-l{font-size:9.5px;font-weight:600;color:var(--gray);text-transform:uppercase;letter-spacing:.6px;margin-bottom:5px;}
+.mc{background:#fff;border:1px solid rgba(0,156,163,.18);border-top:3px solid var(--teal);border-radius:9px;padding:12px 14px;}
+.mc-l{font-size:9.5px;font-weight:600;color:var(--gray);text-transform:uppercase;letter-spacing:.6px;margin-bottom:4px;}
 .mc-v{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:700;color:var(--black);}
-.mc-s{font-size:10px;color:var(--gray);margin-top:3px;}
+.mc-s{font-size:10px;color:var(--gray);margin-top:2px;}
 .cgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
 .cb{background:#fff;border:1px solid rgba(0,0,0,.07);border-radius:10px;padding:14px;}
-.cb-t{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;color:var(--black);margin-bottom:3px;}
-.cb-s{font-size:10px;color:var(--gray);margin-bottom:9px;}
-.cw{position:relative;height:185px;}
+.cb-t{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;color:var(--black);margin-bottom:2px;}
+.cb-s{font-size:10px;color:var(--gray);margin-bottom:8px;}
+.cw{position:relative;height:180px;}
 .ctb{background:#fff;border:1px solid rgba(0,0,0,.07);border-radius:10px;padding:14px;}
 .ctb h3{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;color:var(--black);margin-bottom:10px;}
 .ct{width:100%;border-collapse:collapse;font-size:12px;}
 .ct th{text-align:left;font-size:9.5px;font-weight:700;color:var(--gray);text-transform:uppercase;letter-spacing:.6px;padding:4px 8px;border-bottom:1px solid rgba(0,0,0,.07);}
-.ct td{padding:7px 8px;border-bottom:1px solid rgba(0,0,0,.04);}
+.ct td{padding:6px 8px;border-bottom:1px solid rgba(0,0,0,.04);}
 .ct tr:last-child td{border-bottom:none;}
 .ct tr:hover td{background:var(--surface);}
-.ct td:last-child{text-align:right;font-weight:600;color:var(--teal);}
-.ksb{background:#fff;border:1px solid rgba(0,0,0,.07);border-radius:10px;padding:14px;}
-.ksb h3{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;color:var(--black);margin-bottom:10px;}
-.ksg{display:flex;gap:20px;flex-wrap:wrap;}
-.ksgg{flex:1;min-width:120px;}
-.ksg-t{font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;margin-bottom:6px;}
-.tg{color:#4D7200;}.to{color:#A06800;}.tt{color:var(--teal);}
-.ksi{font-size:11.5px;padding:3px 0;display:flex;align-items:center;gap:6px;}
-.kdd{width:6px;height:6px;border-radius:50%;flex-shrink:0;}
-.kdg{background:var(--green);}.kdo{background:var(--orange);}.kdt{background:var(--teal);}
+/* INDICADORES */
+.ind-section{background:#fff;border:1px solid rgba(0,0,0,.07);border-radius:10px;overflow:hidden;}
+.ind-sec-head{display:flex;align-items:center;gap:8px;padding:10px 14px;border-bottom:1px solid rgba(0,0,0,.06);}
+.ind-sec-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;padding:2px 8px;border-radius:4px;}
+.ind-table{width:100%;border-collapse:collapse;font-size:11.5px;}
+.ind-table th{background:var(--surface);text-align:left;font-size:9px;font-weight:700;color:var(--gray);text-transform:uppercase;letter-spacing:.6px;padding:7px 12px;border-bottom:1px solid rgba(0,0,0,.07);}
+.ind-table td{padding:8px 12px;border-bottom:1px solid rgba(0,0,0,.04);vertical-align:top;line-height:1.4;}
+.ind-table tr:last-child td{border-bottom:none;}
+.ind-table tr:hover td{background:#fafefe;}
+.estado-badge{display:inline-block;font-size:9px;font-weight:700;padding:2px 7px;border-radius:10px;white-space:nowrap;}
+.est-ok{background:rgba(151,191,13,.15);color:#4D7200;}
+.est-wip{background:rgba(242,148,0,.15);color:#A06800;}
+.est-pend{background:rgba(177,177,177,.15);color:#666;}
+/* SLA PANEL */
+.sla-kpis{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px;}
+.sla-k{background:var(--surface);border:1px solid rgba(0,156,163,.18);border-radius:8px;padding:10px 14px;min-width:110px;}
+.sla-kl{font-size:9px;font-weight:700;color:var(--gray);text-transform:uppercase;letter-spacing:.6px;}
+.sla-kv{font-family:'Barlow Condensed',sans-serif;font-size:24px;font-weight:700;margin-top:2px;}
+.sla-kt{font-size:9px;color:var(--gray);margin-top:1px;}
+.chart-box{background:#fff;border:1px solid rgba(0,0,0,.07);border-radius:10px;padding:14px;}
+.chart-box-t{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;color:var(--black);margin-bottom:4px;}
+.chart-box-s{font-size:10px;color:var(--gray);margin-bottom:10px;}
+.chwrap{position:relative;height:175px;}
+/* PBI */
+.pbi-full{flex:1;display:flex;flex-direction:column;background:#fff;}
+.pbi-toolbar{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;border-bottom:1px solid rgba(0,156,163,.15);flex-shrink:0;background:#fff;}
+.pbi-title{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;color:var(--black);display:flex;align-items:center;gap:8px;}
+.pbi-actions{display:flex;gap:8px;}
+.pbi-btn{display:flex;align-items:center;gap:6px;border:1.5px solid var(--teal);color:var(--teal);background:#fff;font-family:'Barlow',sans-serif;font-size:11px;font-weight:700;padding:6px 14px;border-radius:6px;cursor:pointer;text-transform:uppercase;text-decoration:none;transition:background .15s;}
+.pbi-btn:hover,.pbi-btn.prim{background:var(--teal);color:#fff;}
+.pbi-body{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;padding:24px;background:var(--surface);}
+.pbi-card{background:#fff;border:1px solid rgba(0,156,163,.2);border-radius:14px;padding:32px 40px;max-width:520px;width:100%;text-align:center;box-shadow:0 4px 20px rgba(0,156,163,.1);}
+.pbi-icon{font-size:48px;margin-bottom:12px;}
+.pbi-card-title{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:700;color:var(--black);margin-bottom:6px;}
+.pbi-card-sub{font-size:12px;color:var(--gray);line-height:1.6;margin-bottom:20px;}
+.pbi-open-btn{display:inline-flex;align-items:center;gap:8px;background:var(--teal);color:#fff;font-family:'Barlow',sans-serif;font-size:13px;font-weight:700;padding:12px 28px;border-radius:8px;cursor:pointer;text-decoration:none;border:none;text-transform:uppercase;letter-spacing:.5px;transition:background .15s;}
+.pbi-open-btn:hover{background:#007980;}
+.pbi-note{font-size:10px;color:var(--gray);margin-top:12px;}
+.pbi-meta{display:flex;gap:16px;justify-content:center;margin-top:18px;flex-wrap:wrap;}
+.pbi-meta-item{text-align:center;}
+.pbi-meta-v{font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:700;color:var(--teal);}
+.pbi-meta-l{font-size:9px;color:var(--gray);text-transform:uppercase;letter-spacing:.5px;}
 /* COMPARATIVA / RANKING */
 .comp-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
 .comp-card{background:#fff;border:1px solid rgba(0,0,0,.07);border-radius:10px;padding:14px;}
@@ -155,10 +182,9 @@ main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
 .rank-bar-wrap{width:90px;height:6px;background:rgba(0,156,163,.12);border-radius:3px;flex-shrink:0;}
 .rank-bar{height:6px;border-radius:3px;background:var(--teal);}
 .rank-val{font-size:11px;font-weight:700;color:var(--black);width:70px;text-align:right;flex-shrink:0;}
-.src-badge{background:#fff;border:1.5px solid var(--teal);border-radius:10px;padding:10px 14px;display:flex;align-items:center;gap:10px;font-size:11px;color:var(--gray);}
+.src-badge{background:#fff;border:1.5px solid rgba(0,156,163,.3);border-radius:10px;padding:9px 14px;display:flex;align-items:center;gap:8px;font-size:11px;color:var(--gray);}
 .src-badge strong{color:var(--teal);}
-.banner{display:none;align-items:center;gap:10px;border-radius:8px;padding:11px 15px;margin-bottom:14px;font-size:12px;line-height:1.5;}
-.banner.vis{display:flex;}
+.nodatabadge{background:rgba(177,177,177,.08);border:1px dashed #ccc;border-radius:8px;padding:14px;font-size:11px;color:var(--gray);text-align:center;}
 </style>
 </head>
 <body>
@@ -175,7 +201,7 @@ main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
     <span class="hlbl">Escenario</span>
     <select class="hsel" id="fEsc" onchange="reloadAll()">
       <option value="">Todos</option>
-      <option value="Actual">Actual</option>
+      <option value="Actual" selected>Actual</option>
       <option value="Presupuesto">Presupuesto</option>
     </select>
     <span class="hlbl">Mes</span>
@@ -222,31 +248,44 @@ main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
     <div class="ni" data-id="Salud Distribucion" onclick="go('Salud Distribucion',this)"><div class="nico">💊</div><div class="nt"><div class="nn">Salud Distribución</div><div class="nu"><span class="pill psc">Supply Chain</span></div></div></div>
     <div class="ni" data-id="Carta Documento Digital" onclick="go('Carta Documento Digital',this)"><div class="nico">📄</div><div class="nt"><div class="nn">Carta Documento Digital</div><div class="nu"><span class="pill pum">Última Milla</span></div></div><span class="nb nbw">NUEVO</span></div>
     <div class="sdiv"></div>
-    <div style="padding:8px 18px 16px;font-size:10.5px;color:#666;line-height:1.8;">🔗 Datos en tiempo real<br>📊 Fuente: Supabase</div>
+    <div style="padding:8px 18px 16px;font-size:10.5px;color:#666;line-height:1.9;">
+      🔗 Ventas: Supabase<br>
+      📈 SLA/Efec: Supabase<br>
+      ⚡ BI: Power BI Online
+    </div>
   </aside>
   <main>
     <div class="gload" id="gload"><div class="spin"></div><div class="spin-t" id="gload-t">Conectando a Supabase…</div></div>
     <div class="ov" id="pov">
-      <div class="banner" id="ov-banner"></div>
+      <div id="ov-banner"></div>
       <div class="ostats" id="ovStats"></div>
       <div class="ogrid" id="og"></div>
     </div>
     <div class="pp" id="pp">
       <div class="ptop">
-        <div class="pi"><div class="pnum" id="pn">01</div><div><div class="pname" id="pname">—</div><div class="pdesc" id="pdesc">—</div></div></div>
+        <div class="pi">
+          <div class="pnum" id="pn">01</div>
+          <div><div class="pname" id="pname">—</div><div class="pdesc" id="pdesc">—</div></div>
+        </div>
         <div class="pmeta" id="pmeta"></div>
       </div>
       <div class="kstrip" id="ks"></div>
       <div class="tabs-bar">
-        <div class="tab-btn on" data-tab="resumen" onclick="switchTab('resumen',this)">📊 Resumen</div>
-        <div class="tab-btn" data-tab="comparativa" onclick="switchTab('comparativa',this)">📈 Comparativa Anual</div>
-        <div class="tab-btn" data-tab="ranking" onclick="switchTab('ranking',this)">🏆 Ranking Clientes</div>
+        <div class="tab-btn on"  data-tab="resumen"     onclick="switchTab('resumen',this)">📊 Resumen</div>
+        <div class="tab-btn"     data-tab="indicadores" onclick="switchTab('indicadores',this)">📋 Indicadores</div>
+        <div class="tab-btn"     data-tab="slaefec"     onclick="switchTab('slaefec',this)">📈 SLA & Efectividad</div>
+        <div class="tab-btn"     data-tab="comparativa" onclick="switchTab('comparativa',this)">📆 Comparativa</div>
+        <div class="tab-btn"     data-tab="ranking"     onclick="switchTab('ranking',this)">🏆 Ranking</div>
+        <div class="tab-btn"     data-tab="pbi"         onclick="switchTab('pbi',this)">⚡ Performance BI</div>
       </div>
       <div class="ts">Última actualización: <span id="tsv">—</span></div>
       <div class="pcont">
         <div class="tab-panel on" id="tab-resumen"></div>
-        <div class="tab-panel" id="tab-comparativa"></div>
-        <div class="tab-panel" id="tab-ranking"></div>
+        <div class="tab-panel"    id="tab-indicadores"></div>
+        <div class="tab-panel"    id="tab-slaefec"></div>
+        <div class="tab-panel"    id="tab-comparativa"></div>
+        <div class="tab-panel"    id="tab-ranking"></div>
+        <div class="tab-full"     id="tab-pbi"><div class="pbi-full" id="pbi-content"></div></div>
       </div>
     </div>
   </main>
@@ -255,20 +294,192 @@ main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
 // ── CONFIG ──
 const SB_URL='https://rdfdefkhsbjpaukesnto.supabase.co';
 const SB_KEY='sb_publishable_qNz5DKgtDfFTzj-EIsy8Cw_S8mamGPk';
+const PBI_REPORT_URL='https://app.powerbi.com/groups/me/reports/da5805a4-e56d-4d6c-af82-56d55ce65d82/d050495042d3d060d741?ctid=91a5b5c8-673e-4a80-871c-5ed3412dd451&experience=power-bi';
 const MO=['ENERO','FEBRERO','MARZO','ABRIL','MAYO','JUNIO','JULIO','AGOSTO','SEPTIEMBRE','OCTUBRE','NOVIEMBRE','DICIEMBRE'];
 const MS=['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
 const ML={ENERO:'Enero',FEBRERO:'Febrero',MARZO:'Marzo',ABRIL:'Abril',MAYO:'Mayo',JUNIO:'Junio',JULIO:'Julio',AGOSTO:'Agosto',SEPTIEMBRE:'Septiembre',OCTUBRE:'Octubre',NOVIEMBRE:'Noviembre',DICIEMBRE:'Diciembre'};
-const T='#009CA3',T2='#1DB4C2',G='#97BF0D',O='#F29400';
-const META={
-  'Cross Docking':{num:'01',kpis:{m:['Facturación','Volúmenes','NPS','Margen Bruto','SLA'],c:['Penalidades','Backlog'],e:['Errores','Churn Rate']}},
-  'Paqueteria E-Commerce B2C':{num:'02',kpis:{m:['Facturación','Volúmenes','SLA','Efectividad'],c:['ARPU','Penalidades'],e:['Churn Rate','Tickets']}},
-  'Warehousing':{num:'03',kpis:{m:['Facturación','Volúmenes','Margen Bruto','SLA'],c:['ARPU','Clientes'],e:['Churn Rate','Tickets']}},
-  'Distribución de Tarjetas Valoradas':{num:'04',kpis:{m:['Facturación','Volúmenes','SLA','Efectividad'],c:['ARPU','Clientes'],e:['Tickets','Churn Rate']}},
-  'Postal':{num:'05',kpis:{m:['Facturación','Volúmenes','SLA','Efectividad'],c:['ARPU','Clientes'],e:['Tickets','Churn Rate']}},
-  'Salud Warehousing':{num:'06',kpis:{m:['Facturación','Volúmenes','SLA','Margen Bruto'],c:['ARPU','Clientes'],e:['Churn Rate','Tickets']}},
-  'Salud Distribucion':{num:'07',kpis:{m:['Facturación','Volúmenes','SLA','Efectividad'],c:['ARPU','Clientes'],e:['Tickets','Churn Rate']}},
-  'Carta Documento Digital':{num:'09',kpis:{m:['Facturación','Volúmenes','SLA','Efectividad'],c:['Margen Bruto'],e:['Tickets']}},
+const T='#009CA3',G='#97BF0D',O='#F29400';
+
+// ── INDICADORES (definición completa por producto) ──
+// fuente, formula, frecuencia, responsable, estado: ok/wip/pend
+const INDICADORES={
+  'Cross Docking':[
+    {cat:'Performance del Negocio',color:'#97BF0D',items:[
+      {nombre:'Facturación',formula:'Suma de venta normalizada del período',fuente:'Supabase · ventas',frec:'Mensual',resp:'German Gallarini',est:'ok'},
+      {nombre:'Volumen',formula:'Suma de unidades procesadas en el período',fuente:'Supabase · ventas',frec:'Mensual',resp:'German Gallarini',est:'ok'},
+      {nombre:'Margen Bruto',formula:'Facturación − Costo directo operativo',fuente:'Sistema contable / ERP',frec:'Mensual',resp:'German Gallarini',est:'wip'},
+      {nombre:'Costo por operación',formula:'Costo total / Volumen total de operaciones',fuente:'Sistema contable / ERP',frec:'Mensual',resp:'German Gallarini',est:'wip'},
+      {nombre:'Nuevos clientes',formula:'Clientes con primera facturación en el mes',fuente:'Supabase · ventas',frec:'Mensual',resp:'German Gallarini',est:'ok'},
+      {nombre:'Churn (bajas)',formula:'Clientes activos mes anterior sin facturación en mes actual',fuente:'Supabase · ventas',frec:'Mensual',resp:'German Gallarini',est:'wip'},
+    ]},
+    {cat:'Operación',color:'#F29400',items:[
+      {nombre:'SLA',formula:'Operaciones entregadas en plazo / Total operaciones × 100',fuente:'Supabase · sla_efectividad',frec:'Mensual',resp:'German Gallarini',est:'ok'},
+      {nombre:'Backlog operativo',formula:'Operaciones pendientes al cierre del período',fuente:'Sistema operativo',frec:'Mensual',resp:'German Gallarini',est:'pend'},
+      {nombre:'Tasa de errores operativos',formula:'Operaciones con error / Total operaciones × 100',fuente:'Sistema operativo',frec:'Mensual',resp:'German Gallarini',est:'pend'},
+    ]},
+    {cat:'Comercial / Cliente',color:'#009CA3',items:[
+      {nombre:'NPS',formula:'% Promotores − % Detractores (encuesta)',fuente:'Encuesta NPS',frec:'Trimestral',resp:'German Gallarini',est:'pend'},
+      {nombre:'Penalidades',formula:'Monto total de penalidades aplicadas en el período',fuente:'Sistema contable',frec:'Mensual',resp:'German Gallarini',est:'wip'},
+      {nombre:'Churn Rate',formula:'Clientes perdidos / Clientes activos inicio de período × 100',fuente:'Supabase · ventas',frec:'Mensual',resp:'German Gallarini',est:'wip'},
+      {nombre:'Tickets / 100 operaciones',formula:'Total tickets / Total operaciones × 100',fuente:'CRM / Helpdesk',frec:'Mensual',resp:'German Gallarini',est:'pend'},
+      {nombre:'Tiempo resolución tickets',formula:'Promedio días desde apertura hasta cierre de ticket',fuente:'CRM / Helpdesk',frec:'Mensual',resp:'German Gallarini',est:'pend'},
+    ]},
+  ],
+  'Paqueteria E-Commerce B2C':[
+    {cat:'Performance del Negocio',color:'#97BF0D',items:[
+      {nombre:'Facturación',formula:'Suma de venta normalizada del período',fuente:'Supabase · ventas',frec:'Mensual',resp:'Victoria Duque',est:'ok'},
+      {nombre:'Volumen',formula:'Suma de envíos del período',fuente:'Supabase · ventas',frec:'Mensual',resp:'Victoria Duque',est:'ok'},
+      {nombre:'Margen Bruto',formula:'Facturación − Costo directo',fuente:'Sistema contable / ERP',frec:'Mensual',resp:'Victoria Duque',est:'wip'},
+      {nombre:'Costo por envío',formula:'Costo total / Total envíos del período',fuente:'Sistema contable / ERP',frec:'Mensual',resp:'Victoria Duque',est:'wip'},
+      {nombre:'Nuevos clientes',formula:'Clientes con primera facturación en el mes',fuente:'Supabase · ventas',frec:'Mensual',resp:'Victoria Duque',est:'ok'},
+    ]},
+    {cat:'Plataforma',color:'#6B3FA0',items:[
+      {nombre:'Uptime plataforma',formula:'Minutos disponibles / Minutos totales del período × 100',fuente:'Monitoreo plataforma',frec:'Mensual',resp:'Victoria Duque',est:'pend'},
+      {nombre:'Tasa error de cargas',formula:'Cargas fallidas / Total cargas intentadas × 100',fuente:'Logs plataforma',frec:'Mensual',resp:'Victoria Duque',est:'pend'},
+    ]},
+    {cat:'Colecta',color:'#F29400',items:[
+      {nombre:'Tasa colectas fallidas',formula:'Colectas donde no se retiró mercadería / Total colectas × 100',fuente:'Sistema operativo',frec:'Mensual',resp:'Victoria Duque',est:'pend'},
+      {nombre:'Tiempo solicitud→colecta',formula:'Promedio de horas entre solicitud de colecta y ejecución',fuente:'Sistema operativo',frec:'Mensual',resp:'Victoria Duque',est:'pend'},
+    ]},
+    {cat:'Última Milla',color:'#009CA3',items:[
+      {nombre:'SLA',formula:'Envíos entregados en plazo / Total envíos × 100',fuente:'Supabase · sla_efectividad',frec:'Mensual',resp:'Victoria Duque',est:'ok'},
+      {nombre:'Efectividad',formula:'Envíos entregados exitosamente / Total envíos × 100',fuente:'Supabase · sla_efectividad',frec:'Mensual',resp:'Victoria Duque',est:'ok'},
+      {nombre:'Causas de no entrega',formula:'Distribución % de motivos de fallo de entrega',fuente:'Sistema operativo',frec:'Mensual',resp:'Victoria Duque',est:'pend'},
+    ]},
+    {cat:'Performance del Punto',color:'#C0392B',items:[
+      {nombre:'Tasa paquetes vencidos',formula:'Paquetes sin retirar > plazo máximo / Total en punto × 100',fuente:'Sistema operativo Pick It',frec:'Mensual',resp:'Victoria Duque',est:'pend'},
+      {nombre:'Incidentes en punto',formula:'Cantidad de incidentes reportados en puntos de entrega',fuente:'Sistema operativo Pick It',frec:'Mensual',resp:'Victoria Duque',est:'pend'},
+    ]},
+    {cat:'Experiencia del Cliente',color:'#009CA3',items:[
+      {nombre:'NPS',formula:'% Promotores − % Detractores (encuesta)',fuente:'Encuesta NPS',frec:'Trimestral',resp:'Victoria Duque',est:'pend'},
+      {nombre:'Tickets / 100 envíos',formula:'Total tickets / Total envíos × 100',fuente:'CRM / Helpdesk',frec:'Mensual',resp:'Victoria Duque',est:'pend'},
+      {nombre:'Tasa de retiro efectivo',formula:'Paquetes retirados / Total paquetes disponibles en punto × 100',fuente:'Sistema operativo Pick It',frec:'Mensual',resp:'Victoria Duque',est:'pend'},
+      {nombre:'Tiempo resolución tickets',formula:'Promedio días apertura → cierre de ticket',fuente:'CRM / Helpdesk',frec:'Mensual',resp:'Victoria Duque',est:'pend'},
+    ]},
+  ],
+  'Warehousing':[
+    {cat:'Performance del Negocio',color:'#97BF0D',items:[
+      {nombre:'Facturación',formula:'Suma venta normalizada del período',fuente:'Supabase · ventas',frec:'Mensual',resp:'German Gallarini',est:'ok'},
+      {nombre:'Volumen (m² o pallets)',formula:'Unidades almacenadas / movidas en el período',fuente:'Supabase · ventas',frec:'Mensual',resp:'German Gallarini',est:'ok'},
+      {nombre:'Margen Bruto',formula:'Facturación − Costo operativo directo',fuente:'Sistema contable / ERP',frec:'Mensual',resp:'German Gallarini',est:'wip'},
+      {nombre:'ARPU',formula:'Facturación total / Cantidad de clientes activos',fuente:'Supabase · ventas',frec:'Mensual',resp:'German Gallarini',est:'ok'},
+      {nombre:'Nuevos clientes / Bajas',formula:'Altas y bajas respecto al mes anterior',fuente:'Supabase · ventas',frec:'Mensual',resp:'German Gallarini',est:'wip'},
+    ]},
+    {cat:'Operación',color:'#F29400',items:[
+      {nombre:'SLA',formula:'Órdenes procesadas en plazo / Total órdenes × 100',fuente:'Supabase · sla_efectividad',frec:'Mensual',resp:'German Gallarini',est:'ok'},
+      {nombre:'Exactitud de inventario',formula:'Ítems sin discrepancia / Total ítems auditados × 100',fuente:'Sistema WMS',frec:'Mensual',resp:'German Gallarini',est:'pend'},
+      {nombre:'Productividad operativa',formula:'Unidades procesadas / Horas hombre trabajadas',fuente:'Sistema WMS / RRHH',frec:'Mensual',resp:'German Gallarini',est:'pend'},
+    ]},
+    {cat:'Experiencia del Cliente',color:'#009CA3',items:[
+      {nombre:'Churn Rate',formula:'Clientes perdidos / Clientes inicio período × 100',fuente:'Supabase · ventas',frec:'Mensual',resp:'German Gallarini',est:'wip'},
+      {nombre:'Tickets',formula:'Total tickets abiertos en el período',fuente:'CRM / Helpdesk',frec:'Mensual',resp:'German Gallarini',est:'pend'},
+      {nombre:'Tiempo resolución tickets',formula:'Promedio días apertura → cierre',fuente:'CRM / Helpdesk',frec:'Mensual',resp:'German Gallarini',est:'pend'},
+    ]},
+  ],
+  'Distribución de Tarjetas Valoradas':[
+    {cat:'Performance del Negocio',color:'#97BF0D',items:[
+      {nombre:'Facturación',formula:'Suma venta normalizada del período',fuente:'Supabase · ventas',frec:'Mensual',resp:'Victoria Duque',est:'ok'},
+      {nombre:'Volumen',formula:'Tarjetas distribuidas en el período',fuente:'Supabase · ventas',frec:'Mensual',resp:'Victoria Duque',est:'ok'},
+      {nombre:'ARPU',formula:'Facturación total / Clientes activos',fuente:'Supabase · ventas',frec:'Mensual',resp:'Victoria Duque',est:'ok'},
+      {nombre:'Nuevos clientes / Bajas',formula:'Altas y bajas respecto al mes anterior',fuente:'Supabase · ventas',frec:'Mensual',resp:'Victoria Duque',est:'wip'},
+    ]},
+    {cat:'Última Milla',color:'#009CA3',items:[
+      {nombre:'SLA',formula:'Entregas en plazo / Total entregas × 100',fuente:'Supabase · sla_efectividad',frec:'Mensual',resp:'Victoria Duque',est:'ok'},
+      {nombre:'Efectividad',formula:'Entregas exitosas / Total entregas × 100',fuente:'Supabase · sla_efectividad',frec:'Mensual',resp:'Victoria Duque',est:'ok'},
+      {nombre:'Causas de no entregado',formula:'Distribución % de motivos de fallo',fuente:'Sistema operativo',frec:'Mensual',resp:'Victoria Duque',est:'pend'},
+    ]},
+    {cat:'Experiencia del Cliente',color:'#009CA3',items:[
+      {nombre:'Tickets / 100 envíos',formula:'Total tickets / Total envíos × 100',fuente:'CRM / Helpdesk',frec:'Mensual',resp:'Victoria Duque',est:'pend'},
+      {nombre:'Tiempo resolución tickets',formula:'Promedio días apertura → cierre',fuente:'CRM / Helpdesk',frec:'Mensual',resp:'Victoria Duque',est:'pend'},
+      {nombre:'Churn Rate',formula:'Clientes perdidos / Clientes inicio × 100',fuente:'Supabase · ventas',frec:'Mensual',resp:'Victoria Duque',est:'wip'},
+    ]},
+  ],
+  'Postal':[
+    {cat:'Performance del Negocio',color:'#97BF0D',items:[
+      {nombre:'Facturación',formula:'Suma venta normalizada del período',fuente:'Supabase · ventas',frec:'Mensual',resp:'Victoria Duque',est:'ok'},
+      {nombre:'Volumen',formula:'Piezas postales distribuidas',fuente:'Supabase · ventas',frec:'Mensual',resp:'Victoria Duque',est:'ok'},
+      {nombre:'ARPU',formula:'Facturación total / Clientes activos',fuente:'Supabase · ventas',frec:'Mensual',resp:'Victoria Duque',est:'ok'},
+      {nombre:'Nuevos clientes / Bajas',formula:'Altas y bajas respecto al mes anterior',fuente:'Supabase · ventas',frec:'Mensual',resp:'Victoria Duque',est:'wip'},
+    ]},
+    {cat:'Última Milla',color:'#009CA3',items:[
+      {nombre:'SLA',formula:'Entregas en plazo / Total entregas × 100',fuente:'Supabase · sla_efectividad',frec:'Mensual',resp:'Victoria Duque',est:'ok'},
+      {nombre:'Efectividad',formula:'Entregas exitosas / Total entregas × 100',fuente:'Supabase · sla_efectividad',frec:'Mensual',resp:'Victoria Duque',est:'ok'},
+      {nombre:'Causas de no entregado',formula:'Distribución % de motivos de fallo',fuente:'Sistema operativo',frec:'Mensual',resp:'Victoria Duque',est:'pend'},
+    ]},
+    {cat:'Experiencia del Cliente',color:'#009CA3',items:[
+      {nombre:'Tickets / 100 envíos',formula:'Total tickets / Total envíos × 100',fuente:'CRM / Helpdesk',frec:'Mensual',resp:'Victoria Duque',est:'pend'},
+      {nombre:'Tiempo resolución tickets',formula:'Promedio días apertura → cierre',fuente:'CRM / Helpdesk',frec:'Mensual',resp:'Victoria Duque',est:'pend'},
+      {nombre:'Churn Rate',formula:'Clientes perdidos / Clientes inicio × 100',fuente:'Supabase · ventas',frec:'Mensual',resp:'Victoria Duque',est:'wip'},
+    ]},
+  ],
+  'Salud Warehousing':[
+    {cat:'Performance del Negocio',color:'#97BF0D',items:[
+      {nombre:'Facturación',formula:'Suma venta normalizada del período',fuente:'Supabase · ventas',frec:'Mensual',resp:'German Gallarini',est:'ok'},
+      {nombre:'Volumen almacenado',formula:'m² o pallets ocupados en el período',fuente:'Supabase · ventas',frec:'Mensual',resp:'German Gallarini',est:'ok'},
+      {nombre:'Margen Bruto',formula:'Facturación − Costo operativo',fuente:'Sistema contable / ERP',frec:'Mensual',resp:'German Gallarini',est:'wip'},
+      {nombre:'ARPU',formula:'Facturación total / Clientes activos',fuente:'Supabase · ventas',frec:'Mensual',resp:'German Gallarini',est:'ok'},
+    ]},
+    {cat:'Operación',color:'#F29400',items:[
+      {nombre:'SLA',formula:'Órdenes en plazo / Total órdenes × 100',fuente:'Supabase · sla_efectividad',frec:'Mensual',resp:'German Gallarini',est:'pend'},
+      {nombre:'Exactitud de inventario',formula:'Ítems sin discrepancia / Total auditados × 100',fuente:'WMS',frec:'Mensual',resp:'German Gallarini',est:'pend'},
+      {nombre:'Cumplimiento cadena de frío',formula:'Registros en rango de temperatura / Total registros × 100',fuente:'Sistema monitoreo IoT',frec:'Diario',resp:'German Gallarini',est:'pend'},
+    ]},
+    {cat:'Experiencia del Cliente',color:'#009CA3',items:[
+      {nombre:'Churn Rate',formula:'Clientes perdidos / Clientes inicio × 100',fuente:'Supabase · ventas',frec:'Mensual',resp:'German Gallarini',est:'wip'},
+      {nombre:'Tickets',formula:'Total tickets abiertos en el período',fuente:'CRM / Helpdesk',frec:'Mensual',resp:'German Gallarini',est:'pend'},
+      {nombre:'Tiempo resolución tickets',formula:'Promedio días apertura → cierre',fuente:'CRM / Helpdesk',frec:'Mensual',resp:'German Gallarini',est:'pend'},
+    ]},
+  ],
+  'Salud Distribucion':[
+    {cat:'Performance del Negocio',color:'#97BF0D',items:[
+      {nombre:'Facturación',formula:'Suma venta normalizada del período',fuente:'Supabase · ventas',frec:'Mensual',resp:'German Gallarini',est:'ok'},
+      {nombre:'Volumen',formula:'Envíos de medicamentos/material sanitario',fuente:'Supabase · ventas',frec:'Mensual',resp:'German Gallarini',est:'ok'},
+      {nombre:'ARPU',formula:'Facturación total / Clientes activos',fuente:'Supabase · ventas',frec:'Mensual',resp:'German Gallarini',est:'ok'},
+      {nombre:'Nuevos clientes / Bajas',formula:'Altas y bajas respecto al mes anterior',fuente:'Supabase · ventas',frec:'Mensual',resp:'German Gallarini',est:'wip'},
+    ]},
+    {cat:'Última Milla',color:'#009CA3',items:[
+      {nombre:'SLA',formula:'Entregas en plazo / Total entregas × 100',fuente:'Supabase · sla_efectividad',frec:'Mensual',resp:'German Gallarini',est:'ok'},
+      {nombre:'Efectividad',formula:'Entregas exitosas / Total entregas × 100',fuente:'Supabase · sla_efectividad',frec:'Mensual',resp:'German Gallarini',est:'ok'},
+      {nombre:'Causas de no entregado',formula:'Distribución % de motivos de fallo',fuente:'Sistema operativo',frec:'Mensual',resp:'German Gallarini',est:'pend'},
+    ]},
+    {cat:'Experiencia del Cliente',color:'#009CA3',items:[
+      {nombre:'Tickets / 100 envíos',formula:'Total tickets / Total envíos × 100',fuente:'CRM / Helpdesk',frec:'Mensual',resp:'German Gallarini',est:'pend'},
+      {nombre:'Tiempo resolución tickets',formula:'Promedio días apertura → cierre',fuente:'CRM / Helpdesk',frec:'Mensual',resp:'German Gallarini',est:'pend'},
+      {nombre:'Churn Rate',formula:'Clientes perdidos / Clientes inicio × 100',fuente:'Supabase · ventas',frec:'Mensual',resp:'German Gallarini',est:'wip'},
+    ]},
+  ],
+  'Carta Documento Digital':[
+    {cat:'Performance del Negocio',color:'#97BF0D',items:[
+      {nombre:'Facturación',formula:'Suma venta normalizada del período',fuente:'Supabase · ventas',frec:'Mensual',resp:'Victoria Duque',est:'ok'},
+      {nombre:'Volumen',formula:'Cartas documento emitidas en el período',fuente:'Supabase · ventas',frec:'Mensual',resp:'Victoria Duque',est:'ok'},
+      {nombre:'Margen Bruto',formula:'Facturación − Costo (impresión + distribución)',fuente:'Sistema contable / ERP',frec:'Mensual',resp:'Victoria Duque',est:'wip'},
+      {nombre:'Costo por envío',formula:'Costo total / Cartas emitidas',fuente:'Sistema contable / ERP',frec:'Mensual',resp:'Victoria Duque',est:'wip'},
+      {nombre:'Nuevos clientes / Bajas',formula:'Altas y bajas respecto al mes anterior',fuente:'Supabase · ventas',frec:'Mensual',resp:'Victoria Duque',est:'wip'},
+    ]},
+    {cat:'Plataforma Web',color:'#6B3FA0',items:[
+      {nombre:'Uptime plataforma',formula:'Minutos disponibles / Minutos totales × 100',fuente:'Monitoreo plataforma AWP',frec:'Mensual',resp:'Victoria Duque',est:'pend'},
+      {nombre:'Tasa de error de cargas',formula:'Cargas fallidas al subir archivos / Total intentos × 100',fuente:'Logs plataforma',frec:'Mensual',resp:'Victoria Duque',est:'pend'},
+    ]},
+    {cat:'Operación',color:'#F29400',items:[
+      {nombre:'Tasa de error operativo',formula:'Cartas con problema de impresión / Total cartas × 100',fuente:'Sistema operativo',frec:'Mensual',resp:'Victoria Duque',est:'pend'},
+      {nombre:'Tiempo de imposición (AWP→HFD)',formula:'Promedio de horas desde ingreso en AWP hasta pase a HFD',fuente:'Sistema AWP / HFD',frec:'Mensual',resp:'Victoria Duque',est:'pend'},
+      {nombre:'Tiempo digitalización acuses (addoc)',formula:'Promedio de horas entre entrega y digitalización del acuse',fuente:'Sistema addoc',frec:'Mensual',resp:'Victoria Duque',est:'pend'},
+    ]},
+    {cat:'Última Milla',color:'#009CA3',items:[
+      {nombre:'Efectividad 1ra vuelta',formula:'Entregas en 1ra visita / Total cartas × 100',fuente:'Supabase · sla_efectividad',frec:'Mensual',resp:'Victoria Duque',est:'ok'},
+      {nombre:'Efectividad general',formula:'Total entregas exitosas (todas las vueltas) / Total cartas × 100',fuente:'Supabase · sla_efectividad',frec:'Mensual',resp:'Victoria Duque',est:'ok'},
+      {nombre:'SLA',formula:'Cartas entregadas en plazo contractual / Total × 100',fuente:'Supabase · sla_efectividad',frec:'Mensual',resp:'Victoria Duque',est:'ok'},
+      {nombre:'Causas de no entregado',formula:'Distribución % de motivos de fallo',fuente:'Sistema operativo',frec:'Mensual',resp:'Victoria Duque',est:'pend'},
+    ]},
+    {cat:'Experiencia del Cliente',color:'#009CA3',items:[
+      {nombre:'Tickets / 100 cartas',formula:'Total tickets / Total cartas emitidas × 100',fuente:'CRM / Helpdesk',frec:'Mensual',resp:'Victoria Duque',est:'pend'},
+      {nombre:'Tickets por cliente',formula:'Tickets del período agrupados por cliente',fuente:'CRM / Helpdesk',frec:'Mensual',resp:'Victoria Duque',est:'pend'},
+      {nombre:'Principales motivos de tickets',formula:'Top motivos por frecuencia (Pareto)',fuente:'CRM / Helpdesk',frec:'Mensual',resp:'Victoria Duque',est:'pend'},
+      {nombre:'Tiempo resolución tickets',formula:'Promedio días apertura → cierre',fuente:'CRM / Helpdesk',frec:'Mensual',resp:'Victoria Duque',est:'pend'},
+    ]},
+  ],
 };
+
 const DESCS={
   'Cross Docking':'Clasificación y consolidación de mercadería.',
   'Paqueteria E-Commerce B2C':'Distribución de paquetes a consumidor final, red logística capilar.',
@@ -279,16 +490,27 @@ const DESCS={
   'Salud Distribucion':'Transporte y distribución de medicamentos.',
   'Carta Documento Digital':'Cartas documento digitales emitidas y distribuidas físicamente.',
 };
+const OWNERS={
+  'Cross Docking':'Matias Bosch','Paqueteria E-Commerce B2C':'Victoria Duque',
+  'Warehousing':'Victoria Duque','Distribución de Tarjetas Valoradas':'Victoria Duque',
+  'Postal':'Victoria Duque','Salud Warehousing':'German Gallarini',
+  'Salud Distribucion':'German Gallarini','Carta Documento Digital':'Victoria Duque',
+};
+const META_NUMS={
+  'Cross Docking':'01','Paqueteria E-Commerce B2C':'02','Warehousing':'03',
+  'Distribución de Tarjetas Valoradas':'04','Postal':'05','Salud Warehousing':'06',
+  'Salud Distribucion':'07','Carta Documento Digital':'09',
+};
 
 // ── STATE ──
-let allVentas=[], cur='overview', cliActual='', allClientes=[];
+let allVentas=[], allSlaEfec=[], cur='overview', cliActual='', allClientes=[];
 
 // ── CHART HELPERS ──
 Chart.defaults.font.family="'Barlow',sans-serif";
 Chart.defaults.font.size=11;
 Chart.defaults.color='#888';
 const CI={};
-function dc(id){if(CI[id]){CI[id].destroy();delete CI[id];}}
+function dc(id){if(CI[id]){try{CI[id].destroy();}catch(e){}delete CI[id];}}
 function mkChart(id,type,labels,datasets,opts){
   dc(id);
   const el=document.getElementById(id);
@@ -299,7 +521,7 @@ function mkChart(id,type,labels,datasets,opts){
       responsive:true,maintainAspectRatio:false,
       plugins:{legend:{display:opts&&opts.leg||false},tooltip:{mode:'index',intersect:false}},
       scales:type!=='doughnut'?{
-        x:{grid:{display:false},ticks:{font:{size:10}}},
+        x:{grid:{display:false},ticks:{font:{size:9},maxRotation:45}},
         y:{grid:{color:'rgba(0,0,0,.04)'},ticks:{callback:opts&&opts.yf||null,font:{size:10}}}
       }:{},
       ...(opts&&opts.ex||{})
@@ -307,60 +529,86 @@ function mkChart(id,type,labels,datasets,opts){
   });
 }
 
-// ── FORMAT ──
 function fmtARS(v){
   const a=Math.abs(v);
-  if(a>=1e12)return '$'+(v/1e12).toFixed(1)+'B';
   if(a>=1e9)return '$'+(v/1e9).toFixed(1)+'MM';
   if(a>=1e6)return '$'+(v/1e6).toFixed(1)+'M';
   if(a>=1e3)return '$'+(v/1e3).toFixed(0)+'K';
   return '$'+Math.round(v).toLocaleString();
 }
 function colorAnio(a){return a>=2026?G:O;}
+function slaColor(v){
+  if(v===null||v===undefined)return '#ccc';
+  return v>=95?'#4D7200':v>=80?'#A06800':'#C0392B';
+}
 
 // ── SUPABASE FETCH ──
-async function sbFetch(table,select,filters){
-  const headers={'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY};
-  let url=SB_URL+'/rest/v1/'+table+'?select='+encodeURIComponent(select);
-  if(filters) url+=filters;
-  let rows=[],offset=0,page=1000;
+async function sbFetch(table,select,filters=''){
+  const H={
+    'apikey':SB_KEY,
+    'Authorization':'Bearer '+SB_KEY,
+    'Content-Type':'application/json',
+    'Prefer':'return=representation'
+  };
+  let url=SB_URL+'/rest/v1/'+table+'?select='+encodeURIComponent(select)+filters;
+  let rows=[],off=0;
   while(true){
-    const r=await fetch(url+'&offset='+offset+'&limit='+page,{headers});
-    if(!r.ok)throw new Error('HTTP '+r.status+': '+await r.text());
+    const r=await fetch(url+'&offset='+off+'&limit=1000',{headers:H});
+    if(!r.ok){
+      const txt=await r.text();
+      throw new Error('HTTP '+r.status+' '+table+': '+txt.slice(0,200));
+    }
     const d=await r.json();
-    if(!Array.isArray(d)||d.length===0)break;
+    if(!Array.isArray(d)||!d.length)break;
     rows.push(...d);
-    if(d.length<page)break;
-    offset+=page;
+    if(d.length<1000)break;
+    off+=1000;
   }
   return rows;
 }
 
 // ── LOAD ALL ──
 async function loadAll(){
-  const gload=document.getElementById('gload');
-  const gtext=document.getElementById('gload-t');
-  gload.classList.remove('hide');
-  gtext.style.color='';
-  gtext.textContent='Conectando a Supabase…';
+  const gl=document.getElementById('gload');
+  const gt=document.getElementById('gload-t');
+  gl.classList.remove('hide');
+  gt.style.color='';
+  gt.textContent='Conectando a Supabase…';
   document.getElementById('pov').classList.remove('vis');
   document.getElementById('pp').classList.remove('vis');
   document.getElementById('pp').style.display='none';
-
   try{
     const esc=document.getElementById('fEsc').value;
     const mes=document.getElementById('fMes').value;
-    let filters='';
-    if(esc) filters+='&escenario=eq.'+encodeURIComponent(esc);
-    if(mes) filters+='&mes=eq.'+encodeURIComponent(mes);
+    let vf='';
+    if(esc) vf+='&escenario=eq.'+encodeURIComponent(esc);
+    if(mes) vf+='&mes=eq.'+encodeURIComponent(mes);
 
-    gtext.textContent='Descargando ventas…';
-    const ventas=await sbFetch('ventas','anio,mes,cliente,unidad_negocio,cod_material,cantidad,venta_norm,escenario',filters);
+    gt.textContent='Descargando ventas…';
+    const ventas=await sbFetch('ventas','anio,mes,cliente,unidad_negocio,cod_material,cantidad,venta_norm,escenario',vf);
 
-    gtext.textContent='Descargando materiales…';
+    gt.textContent='Descargando materiales…';
     const mats=await sbFetch('material_producto','cod_material,producto,owner','');
 
-    // Enriquecer
+    gt.textContent='Descargando SLA & Efectividad…';
+    let slaData=[];
+    try{
+      slaData=await sbFetch('sla_efectividad','producto,mes,anio,sla_pct,efectividad_pct','');
+      console.log('sla_efectividad cargada: '+slaData.length+' filas');
+      if(slaData.length>0){
+        console.log('Ejemplo fila SLA:', JSON.stringify(slaData[0]));
+        console.log('Productos SLA:', [...new Set(slaData.map(r=>r.producto))]);
+      }
+    }
+    catch(e){
+      console.warn('Tabla sla_efectividad error:',e.message);
+      // Si falla el fetch, intentar con nombre alternativo
+      try{
+        slaData=await sbFetch('sla_efectividad','*','');
+        console.log('sla_efectividad (fallback *): '+slaData.length+' filas');
+      }catch(e2){ console.warn('Fallback SLA también falló:',e2.message); }
+    }
+
     const matMap={};
     mats.forEach(m=>{matMap[m.cod_material]={producto:m.producto,owner:m.owner};});
     ventas.forEach(v=>{
@@ -370,26 +618,16 @@ async function loadAll(){
     });
 
     allVentas=ventas;
+    allSlaEfec=slaData;
     allClientes=[...new Set(ventas.map(v=>v.cliente).filter(Boolean))].sort();
     buildCliDrop('');
-
-    gload.classList.add('hide');
-    if(cur==='overview'){
-      buildOverview();
-    } else {
-      // Restaurar panel de producto visible antes de renderizar
-      document.getElementById('pov').classList.remove('vis');
-      document.getElementById('pov').style.display='none';
-      document.getElementById('pp').classList.add('vis');
-      document.getElementById('pp').style.display='';
-      render(cur);
-    }
-    setTs();
-    updateHeader();
-
+    gl.classList.add('hide');
+    if(cur==='overview') buildOverview();
+    else{ showPP(); render(cur); }
+    setTs(); updateHeader();
   }catch(e){
-    gtext.textContent='Error al cargar: '+e.message;
-    gtext.style.color='#E05A5A';
+    gt.textContent='Error: '+e.message;
+    gt.style.color='#E05A5A';
     console.error(e);
   }
 }
@@ -407,119 +645,94 @@ function buildCliDrop(q){
     drop.appendChild(d);
   });
 }
-function setCli(val){
-  cliActual=val;
-  document.getElementById('fCliInput').value=val;
-  closeDrop();
-  if(cur==='overview') buildOverview();
-  else render(cur);
-}
-function onCliInput(){
-  const q=document.getElementById('fCliInput').value;
-  buildCliDrop(q);
-  openDrop();
-}
+function setCli(val){cliActual=val;document.getElementById('fCliInput').value=val;closeDrop();if(cur==='overview')buildOverview();else render(cur);}
+function onCliInput(){buildCliDrop(document.getElementById('fCliInput').value);openDrop();}
 function openDrop(){document.getElementById('cliDrop').classList.add('open');}
 function closeDrop(){document.getElementById('cliDrop').classList.remove('open');}
 document.getElementById('fCliInput').addEventListener('focus',()=>{if(allClientes.length)openDrop();});
-document.addEventListener('click',e=>{
-  if(!e.target.closest('.cli-wrap')) closeDrop();
-});
+document.addEventListener('click',e=>{if(!e.target.closest('.cli-wrap'))closeDrop();});
 
-// ── GET VENTAS (filtrado por cliente) ──
-function gv(){
-  if(!cliActual) return allVentas;
-  return allVentas.filter(v=>v.cliente===cliActual);
-}
+function gv(){return cliActual?allVentas.filter(v=>v.cliente===cliActual):allVentas;}
 
-// ── HEADER UPDATE ──
 function updateHeader(){
   const v=gv();
   const years=[...new Set(v.map(x=>x.anio))].sort();
-  const n=v.length.toLocaleString();
   const esc=document.getElementById('fEsc').value;
   const mes=document.getElementById('fMes').value;
-  const parts=[years.join('–'),mes?ML[mes]||mes:'',esc,n+' registros'].filter(Boolean);
-  document.getElementById('hperiodo').textContent='Dashboard Ejecutivo · '+parts.join(' · ');
+  const parts=[years.join('–'),mes?ML[mes]||mes:'',esc,v.length.toLocaleString()+' reg'].filter(Boolean);
+  document.getElementById('hperiodo').textContent='Dashboard · '+parts.join(' · ');
 }
 
-// ── ULTIMO MES REAL ──
 function ultimoMes(){
   const reales=allVentas.filter(v=>v.escenario==='Actual');
   if(!reales.length)return null;
   const sumas={};
-  reales.forEach(v=>{
-    const k=v.anio+'|'+(v.mes||'').toUpperCase();
-    sumas[k]=(sumas[k]||0)+Math.abs(Number(v.venta_norm)||0);
-  });
-  const con=Object.entries(sumas)
-    .filter(([,s])=>s>500000000) // >500M ARS
-    .map(([k])=>({anio:parseInt(k),mes:k.split('|')[1]}))
-    .filter(x=>MO.includes(x.mes))
-    .sort((a,b)=>a.anio!==b.anio?a.anio-b.anio:MO.indexOf(a.mes)-MO.indexOf(b.mes));
+  reales.forEach(v=>{const k=v.anio+'|'+(v.mes||'').toUpperCase();sumas[k]=(sumas[k]||0)+Math.abs(Number(v.venta_norm)||0);});
+  const con=Object.entries(sumas).filter(([,s])=>s>500000000).map(([k])=>({anio:parseInt(k),mes:k.split('|')[1]})).filter(x=>MO.includes(x.mes)).sort((a,b)=>a.anio!==b.anio?a.anio-b.anio:MO.indexOf(a.mes)-MO.indexOf(b.mes));
   return con.length?con[con.length-1]:null;
+}
+
+// ── HELPERS PANEL ──
+function showOV(){
+  document.getElementById('pp').classList.remove('vis');document.getElementById('pp').style.display='none';
+  document.getElementById('pov').classList.add('vis');document.getElementById('pov').style.display='';
+}
+function showPP(){
+  document.getElementById('pov').classList.remove('vis');document.getElementById('pov').style.display='none';
+  document.getElementById('pp').classList.add('vis');document.getElementById('pp').style.display='';
 }
 
 // ── OVERVIEW ──
 function buildOverview(){
-  document.getElementById('pp').classList.remove('vis');
-  document.getElementById('pp').style.display='none';
-  document.getElementById('pov').classList.add('vis');
-  document.getElementById('pov').style.display='';
-
+  showOV();
   const v=gv();
-  // Banner
   const ult=ultimoMes();
   const mes=document.getElementById('fMes').value?.toUpperCase();
   const banner=document.getElementById('ov-banner');
   if(ult){
-    const mesLabel=ML[ult.mes]||ult.mes;
-    const idxUlt=MO.indexOf(ult.mes);
-    const idxFil=mes?MO.indexOf(mes):-1;
-    if(mes&&idxFil>idxUlt){
-      banner.style.cssText='display:flex;align-items:center;gap:10px;background:#FFF0F0;border:1.5px solid #E05A5A;border-radius:8px;padding:11px 15px;margin-bottom:14px;font-size:12px;line-height:1.5;';
-      banner.innerHTML='<span style="font-size:15px">⚠️</span><span>Los datos de <strong>'+(ML[mes]||mes)+' '+ult.anio+'</strong> todavía no están cargados. Para verlos, actualizá Supabase con el archivo de ese mes. Último disponible: <strong>'+mesLabel+' '+ult.anio+'</strong>.</span>';
+    const ml=ML[ult.mes]||ult.mes;
+    const iU=MO.indexOf(ult.mes),iF=mes?MO.indexOf(mes):-1;
+    if(mes&&iF>iU){
+      banner.style.cssText='display:flex;align-items:center;gap:10px;background:#FFF0F0;border:1.5px solid #E05A5A;border-radius:8px;padding:10px 14px;margin-bottom:14px;font-size:12px;';
+      banner.innerHTML='<span>⚠️</span><span>Datos de <strong>'+(ML[mes]||mes)+' '+ult.anio+'</strong> no cargados aún.</span>';
     } else {
-      banner.style.cssText='display:flex;align-items:center;gap:10px;background:#F0FAF0;border:1.5px solid '+colorAnio(ult.anio)+';border-radius:8px;padding:11px 15px;margin-bottom:14px;font-size:12px;';
-      banner.innerHTML='<span style="font-size:15px">✅</span><span>Datos cargados hasta <strong>'+mesLabel+' '+ult.anio+'</strong>.</span>';
+      banner.style.cssText='display:flex;align-items:center;gap:10px;background:#F0FAF0;border:1.5px solid '+colorAnio(ult.anio)+';border-radius:8px;padding:10px 14px;margin-bottom:14px;font-size:12px;';
+      banner.innerHTML='<span>✅</span><span>Datos hasta <strong>'+ml+' '+ult.anio+'</strong>.</span>';
     }
-  }
+  } else { banner.style.display='none'; }
 
-  // Stats UN
   const byUN={};
   v.forEach(x=>{byUN[x.unidad_negocio||'Otros']=(byUN[x.unidad_negocio||'Otros']||0)+(Number(x.venta_norm)||0);});
   const statsEl=document.getElementById('ovStats');
   statsEl.innerHTML='';
-  const uns=['Ultima Milla','Supply Chain','Cross Dock'];
-  const unColors={'Ultima Milla':T,'Supply Chain':G,'Cross Dock':O};
   let total=0; Object.values(byUN).forEach(x=>total+=x);
-  uns.forEach(u=>{
-    statsEl.innerHTML+=`<div class="osc"><div class="osc-l">${u}</div><div class="osc-v" style="color:${unColors[u]||T}">${fmtARS(byUN[u]||0)}</div><div class="osc-s">Venta normalizada</div></div>`;
+  [['Ultima Milla',T],['Supply Chain',G],['Cross Dock',O]].forEach(([u,c])=>{
+    statsEl.innerHTML+=`<div class="osc"><div class="osc-l">${u}</div><div class="osc-v" style="color:${c}">${fmtARS(byUN[u]||0)}</div><div class="osc-s">Venta normalizada</div></div>`;
   });
-  statsEl.innerHTML+=`<div class="osc"><div class="osc-l">Total</div><div class="osc-v">${fmtARS(total)}</div><div class="osc-s">${Object.keys(META).length} productos</div></div>`;
+  statsEl.innerHTML+=`<div class="osc"><div class="osc-l">Total</div><div class="osc-v">${fmtARS(total)}</div><div class="osc-s">${Object.keys(META_NUMS).length} productos</div></div>`;
 
-  // Cards
   const byP={};
   v.forEach(x=>{
-    const p=x.producto;
-    if(!byP[p])byP[p]={fac:0,vol:0,cli:new Set(),owner:x.owner,anio:x.anio};
-    byP[p].fac+=Number(x.venta_norm)||0;
-    byP[p].vol+=Number(x.cantidad)||0;
+    const p=x.producto;if(!byP[p])byP[p]={fac:0,vol:0,cli:new Set(),anio:x.anio||2025};
+    byP[p].fac+=Number(x.venta_norm)||0;byP[p].vol+=Number(x.cantidad)||0;
     if(x.cliente)byP[p].cli.add(x.cliente);
-    if(x.anio>byP[p].anio)byP[p].anio=x.anio;
+    if((x.anio||0)>byP[p].anio)byP[p].anio=x.anio;
   });
-  const grid=document.getElementById('og');
-  grid.innerHTML='';
-  Object.entries(META).forEach(([prod,m])=>{
-    const d=byP[prod]||{fac:0,vol:0,cli:new Set(),owner:'—',anio:2025};
+
+  const grid=document.getElementById('og');grid.innerHTML='';
+  Object.entries(META_NUMS).forEach(([prod,num])=>{
+    const d=byP[prod]||{fac:0,vol:0,cli:new Set(),anio:2025};
     const bc=colorAnio(d.anio);
-    const card=document.createElement('div');card.className='ocard';
-    card.style.borderTopColor=bc;
-    card.innerHTML=`<div class="oc-num">${m.num} <span style="font-size:9px;font-weight:700;padding:1px 5px;border-radius:8px;background:${bc}22;color:${bc}">${d.anio}</span></div>
+    // SLA from supabase
+    const slaRows=allSlaEfec.filter(r=>(r.producto||'').trim()===prod.trim()&&r.sla_pct!=null&&r.sla_pct!=='');
+    const lastSla=slaRows.length?Number(slaRows[slaRows.length-1].sla_pct):null;
+    const slaBadge=lastSla!==null?`<span style="font-size:9px;font-weight:700;padding:1px 6px;border-radius:6px;background:${slaColor(lastSla)}22;color:${slaColor(lastSla)}">SLA ${lastSla.toFixed(1)}%</span>`:'';
+    const card=document.createElement('div');card.className='ocard';card.style.borderTopColor=bc;
+    card.innerHTML=`<div class="oc-num">${num} <span style="font-size:9px;font-weight:700;padding:1px 5px;border-radius:6px;background:${bc}22;color:${bc}">${d.anio}</span> ${slaBadge}</div>
 <div class="oc-name">${prod}</div>
-<div class="oc-owner">👤 ${d.owner}</div>
+<div class="oc-owner">👤 ${OWNERS[prod]||'—'}</div>
 <div><span class="oc-v">${fmtARS(d.fac)}</span></div>
-<div style="font-size:10px;color:var(--gray);margin-top:3px">${Math.round(d.vol).toLocaleString()} unid. · ${d.cli.size} clientes</div>`;
+<div style="font-size:10px;color:var(--gray);margin-top:2px">${Math.round(d.vol).toLocaleString()} unid. · ${d.cli.size} clientes</div>`;
     card.onclick=()=>go(prod,document.querySelector(`.ni[data-id="${prod}"]`));
     grid.appendChild(card);
   });
@@ -532,13 +745,11 @@ function go(id,el){
   if(el)el.classList.add('on');
   cur=id;
   if(id==='overview'){buildOverview();return;}
-  document.getElementById('pov').classList.remove('vis');
-  document.getElementById('pov').style.display='none';
-  document.getElementById('pp').classList.add('vis');
-  document.getElementById('pp').style.display='';
-  // Reset tab
+  showPP();
+  // reset tabs
   document.querySelectorAll('.tab-btn').forEach(t=>t.classList.remove('on'));
   document.querySelectorAll('.tab-panel').forEach(p=>{p.classList.remove('on');p.innerHTML='';});
+  document.querySelectorAll('.tab-full').forEach(p=>p.classList.remove('on'));
   document.querySelector('.tab-btn[data-tab="resumen"]').classList.add('on');
   document.getElementById('tab-resumen').classList.add('on');
   render(id);
@@ -548,143 +759,515 @@ function go(id,el){
 function switchTab(tab,el){
   document.querySelectorAll('.tab-btn').forEach(t=>t.classList.remove('on'));
   document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('on'));
+  document.querySelectorAll('.tab-full').forEach(p=>p.classList.remove('on'));
   el.classList.add('on');
-  document.getElementById('tab-'+tab).classList.add('on');
+  if(tab==='pbi'){
+    document.getElementById('tab-pbi').classList.add('on');
+    renderPBI(cur);
+  } else {
+    const panel=document.getElementById('tab-'+tab);
+    if(panel){ panel.classList.add('on'); }
+    if(tab==='indicadores'&&document.getElementById('tab-indicadores').innerHTML==='') renderIndicadores(cur);
+    if(tab==='slaefec'&&document.getElementById('tab-slaefec').innerHTML==='') renderSlaEfec(cur);
+    if(tab==='comparativa'&&document.getElementById('tab-comparativa').innerHTML==='') renderComparativa(cur);
+    if(tab==='ranking'&&document.getElementById('tab-ranking').innerHTML==='') renderRanking(cur);
+  }
 }
 
 // ── RENDER PRODUCT ──
 function render(prod){
-  const m=META[prod]||{num:'—',kpis:{m:[],c:[],e:[]}};
+  const num=META_NUMS[prod]||'—';
   const v=gv().filter(x=>x.producto===prod);
   const fac=v.reduce((a,b)=>a+(Number(b.venta_norm)||0),0);
   const vol=v.reduce((a,b)=>a+(Number(b.cantidad)||0),0);
   const clis=new Set(v.map(x=>x.cliente).filter(Boolean));
   const maxAnio=v.length?Math.max(...v.map(x=>x.anio)):2025;
-  const owner=v.find(x=>x.owner&&x.owner!=='—')?.owner||'—';
-
-  document.getElementById('pn').textContent=m.num;
+  const owner=OWNERS[prod]||'—';
+  document.getElementById('pn').textContent=num;
   document.getElementById('pn').style.color=colorAnio(maxAnio);
   document.getElementById('pname').textContent=prod;
   document.getElementById('pdesc').textContent=DESCS[prod]||'';
   document.getElementById('pmeta').innerHTML=`
     <div class="mi"><div class="mv">${fmtARS(fac)}</div><div class="ml">Facturación</div></div>
-    <div class="ms"></div>
-    <div class="mi"><div class="mv">${Math.round(vol).toLocaleString()}</div><div class="ml">Volumen</div></div>
-    <div class="ms"></div>
-    <div class="mi"><div class="mv">${clis.size}</div><div class="ml">Clientes</div></div>
-    <div class="ms"></div>
-    <div class="mi"><div class="mv" style="font-size:12px;font-weight:500">${owner}</div><div class="ml">Owner</div></div>`;
+    <div class="ms"></div><div class="mi"><div class="mv">${Math.round(vol).toLocaleString()}</div><div class="ml">Volumen</div></div>
+    <div class="ms"></div><div class="mi"><div class="mv">${clis.size}</div><div class="ml">Clientes</div></div>
+    <div class="ms"></div><div class="mi"><div class="mv" style="font-size:12px">${owner}</div><div class="ml">Owner</div></div>`;
 
-  // KPI chips
+  // kstrip — primeras categorías del plan de indicadores
   const ks=document.getElementById('ks');
-  ks.innerHTML='<span class="kl">KPIs:</span>';
-  m.kpis.m.forEach(k=>{const c=document.createElement('div');c.className='kc';c.innerHTML=`<span class="kd" style="background:${G}"></span>${k}`;ks.appendChild(c);});
-  m.kpis.c.forEach(k=>{const c=document.createElement('div');c.className='kc';c.innerHTML=`<span class="kd" style="background:${O}"></span>${k}`;ks.appendChild(c);});
-  m.kpis.e.slice(0,2).forEach(k=>{const c=document.createElement('div');c.className='kc';c.innerHTML=`<span class="kd" style="background:${T}"></span>${k}`;ks.appendChild(c);});
-
+  ks.innerHTML='<span class="kl">Indicadores:</span>';
+  const cats=INDICADORES[prod]||[];
+  cats.forEach(sec=>{
+    const c=document.createElement('div');c.className='kc';
+    c.innerHTML=`<span class="kd" style="background:${sec.color}"></span>${sec.cat} (${sec.items.length})`;
+    ks.appendChild(c);
+  });
   setTs();
   renderResumen(prod,v,fac,vol,clis);
-  renderComparativa(prod);
-  renderRanking(prod);
+  // clear lazy panels
+  ['indicadores','slaefec','comparativa','ranking'].forEach(t=>{
+    const el=document.getElementById('tab-'+t);
+    if(el)el.innerHTML='';
+  });
 }
 
-// ── RESUMEN TAB ──
+// ── RESUMEN ──
 function renderResumen(prod,v,fac,vol,clis){
   const pc=document.getElementById('tab-resumen');
   pc.innerHTML='';
 
-  // Banner dato
-  const ult=ultimoMes();
-  if(ult){
-    const mes=document.getElementById('fMes').value?.toUpperCase();
-    const idxUlt=MO.indexOf(ult.mes);
-    const idxFil=mes?MO.indexOf(mes):-1;
-    const av=document.createElement('div');
-    if(mes&&idxFil>idxUlt){
-      av.style.cssText='background:#FFF0F0;border:1.5px solid #E05A5A;border-radius:8px;padding:9px 13px;font-size:11.5px;display:flex;gap:8px;align-items:center;';
-      av.innerHTML='<span>⚠️</span><span>Los datos de <strong>'+(ML[mes]||mes)+'</strong> no están cargados. Último: <strong>'+(ML[ult.mes]||ult.mes)+' '+ult.anio+'</strong>.</span>';
-    } else {
-      av.style.cssText='background:#F0FAF0;border:1.5px solid '+colorAnio(ult.anio)+';border-radius:8px;padding:9px 13px;font-size:11.5px;display:flex;gap:8px;align-items:center;';
-      av.innerHTML='<span>✅</span><span>Datos cargados hasta <strong>'+(ML[ult.mes]||ult.mes)+' '+ult.anio+'</strong>.</span>';
-    }
-    pc.appendChild(av);
-  }
+  // SLA & Efec último mes desde Supabase
+  const slaRows=allSlaEfec.filter(r=>(r.producto||'').trim()===prod.trim());
+  const slaWithData=slaRows.filter(r=>r.sla_pct!=null);
+  const efecWithData=slaRows.filter(r=>r.efectividad_pct!=null);
+  const lastSla=slaWithData.length?Number(slaWithData[slaWithData.length-1].sla_pct):null;
+  const lastEfec=efecWithData.length?Number(efecWithData[efecWithData.length-1].efectividad_pct):null;
+  const avgSla=slaWithData.length?slaWithData.reduce((a,b)=>a+Number(b.sla_pct),0)/slaWithData.length:null;
 
-  // Métricas
   const top1=Object.entries(v.reduce((a,b)=>{if(!b.cliente)return a;a[b.cliente]=(a[b.cliente]||0)+(Number(b.venta_norm)||0);return a;},{})).sort((a,b)=>b[1]-a[1])[0];
+
   const mrow=document.createElement('div');mrow.className='mrow';
   mrow.innerHTML=`
-    <div class="mc"><div class="mc-l">Facturación total</div><div class="mc-v">${fmtARS(fac)}</div><div class="mc-s">Venta normalizada</div></div>
-    <div class="mc"><div class="mc-l">Volumen total</div><div class="mc-v">${Math.round(vol).toLocaleString()}</div><div class="mc-s">Unidades</div></div>
+    <div class="mc"><div class="mc-l">Facturación</div><div class="mc-v">${fmtARS(fac)}</div><div class="mc-s">Venta normalizada</div></div>
+    <div class="mc"><div class="mc-l">Volumen</div><div class="mc-v">${Math.round(vol).toLocaleString()}</div><div class="mc-s">Unidades</div></div>
     <div class="mc"><div class="mc-l">Clientes activos</div><div class="mc-v">${clis.size}</div><div class="mc-s">Con facturación</div></div>
-    ${top1?`<div class="mc"><div class="mc-l">Top cliente</div><div class="mc-v" style="font-size:16px">${fmtARS(top1[1])}</div><div class="mc-s">${top1[0]}</div></div>`:''}`;
+    ${lastSla!==null?`<div class="mc" style="border-top-color:${slaColor(lastSla)}"><div class="mc-l">SLA último mes</div><div class="mc-v" style="color:${slaColor(lastSla)}">${lastSla.toFixed(1)}%</div><div class="mc-s">Cumplimiento</div></div>`:''}
+    ${lastEfec!==null?`<div class="mc" style="border-top-color:${slaColor(lastEfec)}"><div class="mc-l">Efectividad último mes</div><div class="mc-v" style="color:${slaColor(lastEfec)}">${lastEfec.toFixed(1)}%</div><div class="mc-s">Entrega exitosa</div></div>`:''}
+    ${top1?`<div class="mc"><div class="mc-l">Top cliente</div><div class="mc-v" style="font-size:15px">${fmtARS(top1[1])}</div><div class="mc-s">${top1[0]}</div></div>`:''}`;
   pc.appendChild(mrow);
 
-  // Gráfico facturación por anio+mes
+  // Gráficos fac + vol
   const byAM={};
-  v.forEach(x=>{
-    const mm=x.mes?.toUpperCase()||'';
-    const k=x.anio+'|'+mm;
-    byAM[k]=(byAM[k]||0)+(Number(x.venta_norm)||0);
-  });
-  const sortedAM=Object.entries(byAM)
-    .map(([k,val])=>({anio:parseInt(k),mes:k.split('|')[1],val}))
-    .filter(x=>MO.includes(x.mes))
-    .sort((a,b)=>a.anio!==b.anio?a.anio-b.anio:MO.indexOf(a.mes)-MO.indexOf(b.mes));
-
-  if(sortedAM.length){
-    const labels=sortedAM.map(x=>MS[MO.indexOf(x.mes)]+" '"+String(x.anio).slice(-2));
-    const vals=sortedAM.map(x=>+(x.val/1e6).toFixed(1));
-    const colors=sortedAM.map(x=>x.anio>=2026?'rgba(151,191,13,.8)':'rgba(242,148,0,.8)');
-
-    // Volumen por anio+mes
+  v.forEach(x=>{const k=x.anio+'|'+(x.mes||'').toUpperCase();byAM[k]=(byAM[k]||0)+(Number(x.venta_norm)||0);});
+  const sorted=Object.entries(byAM).map(([k,val])=>({anio:parseInt(k),mes:k.split('|')[1],val})).filter(x=>MO.includes(x.mes)).sort((a,b)=>a.anio!==b.anio?a.anio-b.anio:MO.indexOf(a.mes)-MO.indexOf(b.mes));
+  if(sorted.length){
+    const lbls=sorted.map(x=>MS[MO.indexOf(x.mes)]+"'"+String(x.anio).slice(-2));
+    const vals=sorted.map(x=>+(x.val/1e6).toFixed(1));
+    const cols=sorted.map(x=>x.anio>=2026?'rgba(151,191,13,.8)':'rgba(242,148,0,.8)');
     const byAMvol={};
     v.forEach(x=>{const k=x.anio+'|'+(x.mes||'').toUpperCase();byAMvol[k]=(byAMvol[k]||0)+(Number(x.cantidad)||0);});
-    const vols=sortedAM.map(x=>Math.round(byAMvol[x.anio+'|'+x.mes]||0));
-
+    const vols=sorted.map(x=>Math.round(byAMvol[x.anio+'|'+x.mes]||0));
     const cg=document.createElement('div');cg.className='cgrid';
-    cg.innerHTML=`
-      <div class="cb"><div class="cb-t">Facturación mensual</div><div class="cb-s">ARS M · 🟠 2025 · 🟢 2026</div><div class="cw"><canvas id="cf"></canvas></div></div>
-      <div class="cb"><div class="cb-t">Volumen mensual</div><div class="cb-s">Unidades por mes</div><div class="cw"><canvas id="cv"></canvas></div></div>`;
+    cg.innerHTML=`<div class="cb"><div class="cb-t">Facturación mensual</div><div class="cb-s">ARS M · 🟠 2025 · 🟢 2026</div><div class="cw"><canvas id="cf"></canvas></div></div>
+      <div class="cb"><div class="cb-t">Volumen mensual</div><div class="cb-s">Unidades</div><div class="cw"><canvas id="cv"></canvas></div></div>`;
     pc.appendChild(cg);
     requestAnimationFrame(()=>{
-      mkChart('cf','bar',labels,[{data:vals,backgroundColor:colors,borderRadius:5}],{yf:v=>'$'+v+'M'});
-      mkChart('cv','line',labels,[{data:vols,borderColor:T,backgroundColor:'rgba(0,156,163,.08)',tension:.4,fill:true,pointRadius:3}]);
+      mkChart('cf','bar',lbls,[{data:vals,backgroundColor:cols,borderRadius:4}],{yf:v=>'$'+v+'M'});
+      mkChart('cv','line',lbls,[{data:vols,borderColor:T,backgroundColor:'rgba(0,156,163,.08)',tension:.4,fill:true,pointRadius:3}]);
     });
   }
 
-  // Top clientes tabla
+  // Top clientes
   const byC={};
   v.forEach(x=>{if(!x.cliente)return;byC[x.cliente]=(byC[x.cliente]||0)+(Number(x.venta_norm)||0);});
   const topC=Object.entries(byC).sort((a,b)=>b[1]-a[1]).slice(0,8);
   if(topC.length){
     const ct=document.createElement('div');ct.className='ctb';
-    ct.innerHTML=`<h3>Top Clientes</h3><table class="ct"><thead><tr><th>Cliente</th><th>Facturación</th></tr></thead><tbody>
-      ${topC.map(([n,f],i)=>`<tr><td>${i+1}. ${n}</td><td>${fmtARS(f)}</td></tr>`).join('')}</tbody></table>`;
+    ct.innerHTML=`<h3>Top Clientes</h3><table class="ct"><thead><tr><th>Cliente</th><th style="text-align:right">Facturación</th></tr></thead><tbody>
+      ${topC.map(([n,f],i)=>`<tr><td>${i+1}. ${n}</td><td style="text-align:right;font-weight:600;color:var(--teal)">${fmtARS(f)}</td></tr>`).join('')}</tbody></table>`;
     pc.appendChild(ct);
   }
 
-  // KPI Status
-  const kb=document.createElement('div');kb.className='ksb';
-  kb.innerHTML=`<h3>Plan de Medición de Indicadores</h3><div class="ksg">
-    <div class="ksgg"><div class="ksg-t tg">● Medidos</div>${(META[prod]?.kpis.m||[]).map(k=>`<div class="ksi"><span class="kdd kdg"></span>${k}</div>`).join('')}</div>
-    <div class="ksgg"><div class="ksg-t to">● En Curso</div>${(META[prod]?.kpis.c||[]).map(k=>`<div class="ksi"><span class="kdd kdo"></span>${k}</div>`).join('')}</div>
-    <div class="ksgg"><div class="ksg-t tt">● Evolutivos</div>${(META[prod]?.kpis.e||[]).map(k=>`<div class="ksi"><span class="kdd kdt"></span>${k}</div>`).join('')}</div>
-  </div>`;
-  pc.appendChild(kb);
-
-  // Fuente
-  const src=document.createElement('div');src.className='src-badge';
-  src.innerHTML=`<span>🔗 Fuente: <strong>Supabase</strong> · ${v.length.toLocaleString()} registros</span>`;
-  pc.appendChild(src);
+  pc.appendChild(Object.assign(document.createElement('div'),{
+    className:'src-badge',
+    innerHTML:`<span>🔗 <strong>Supabase · ventas</strong> · ${v.length.toLocaleString()} registros &nbsp;|&nbsp; 📈 <strong>Supabase · sla_efectividad</strong> · ${slaRows.length} registros</span>`
+  }));
 }
 
-// ── COMPARATIVA TAB ──
+// ── INDICADORES ──
+function renderIndicadores(prod){
+  const pc=document.getElementById('tab-indicadores');
+  pc.innerHTML='';
+
+  const vProd=allVentas.filter(x=>x.producto===prod&&x.escenario==='Actual');
+  const MO_I=Object.fromEntries(MO.map((m,i)=>[m,i]));
+  const mesesDisp=[...new Set(vProd.map(x=>x.anio+'|'+x.mes))].sort((a,b)=>{
+    const[ya,ma]=a.split('|');const[yb,mb]=b.split('|');
+    return ya!==yb?Number(ya)-Number(yb):(MO_I[ma]||0)-(MO_I[mb]||0);
+  });
+  const ultK=mesesDisp[mesesDisp.length-1]||'';
+  const antK=mesesDisp[mesesDisp.length-2]||'';
+  const[ultA,ultM]=ultK.split('|'); const[antA,antM]=antK.split('|');
+  const vUlt=vProd.filter(x=>String(x.anio)===String(ultA)&&x.mes===ultM);
+  const vAnt=vProd.filter(x=>String(x.anio)===String(antA)&&x.mes===antM);
+
+  const facUlt=vUlt.reduce((a,b)=>a+(Number(b.venta_norm)||0),0);
+  const volUlt=vUlt.reduce((a,b)=>a+(Number(b.cantidad)||0),0);
+  const clisUlt=new Set(vUlt.map(x=>x.cliente).filter(Boolean));
+  const clisAnt=new Set(vAnt.map(x=>x.cliente).filter(Boolean));
+  const arpu=clisUlt.size>0?facUlt/clisUlt.size:0;
+  const nuevos=[...clisUlt].filter(c=>!clisAnt.has(c)).length;
+  const bajas=[...clisAnt].filter(c=>!clisUlt.has(c)).length;
+
+  const slaP=allSlaEfec.filter(r=>(r.producto||'').trim()===prod.trim());
+  slaP.sort((a,b)=>Number(a.anio)!==Number(b.anio)?Number(a.anio)-Number(b.anio):(MO_I[a.mes]||0)-(MO_I[b.mes]||0));
+  const lSla=slaP.filter(r=>r.sla_pct!=null&&r.sla_pct!=='').pop();
+  const lEfe=slaP.filter(r=>r.efectividad_pct!=null&&r.efectividad_pct!=='').pop();
+  const slaVal=lSla?parseFloat(lSla.sla_pct):null;
+  const efeVal=lEfe?parseFloat(lEfe.efectividad_pct):null;
+  const slaLbl=lSla?(lSla.mes.charAt(0)+lSla.mes.slice(1).toLowerCase()+' '+lSla.anio):'—';
+  const efeLbl=lEfe?(lEfe.mes.charAt(0)+lEfe.mes.slice(1).toLowerCase()+' '+lEfe.anio):'—';
+  const mesLbl=ultM?(ultM.charAt(0)+ultM.slice(1).toLowerCase()+' '+ultA):'—';
+
+  function fv(val,fmt,nota){
+    const ok=val!==null&&val!==undefined&&!isNaN(val);
+    const d=document.createElement('div');
+    if(!ok){
+      d.style.cssText='color:#bbb;font-size:11px';d.textContent='Sin datos';
+      return d;
+    }
+    let txt='';
+    if(fmt==='ars') txt=fmtARS(val);
+    else if(fmt==='pct'){txt=val.toFixed(1)+'%';d.style.color=slaColor(val);}
+    else if(fmt==='num') txt=Math.round(val).toLocaleString('es-AR');
+    else txt=val.toFixed(1);
+    d.style.cssText='font-weight:700;font-size:13px';d.textContent=txt;
+    if(nota){const s=document.createElement('div');s.style.cssText='font-size:9px;color:#aaa;margin-top:1px';s.textContent=nota;d.appendChild(s);}
+    return d;
+  }
+
+  // Definición indicadores por producto
+  function getItems(){
+    const comun=[
+      {n:'Facturación',f:'Suma venta normalizada (escenario Actual)',src:'Supabase · ventas',val:facUlt,fmt:'ars',nota:mesLbl},
+      {n:'Volumen',f:'Suma unidades del período',src:'Supabase · ventas',val:volUlt,fmt:'num',nota:mesLbl},
+      {n:'Clientes activos',f:'Clientes distintos con venta > 0',src:'Supabase · ventas',val:clisUlt.size,fmt:'num',nota:mesLbl},
+      {n:'Nuevos clientes',f:'Clientes sin actividad en mes anterior',src:'Supabase · ventas',val:nuevos,fmt:'num',nota:mesLbl},
+      {n:'Bajas (Churn qty)',f:'Clientes del mes anterior sin actividad en mes actual',src:'Supabase · ventas',val:bajas,fmt:'num',nota:mesLbl},
+      {n:'ARPU',f:'Facturación / Clientes activos del período',src:'Supabase · ventas',val:arpu>0?arpu:null,fmt:'ars',nota:mesLbl},
+      {n:'Margen Bruto',f:'Facturación − Costo operativo directo',src:'ERP / Contable',val:null,fmt:'ars',nota:null},
+      {n:'Costo unitario',f:'Costo total / Volumen (envíos u operaciones)',src:'ERP / Contable',val:null,fmt:'ars',nota:null},
+    ];
+    const slaItems=[
+      {n:'SLA',f:'Entregas / operaciones en plazo sobre total × 100',src:'Supabase · sla_efectividad',val:slaVal,fmt:'pct',nota:slaLbl},
+      {n:'Efectividad',f:'Entregas exitosas sobre total de intentos × 100',src:'Supabase · sla_efectividad',val:efeVal,fmt:'pct',nota:efeLbl},
+      {n:'Causas de no entrega',f:'Distribución % de motivos de fallo por categoría',src:'Sistema operativo',val:null,fmt:'pct',nota:null},
+      {n:'Errores / rechazos',f:'Operaciones con error o rechazo / Total × 100',src:'Sistema operativo',val:null,fmt:'pct',nota:null},
+    ];
+    const cliItems=[
+      {n:'NPS',f:'% Promotores − % Detractores (encuesta)',src:'Encuesta NPS',val:null,fmt:'num',nota:null},
+      {n:'Tickets / 100 envíos',f:'Total tickets del período / Volumen × 100',src:'CRM / Helpdesk',val:null,fmt:'num',nota:null},
+      {n:'Tiempo resolución',f:'Promedio días desde apertura hasta cierre de ticket',src:'CRM / Helpdesk',val:null,fmt:'num',nota:null},
+      {n:'Penalidades',f:'Monto total de penalidades aplicadas en el período',src:'Sistema contable',val:null,fmt:'ars',nota:null},
+    ];
+
+    const specific={
+      'Carta Documento Digital':[
+        {cat:'Performance del Negocio',color:'#97BF0D',items:comun},
+        {cat:'Plataforma Web',color:'#6B3FA0',items:[
+          {n:'Uptime plataforma',f:'Minutos disponibles / minutos totales del período × 100',src:'Monitoreo AWP',val:null,fmt:'pct',nota:null},
+          {n:'Tasa error de cargas',f:'Cargas fallidas al subir archivos / total intentos × 100',src:'Logs plataforma',val:null,fmt:'pct',nota:null},
+        ]},
+        {cat:'Operación',color:'#F29400',items:[
+          {n:'Tasa error operativo',f:'Cartas con problema de impresión / total cartas × 100',src:'Sistema operativo',val:null,fmt:'pct',nota:null},
+          {n:'Tiempo imposición (AWP→HFD)',f:'Promedio horas desde ingreso AWP hasta pase a HFD',src:'Sistema AWP/HFD',val:null,fmt:'num',nota:null},
+          {n:'Tiempo digitalización acuses',f:'Promedio horas entre entrega y digitalización de acuse (addoc)',src:'Sistema addoc',val:null,fmt:'num',nota:null},
+          ...slaItems,
+        ]},
+        {cat:'Experiencia del Cliente',color:'#009CA3',items:[
+          ...cliItems,
+          {n:'Tickets por cliente',f:'Distribución de tickets agrupados por cliente',src:'CRM / Helpdesk',val:null,fmt:'num',nota:null},
+        ]},
+      ],
+      'Paqueteria E-Commerce B2C':[
+        {cat:'Performance del Negocio',color:'#97BF0D',items:comun},
+        {cat:'Plataforma',color:'#6B3FA0',items:[
+          {n:'Uptime plataforma',f:'Minutos disponibles / minutos totales × 100',src:'Monitoreo plataforma',val:null,fmt:'pct',nota:null},
+          {n:'Tasa error de cargas',f:'Cargas fallidas / total intentos × 100',src:'Logs plataforma',val:null,fmt:'pct',nota:null},
+        ]},
+        {cat:'Colecta',color:'#E67E22',items:[
+          {n:'Tasa colectas fallidas',f:'Colectas donde no se retiró mercadería / total × 100',src:'Sistema operativo',val:null,fmt:'pct',nota:null},
+          {n:'Tiempo solicitud → colecta',f:'Promedio horas entre solicitud y ejecución de colecta',src:'Sistema operativo',val:null,fmt:'num',nota:null},
+        ]},
+        {cat:'Última Milla',color:'#009CA3',items:slaItems},
+        {cat:'Performance del Punto (Pick It)',color:'#C0392B',items:[
+          {n:'Tasa paquetes vencidos',f:'Paquetes sin retirar > plazo máximo / total en punto × 100',src:'Sistema Pick It',val:null,fmt:'pct',nota:null},
+          {n:'Incidentes en punto',f:'Cantidad de incidentes reportados en puntos de entrega',src:'Sistema Pick It',val:null,fmt:'num',nota:null},
+        ]},
+        {cat:'Experiencia del Cliente',color:'#1ABC9C',items:[
+          ...cliItems,
+          {n:'Tasa de retiro efectivo',f:'Paquetes retirados / total disponibles en punto × 100',src:'Sistema Pick It',val:null,fmt:'pct',nota:null},
+        ]},
+      ],
+    };
+    if(specific[prod]) return specific[prod];
+    // Genérico para todos los demás
+    return [
+      {cat:'Performance del Negocio',color:'#97BF0D',items:comun},
+      {cat:'Operación / Última Milla',color:'#F29400',items:slaItems},
+      {cat:'Experiencia del Cliente',color:'#009CA3',items:cliItems},
+    ];
+  }
+
+  const secs=getItems();
+  const total=secs.reduce((a,s)=>a+s.items.length,0);
+  const conVal=secs.reduce((a,s)=>a+s.items.filter(i=>i.val!==null&&!isNaN(i.val)).length,0);
+
+  // ── Tarjetas resumen ──
+  function mkMC(label,val,sub,color){
+    const d=document.createElement('div');
+    d.style.cssText='background:#fff;border:1px solid rgba(0,156,163,.18);border-top:3px solid '+color+';border-radius:9px;padding:12px 14px;min-width:110px;';
+    const l=document.createElement('div');l.style.cssText='font-size:9.5px;font-weight:600;color:var(--gray);text-transform:uppercase;letter-spacing:.6px;margin-bottom:4px';l.textContent=label;
+    const v=document.createElement('div');v.style.cssText='font-family:"Barlow Condensed",sans-serif;font-size:22px;font-weight:700;color:var(--black)';v.textContent=val;
+    const s=document.createElement('div');s.style.cssText='font-size:10px;color:var(--gray);margin-top:2px';s.textContent=sub;
+    d.appendChild(l);d.appendChild(v);d.appendChild(s);return d;
+  }
+  const rw=document.createElement('div');
+  rw.style.cssText='display:flex;gap:10px;flex-wrap:wrap;margin-bottom:10px;';
+  rw.appendChild(mkMC('Total indicadores',String(total),'definidos','#009CA3'));
+  rw.appendChild(mkMC('✅ Con valor',String(conVal),'calculados ahora','#97BF0D'));
+  rw.appendChild(mkMC('⏳ Sin fuente',String(total-conVal),'fuente externa','#ccc'));
+  if(ultM){const mc=mkMC('Período calculado',mesLbl,'último mes con datos','#009CA3');mc.querySelector('div:nth-child(2)').style.fontSize='14px';rw.appendChild(mc);}
+  pc.appendChild(rw);
+
+  // ── Tabla por sección ──
+  secs.forEach(function(sec){
+    // wrapper
+    const wrap=document.createElement('div');
+    wrap.style.cssText='background:#fff;border:1px solid rgba(0,0,0,.08);border-radius:10px;margin-bottom:8px;';
+
+    // header sección
+    const hd=document.createElement('div');
+    hd.style.cssText='display:flex;align-items:center;gap:8px;padding:9px 14px;border-bottom:1px solid rgba(0,0,0,.06);background:#fafafa;border-radius:10px 10px 0 0;';
+    const badge=document.createElement('span');
+    badge.style.cssText='font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;padding:3px 10px;border-radius:4px;background:'+sec.color+'22;color:'+sec.color;
+    badge.textContent=sec.cat;
+    const cnt=document.createElement('span');
+    cnt.style.cssText='font-size:10px;color:var(--gray);margin-left:auto';
+    cnt.textContent=sec.items.filter(i=>i.val!==null&&!isNaN(i.val)).length+'/'+sec.items.length+' con valor';
+    hd.appendChild(badge);hd.appendChild(cnt);
+    wrap.appendChild(hd);
+
+    // tabla
+    const tbl=document.createElement('table');
+    tbl.style.cssText='width:100%;border-collapse:collapse;table-layout:fixed;';
+
+    // colgroup para anchos fijos
+    tbl.innerHTML='<colgroup>'+
+      '<col style="width:17%"><col style="width:28%"><col style="width:16%">'+
+      '<col style="width:16%"><col style="width:7%"><col style="width:16%">'+
+      '</colgroup>';
+
+    // thead
+    const thead=tbl.createTHead();
+    const hr=thead.insertRow();
+    hr.style.cssText='background:#f5fafa;';
+    ['Indicador','Fórmula / Definición','Fuente','Valor actual','Frec.','Estado'].forEach(function(txt){
+      const th=document.createElement('th');
+      th.style.cssText='text-align:left;font-size:9px;font-weight:700;color:#aaa;text-transform:uppercase;letter-spacing:.5px;padding:6px 10px;border-bottom:1px solid rgba(0,0,0,.06);';
+      th.textContent=txt;
+      hr.appendChild(th);
+    });
+
+    // tbody
+    const tbody=tbl.createTBody();
+    sec.items.forEach(function(item,i){
+      const tr=tbody.insertRow();
+      tr.style.cssText='border-bottom:'+(i<sec.items.length-1?'1px solid rgba(0,0,0,.04)':'none')+';';
+      tr.addEventListener('mouseover',function(){this.style.background='#f8fffe';});
+      tr.addEventListener('mouseout',function(){this.style.background='';});
+
+      const hasVal=item.val!==null&&item.val!==undefined&&!isNaN(item.val);
+
+      function mkTd(style){const td=tr.insertCell();td.style.cssText='padding:8px 10px;vertical-align:top;'+style;return td;}
+
+      // Col 1: nombre
+      const td1=mkTd('font-weight:600;font-size:12px;line-height:1.4;');
+      td1.textContent=item.n;
+
+      // Col 2: fórmula
+      const td2=mkTd('font-size:11px;color:#555;line-height:1.4;');
+      td2.textContent=item.f;
+
+      // Col 3: fuente
+      const td3=mkTd('');
+      const srcBadge=document.createElement('span');
+      srcBadge.style.cssText='font-size:10px;background:rgba(0,156,163,.08);padding:2px 6px;border-radius:4px;white-space:nowrap;display:inline-block;';
+      srcBadge.textContent=item.src;
+      td3.appendChild(srcBadge);
+
+      // Col 4: valor
+      const td4=mkTd('text-align:right;');
+      td4.appendChild(fv(item.val,item.fmt,item.nota));
+
+      // Col 5: frecuencia
+      const td5=mkTd('font-size:11px;color:var(--gray);');
+      td5.textContent='Mensual';
+
+      // Col 6: estado
+      const td6=mkTd('');
+      const stBadge=document.createElement('span');
+      stBadge.style.cssText='font-size:9px;font-weight:700;padding:2px 7px;border-radius:10px;white-space:nowrap;'+
+        (hasVal?'background:rgba(151,191,13,.15);color:#4D7200':'background:rgba(177,177,177,.15);color:#888');
+      stBadge.textContent=hasVal?'✅ Activo':'⏳ Pendiente';
+      td6.appendChild(stBadge);
+    });
+
+    tbl.appendChild(tbody);
+    wrap.appendChild(tbl);
+    pc.appendChild(wrap);
+  });
+
+  // footer
+  const foot=document.createElement('div');
+  foot.style.cssText='background:#fff;border:1.5px solid rgba(0,156,163,.3);border-radius:10px;padding:9px 14px;font-size:11px;color:var(--gray);';
+  foot.innerHTML='<span>📋 Valores calculados desde <strong style="color:var(--teal)">Supabase · ventas</strong> y <strong style="color:var(--teal)">sla_efectividad</strong> · Se actualizan al hacer clic en Actualizar</span>';
+  pc.appendChild(foot);
+}
+
+
+// ── SLA & EFECTIVIDAD (desde Supabase) ──
+function renderSlaEfec(prod){
+  const pc=document.getElementById('tab-slaefec');
+  pc.innerHTML='';
+  // Debug: log en consola para verificar datos
+  console.log('[SLA] prod buscado:', JSON.stringify(prod));
+  console.log('[SLA] allSlaEfec total filas:', allSlaEfec.length);
+  if(allSlaEfec.length>0) console.log('[SLA] primer row:', JSON.stringify(allSlaEfec[0]));
+  const rows=allSlaEfec.filter(r=>(r.producto||'').trim()===prod.trim());
+  console.log('[SLA] rows para este producto:', rows.length);
+
+  if(!rows.length){
+    // Mostrar todos los productos disponibles en la tabla para diagnóstico
+    const todosProds=[...new Set(allSlaEfec.map(r=>r.producto))];
+    const hayDatos=allSlaEfec.length>0;
+    let msgHtml='<div style="font-size:15px;margin-bottom:8px">📭</div>';
+    if(hayDatos){
+      msgHtml+='<div style="font-weight:700;font-size:13px;margin-bottom:6px">Sin datos para <em>'+prod+'</em></div>';
+      msgHtml+='<div style="font-size:11px;color:var(--gray);margin-bottom:8px">La tabla tiene '+allSlaEfec.length+' filas con estos productos:</div>';
+      msgHtml+='<div style="font-size:11px;text-align:left;background:#f5f5f5;border-radius:6px;padding:8px 12px;display:inline-block;margin-bottom:8px">'+todosProds.map(p=>'<div>• '+p+'</div>').join('')+'</div>';
+      msgHtml+='<div style="font-size:11px;color:#E05A5A;margin-top:4px">⚠️ Nombre esperado: <strong>'+prod+'</strong></div>';
+    } else {
+      msgHtml+='<div style="font-weight:700;font-size:13px;margin-bottom:6px">Tabla sla_efectividad vacía o sin acceso</div>';
+      msgHtml+='<div style="font-size:11px;color:var(--gray);margin-bottom:12px">Si ya importaste el CSV, el problema es RLS (Row Level Security).</div>';
+      msgHtml+='<div style="font-size:11px;text-align:left;background:#1e1e1e;color:#7ec8e3;border-radius:8px;padding:12px 16px;font-family:monospace;margin-bottom:8px">'+
+        'ALTER TABLE sla_efectividad ENABLE ROW LEVEL SECURITY;<br>'+
+        'CREATE POLICY "public read" ON sla_efectividad<br>'+
+        '&nbsp;&nbsp;FOR SELECT USING (true);'+
+        '</div>';
+      msgHtml+='<div style="font-size:11px;color:var(--gray)">Corré ese SQL en <strong>Supabase → SQL Editor</strong></div>';
+    }
+    pc.innerHTML='<div class="nodatabadge" style="max-width:520px;margin:0 auto;text-align:center;padding:20px;">'+msgHtml+'</div>';
+    return;
+  }
+
+  // Ordenar por anio+mes
+  const MO_IDX=Object.fromEntries(MO.map((m,i)=>[m,i]));
+  rows.sort((a,b)=>a.anio!==b.anio?Number(a.anio)-Number(b.anio):(MO_IDX[a.mes]||0)-(MO_IDX[b.mes]||0));
+
+  const slaRows=rows.filter(r=>r.sla_pct!=null&&r.sla_pct!==''&&!isNaN(parseFloat(r.sla_pct)));
+  const efecRows=rows.filter(r=>r.efectividad_pct!=null&&r.efectividad_pct!==''&&!isNaN(parseFloat(r.efectividad_pct)));
+  const hasSla=slaRows.length>0, hasEfec=efecRows.length>0;
+
+  const lastSla=hasSla?Number(slaRows[slaRows.length-1].sla_pct):null;
+  const lastEfec=hasEfec?Number(efecRows[efecRows.length-1].efectividad_pct):null;
+  const avgSla=hasSla?slaRows.reduce((a,b)=>a+Number(b.sla_pct),0)/slaRows.length:null;
+  const avgEfec=hasEfec?efecRows.reduce((a,b)=>a+Number(b.efectividad_pct),0)/efecRows.length:null;
+  const minSla=hasSla?Math.min(...slaRows.map(r=>Number(r.sla_pct))):null;
+
+  // KPIs
+  const kpis=document.createElement('div');kpis.className='sla-kpis';
+  if(lastSla!==null) kpis.innerHTML+=`<div class="sla-k"><div class="sla-kl">SLA último mes</div><div class="sla-kv" style="color:${slaColor(lastSla)}">${lastSla.toFixed(1)}%</div><div class="sla-kt">${slaRows[slaRows.length-1].mes.charAt(0)+slaRows[slaRows.length-1].mes.slice(1).toLowerCase()} ${slaRows[slaRows.length-1].anio}</div></div>`;
+  if(avgSla!==null) kpis.innerHTML+=`<div class="sla-k"><div class="sla-kl">SLA promedio</div><div class="sla-kv" style="color:${slaColor(avgSla)}">${avgSla.toFixed(1)}%</div><div class="sla-kt">${slaRows.length} meses</div></div>`;
+  if(minSla!==null) kpis.innerHTML+=`<div class="sla-k"><div class="sla-kl">SLA mínimo</div><div class="sla-kv" style="color:${slaColor(minSla)}">${minSla.toFixed(1)}%</div><div class="sla-kt">peor mes</div></div>`;
+  if(lastEfec!==null) kpis.innerHTML+=`<div class="sla-k"><div class="sla-kl">Efectividad último mes</div><div class="sla-kv" style="color:${slaColor(lastEfec)}">${lastEfec.toFixed(1)}%</div><div class="sla-kt">${efecRows[efecRows.length-1].mes.charAt(0)+efecRows[efecRows.length-1].mes.slice(1).toLowerCase()} ${efecRows[efecRows.length-1].anio}</div></div>`;
+  if(avgEfec!==null) kpis.innerHTML+=`<div class="sla-k"><div class="sla-kl">Efectividad promedio</div><div class="sla-kv" style="color:${slaColor(avgEfec)}">${avgEfec.toFixed(1)}%</div><div class="sla-kt">${efecRows.length} meses</div></div>`;
+  pc.appendChild(kpis);
+
+  // Gráfico SLA
+  if(hasSla){
+    const lbls=slaRows.map(r=>MS[MO_IDX[r.mes]]+"'"+String(r.anio).slice(-2));
+    const vals=slaRows.map(r=>Number(r.sla_pct));
+    const cols=vals.map(v=>v>=95?'rgba(151,191,13,.85)':v>=80?'rgba(242,148,0,.85)':'rgba(192,57,43,.85)');
+    const box=document.createElement('div');box.className='chart-box';
+    box.innerHTML=`<div class="chart-box-t">📊 SLA — Cumplimiento de Nivel de Servicio</div><div class="chart-box-s">🟢 ≥95% &nbsp; 🟠 80-95% &nbsp; 🔴 &lt;80% &nbsp;&nbsp; — — línea objetivo 95%</div><div class="chwrap"><canvas id="ch-sla"></canvas></div>`;
+    pc.appendChild(box);
+    const refLine={id:'r95',afterDraw(c){const{ctx,chartArea:{left,right},scales:{y}}=c;const py=y.getPixelForValue(95);ctx.save();ctx.beginPath();ctx.strokeStyle='rgba(151,191,13,.6)';ctx.setLineDash([5,3]);ctx.lineWidth=1.5;ctx.moveTo(left,py);ctx.lineTo(right,py);ctx.stroke();ctx.restore();}};
+    requestAnimationFrame(()=>{
+      dc('ch-sla');const el=document.getElementById('ch-sla');
+      if(el) CI['ch-sla']=new Chart(el.getContext('2d'),{type:'bar',data:{labels:lbls,datasets:[{data:vals,backgroundColor:cols,borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.raw.toFixed(1)+'%'}}},scales:{x:{grid:{display:false},ticks:{font:{size:9}}},y:{min:0,max:100,ticks:{callback:v=>v+'%',stepSize:20},grid:{color:'rgba(0,0,0,.04)'}}}},plugins:[refLine]});
+    });
+  }
+
+  // Gráfico Efectividad
+  if(hasEfec){
+    const lbls=efecRows.map(r=>MS[MO_IDX[r.mes]]+"'"+String(r.anio).slice(-2));
+    const vals=efecRows.map(r=>Number(r.efectividad_pct));
+    const ptCols=vals.map(v=>v>=95?'#4D7200':v>=80?'#A06800':'#C0392B');
+    const box=document.createElement('div');box.className='chart-box';
+    box.innerHTML=`<div class="chart-box-t">📦 Efectividad Final de Entrega</div><div class="chart-box-s">Porcentaje de entregas exitosas sobre total de intentos</div><div class="chwrap"><canvas id="ch-efec"></canvas></div>`;
+    pc.appendChild(box);
+    const refLine={id:'r95e',afterDraw(c){const{ctx,chartArea:{left,right},scales:{y}}=c;const py=y.getPixelForValue(95);ctx.save();ctx.beginPath();ctx.strokeStyle='rgba(0,156,163,.5)';ctx.setLineDash([5,3]);ctx.lineWidth=1.5;ctx.moveTo(left,py);ctx.lineTo(right,py);ctx.stroke();ctx.restore();}};
+    requestAnimationFrame(()=>{
+      dc('ch-efec');const el=document.getElementById('ch-efec');
+      if(el) CI['ch-efec']=new Chart(el.getContext('2d'),{type:'line',data:{labels:lbls,datasets:[{data:vals,borderColor:T,backgroundColor:'rgba(0,156,163,.07)',pointBackgroundColor:ptCols,pointRadius:5,tension:.3,fill:true}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.raw.toFixed(1)+'%'}}},scales:{x:{grid:{display:false},ticks:{font:{size:9}}},y:{min:0,max:100,ticks:{callback:v=>v+'%',stepSize:20},grid:{color:'rgba(0,0,0,.04)'}}}},plugins:[refLine]});
+    });
+  }
+
+  // Tabla detalle mensual
+  const tbl=document.createElement('div');tbl.className='ctb';
+  tbl.innerHTML=`<h3>Detalle mensual · Fuente: Supabase · sla_efectividad</h3>
+    <table class="ct"><thead><tr><th>Mes</th><th>Año</th>${hasSla?'<th style="text-align:right">SLA</th>':''}${hasEfec?'<th style="text-align:right">Efectividad</th>':''}</tr></thead>
+    <tbody>${rows.map(r=>{
+      const s=r.sla_pct!=null&&r.sla_pct!==''?Number(r.sla_pct):null;
+      const e=r.efectividad_pct!=null&&r.efectividad_pct!==''?Number(r.efectividad_pct):null;
+      return `<tr><td>${r.mes.charAt(0)+r.mes.slice(1).toLowerCase()}</td><td>${r.anio}</td>${hasSla?`<td style="text-align:right;font-weight:600;color:${s!==null?slaColor(s):'#ccc'}">${s!==null?s.toFixed(1)+'%':'—'}</td>`:''}${hasEfec?`<td style="text-align:right;font-weight:600;color:${e!==null?slaColor(e):'#ccc'}">${e!==null?e.toFixed(1)+'%':'—'}</td>`:''}</tr>`;
+    }).join('')}</tbody></table>`;
+  pc.appendChild(tbl);
+
+  pc.appendChild(Object.assign(document.createElement('div'),{
+    className:'src-badge',
+    innerHTML:`<span>📈 Fuente: <strong>Supabase · sla_efectividad</strong> · ${rows.length} registros · Tabla: <code>sla_efectividad</code></span>`
+  }));
+}
+
+// ── PERFORMANCE BI ──
+function renderPBI(prod){
+  const cont=document.getElementById('pbi-content');
+  cont.innerHTML='';
+  const owner=OWNERS[prod]||'—';
+  const slaRows=allSlaEfec.filter(r=>(r.producto||'').trim()===prod.trim()&&r.sla_pct!=null&&r.sla_pct!=='');
+  const lastSla=slaRows.length?Number(slaRows[slaRows.length-1].sla_pct):null;
+
+  cont.innerHTML=`
+  <div class="pbi-toolbar">
+    <div class="pbi-title">
+      <span style="font-size:20px">⚡</span>
+      Performance BI · ${prod}
+    </div>
+
+  </div>
+  <div class="pbi-body">
+    <div class="pbi-card">
+      <div class="pbi-icon">📊</div>
+      <div class="pbi-card-title">Reporte Power BI · ${prod}</div>
+      <div class="pbi-card-sub">
+        El reporte completo de este producto está disponible en Power BI Online.<br>
+        Incluye análisis de margen, evolución de ventas, comparativas y drill-down por cliente.
+      </div>
+      <a href="${PBI_REPORT_URL}" target="_blank" class="pbi-open-btn">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+        Abrir reporte completo
+      </a>
+      <div class="pbi-note">Se abre en una nueva pestaña · Requiere acceso a Power BI con tu cuenta OCASA</div>
+    </div>
+    <div class="pbi-card" style="background:var(--surface);border-color:rgba(0,156,163,.15)">
+      <div style="font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:700;color:var(--black);margin-bottom:10px">📋 Resumen del producto</div>
+      <div class="pbi-meta">
+        ${lastSla!==null?`<div class="pbi-meta-item"><div class="pbi-meta-v" style="color:${slaColor(lastSla)}">${lastSla.toFixed(1)}%</div><div class="pbi-meta-l">SLA último mes</div></div>`:''}
+        <div class="pbi-meta-item"><div class="pbi-meta-v">${INDICADORES[prod]?INDICADORES[prod].reduce((a,s)=>a+s.items.length,0):0}</div><div class="pbi-meta-l">Indicadores</div></div>
+        <div class="pbi-meta-item"><div class="pbi-meta-v">${META_NUMS[prod]||'—'}</div><div class="pbi-meta-l">Nro. producto</div></div>
+        <div class="pbi-meta-item"><div class="pbi-meta-v" style="font-size:12px">${owner.split(' ')[0]}</div><div class="pbi-meta-l">Owner</div></div>
+      </div>
+    </div>
+  </div>`;
+}
+
+// ── COMPARATIVA ──
 function renderComparativa(prod){
   const pc=document.getElementById('tab-comparativa');
   const v=allVentas.filter(x=>x.producto===prod&&x.escenario==='Actual');
-  if(!v.length){pc.innerHTML='<div style="padding:20px;color:var(--gray)">Sin datos de escenario Actual.</div>';return;}
-
+  if(!v.length){pc.innerHTML='<div class="nodatabadge">Sin datos.</div>';return;}
   const byAM={};
   v.forEach(x=>{const k=x.anio+'|'+(x.mes||'').toUpperCase();byAM[k]=(byAM[k]||0)+(Number(x.venta_norm)||0);});
   const years=[...new Set(v.map(x=>x.anio))].sort();
@@ -693,107 +1276,62 @@ function renderComparativa(prod){
   const d2=years.length>1?MO.map(m=>byAM[yr2+'|'+m]||0):null;
   const t1=d1.reduce((a,b)=>a+b,0),t2=d2?d2.reduce((a,b)=>a+b,0):0;
   const vp=t1>0&&t2>0?((t2-t1)/t1*100):null;
-
   const cards=document.createElement('div');cards.className='comp-row';
-  cards.innerHTML=`
-    <div class="comp-card"><h4>${yr1} — Total</h4>
-      <div style="font-family:'Barlow Condensed',sans-serif;font-size:26px;font-weight:700;color:${colorAnio(yr1)}">${fmtARS(t1)}</div></div>
-    ${d2?`<div class="comp-card"><h4>${yr2} — Total</h4>
-      <div style="font-family:'Barlow Condensed',sans-serif;font-size:26px;font-weight:700;color:${colorAnio(yr2)}">${fmtARS(t2)}</div>
-      ${vp!=null?`<div style="font-size:11px;margin-top:4px">vs ${yr1}: <strong style="color:${vp>=0?'#4D7200':'#A06800'}">${vp>=0?'+':''}${vp.toFixed(1)}%</strong></div>`:''}
-    </div>`:''}`;
+  cards.innerHTML=`<div class="comp-card"><h4>${yr1} — Total</h4><div style="font-family:'Barlow Condensed',sans-serif;font-size:26px;font-weight:700;color:${colorAnio(yr1)}">${fmtARS(t1)}</div></div>
+    ${d2?`<div class="comp-card"><h4>${yr2} — Total</h4><div style="font-family:'Barlow Condensed',sans-serif;font-size:26px;font-weight:700;color:${colorAnio(yr2)}">${fmtARS(t2)}</div>${vp!=null?`<div style="font-size:11px;margin-top:4px">vs ${yr1}: <strong style="color:${vp>=0?'#4D7200':'#A06800'}">${vp>=0?'+':''}${vp.toFixed(1)}%</strong></div>`:''}</div>`:''} `;
   pc.appendChild(cards);
-
-  const cg=document.createElement('div');cg.className='comp-card';
+  const cg=document.createElement('div');
   cg.style.cssText='background:#fff;border:1px solid rgba(0,0,0,.07);border-radius:10px;padding:14px;';
-  cg.innerHTML=`<h4>Facturación mensual — ${yr1}${d2?' vs '+yr2:''}</h4>
-    <div class="comp-sub">Venta normalizada (ARS M)</div>
-    <div style="position:relative;height:210px"><canvas id="cc-comp"></canvas></div>`;
+  cg.innerHTML=`<div style="font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;margin-bottom:3px">Facturación mensual${d2?' — '+yr1+' vs '+yr2:''}</div><div style="font-size:10px;color:var(--gray);margin-bottom:8px">ARS M</div><div style="position:relative;height:200px"><canvas id="cc-comp"></canvas></div>`;
   pc.appendChild(cg);
-
-  const smo=MO.map(m=>m.substring(0,3));
   const ds=[{label:String(yr1),data:d1.map(x=>+(x/1e6).toFixed(1)),backgroundColor:'rgba(242,148,0,.75)',borderRadius:4}];
   if(d2) ds.push({label:String(yr2),data:d2.map(x=>+(x/1e6).toFixed(1)),backgroundColor:'rgba(151,191,13,.75)',borderRadius:4});
-  requestAnimationFrame(()=>{
-    mkChart('cc-comp','bar',smo,ds,{leg:true,yf:x=>'$'+x+'M',ex:{plugins:{legend:{display:true,position:'top',labels:{font:{size:11},boxWidth:12}}}}});
-  });
+  requestAnimationFrame(()=>mkChart('cc-comp','bar',MO.map(m=>m.slice(0,3)),ds,{leg:true,yf:x=>'$'+x+'M',ex:{plugins:{legend:{display:true,position:'top',labels:{font:{size:11},boxWidth:12}}}}}));
 }
 
-// ── RANKING TAB ──
+// ── RANKING ──
 function renderRanking(prod){
   const pc=document.getElementById('tab-ranking');
   const v=allVentas.filter(x=>x.producto===prod&&x.escenario==='Actual');
-  if(!v.length){pc.innerHTML='<div style="padding:20px;color:var(--gray)">Sin datos.</div>';return;}
-
+  if(!v.length){pc.innerHTML='<div class="nodatabadge">Sin datos.</div>';return;}
   const years=[...new Set(v.map(x=>x.anio))].sort();
-  const yr1=years[0],yr2=years[years.length-1];
-  // Meses disponibles en yr2
-  const mesesYr2=[...new Set(v.filter(x=>x.anio===yr2).map(x=>x.mes?.toUpperCase()).filter(Boolean))];
-
+  const yr2=years[years.length-1];
   const byC2={};
   v.filter(x=>x.anio===yr2).forEach(x=>{if(!x.cliente)return;byC2[x.cliente]=(byC2[x.cliente]||0)+(Number(x.venta_norm)||0);});
-
   const sorted=Object.entries(byC2).sort((a,b)=>b[1]-a[1]).filter(([,x])=>x>0);
-  if(!sorted.length){pc.innerHTML='<div style="padding:20px;color:var(--gray)">Sin datos para '+yr2+'.</div>';return;}
-
+  if(!sorted.length){pc.innerHTML='<div class="nodatabadge">Sin datos para '+yr2+'.</div>';return;}
   const top20=sorted.slice(0,20),maxF=top20[0][1];
   const totalF=sorted.reduce((a,b)=>a+b[1],0);
   const top3p=top20.slice(0,3).reduce((a,b)=>a+b[1],0)/totalF*100;
-
   const rsm=document.createElement('div');rsm.className='comp-row';
-  rsm.innerHTML=`
-    <div class="comp-card"><h4>Concentración Top 3</h4>
-      <div style="font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:700;color:${T}">${top3p.toFixed(1)}%</div>
-      <div style="font-size:10px;color:var(--gray);margin-top:3px">del total de facturación</div></div>
-    <div class="comp-card"><h4>Clientes activos ${yr2}</h4>
-      <div style="font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:700;color:var(--black)">${sorted.length}</div>
-      <div style="font-size:10px;color:var(--gray);margin-top:3px">con facturación > $0</div></div>`;
+  rsm.innerHTML=`<div class="comp-card"><h4>Concentración Top 3</h4><div style="font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:700;color:${T}">${top3p.toFixed(1)}%</div><div style="font-size:10px;color:var(--gray);margin-top:2px">del total</div></div>
+    <div class="comp-card"><h4>Clientes activos ${yr2}</h4><div style="font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:700">${sorted.length}</div><div style="font-size:10px;color:var(--gray);margin-top:2px">con facturación &gt; $0</div></div>`;
   pc.appendChild(rsm);
-
   const rb=document.createElement('div');rb.className='rank-box';
   rb.innerHTML=`<h4>Top 20 Clientes · ${yr2}</h4><div class="rank-sub">Facturación acumulada</div>`;
   top20.forEach(([name,fac],i)=>{
-    const pct=(fac/maxF*100).toFixed(0);
     const row=document.createElement('div');row.className='rank-item';
-    row.innerHTML=`<span class="rank-pos">${i+1}</span>
-      <span class="rank-name" title="${name}">${name}</span>
-      <div class="rank-bar-wrap"><div class="rank-bar" style="width:${pct}%"></div></div>
+    row.innerHTML=`<span class="rank-pos">${i+1}</span><span class="rank-name" title="${name}">${name}</span>
+      <div class="rank-bar-wrap"><div class="rank-bar" style="width:${(fac/maxF*100).toFixed(0)}%"></div></div>
       <span class="rank-val">${fmtARS(fac)}</span>`;
     rb.appendChild(row);
   });
   pc.appendChild(rb);
-
-  // Dona
-  const top5=top20.slice(0,5);
-  const resto=sorted.slice(5).reduce((a,b)=>a+b[1],0);
+  const top5=top20.slice(0,5),resto=sorted.slice(5).reduce((a,b)=>a+b[1],0);
   const pie=document.createElement('div');pie.className='comp-card';
   pie.innerHTML=`<h4>Distribución top 5 + resto</h4><div style="position:relative;height:200px"><canvas id="cc-pie"></canvas></div>`;
   pc.appendChild(pie);
-  requestAnimationFrame(()=>{
-    mkChart('cc-pie','doughnut',
-      [...top5.map(([n])=>n.length>22?n.substring(0,22)+'…':n),'Resto'],
-      [{data:[...top5.map(([,x])=>+(x/1e6).toFixed(1)),+(resto/1e6).toFixed(1)],
-        backgroundColor:['#009CA3','#1DB4C2','#97BF0D','#F29400','#231F20','#B1B1B1'],borderWidth:2,borderColor:'#fff'}],
-      {ex:{plugins:{legend:{display:true,position:'right',labels:{font:{size:10},boxWidth:10}},
-        tooltip:{callbacks:{label:c=>' '+c.label+': $'+c.raw+'M'}}}}}
-    );
-  });
+  requestAnimationFrame(()=>mkChart('cc-pie','doughnut',[...top5.map(([n])=>n.length>22?n.substring(0,22)+'…':n),'Resto'],[{data:[...top5.map(([,x])=>+(x/1e6).toFixed(1)),+(resto/1e6).toFixed(1)],backgroundColor:['#009CA3','#1DB4C2','#97BF0D','#F29400','#231F20','#B1B1B1'],borderWidth:2,borderColor:'#fff'}],{ex:{plugins:{legend:{display:true,position:'right',labels:{font:{size:10},boxWidth:10}},tooltip:{callbacks:{label:c=>' '+c.label+': $'+c.raw+'M'}}}}}));
 }
 
 // ── UTILS ──
-function setTs(){
-  document.getElementById('tsv').textContent=new Date().toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
-}
+function setTs(){document.getElementById('tsv').textContent=new Date().toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit',second:'2-digit'});}
 function reloadAll(){
-  // Reinicia cliente al actualizar manualmente
-  // NO reiniciar si es solo cambio de escenario/mes
   const ic=document.getElementById('refIco');
   ic.style.transition='transform .6s';ic.style.transform='rotate(360deg)';
   setTimeout(()=>{ic.style.transition='';ic.style.transform='';},650);
   loadAll();
 }
-
-// ── INIT ──
 loadAll();
 </script>
 </body>
