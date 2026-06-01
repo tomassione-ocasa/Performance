@@ -1252,7 +1252,7 @@ function renderIndicadores(prod){
       {n:'Bajas (Churn qty)',f:'Clientes del mes anterior sin actividad en mes actual',src:'Supabase · ventas',val:bajas,fmt:'num',nota:mesLbl},
       {n:'ARPU',f:'Facturación / Clientes activos del período',src:'Supabase · ventas',val:arpu>0?arpu:null,fmt:'ars',nota:mesLbl},
       {n:'Margen Bruto',f:'Facturación − Costo operativo directo',src:'ERP / Contable',val:null,fmt:'ars',nota:null},
-      {n:'Costo unitario',f:'Costo total / Volumen (envíos u operaciones)',src:'ERP / Contable',val:null,fmt:'ars',nota:null},
+      {n:'Costo por envío',f:'Costo total / Cartas emitidas en el período',src:'ERP / Contable',val:null,fmt:'ars',nota:null},
     ];
     const slaItems=[
       {n:'SLA',f:'Entregas / operaciones en plazo sobre total × 100',src:'Supabase · sla_efectividad',val:slaVal,fmt:'pct',nota:slaLbl},
@@ -1262,7 +1262,7 @@ function renderIndicadores(prod){
     ];
     const cliItems=[
       {n:'NPS',f:'% Promotores − % Detractores (encuesta)',src:'Encuesta NPS',val:null,fmt:'num',nota:null},
-      {n:'Tickets / 100 envíos',f:'Total tickets del período / Volumen × 100',src:'CRM / Helpdesk',val:null,fmt:'num',nota:null},
+      {n:'Tickets / 100 cartas',f:'Total tickets del período / Cartas emitidas × 100',src:'CRM / Helpdesk',val:null,fmt:'num',nota:null},
       {n:'Tiempo resolución',f:'Promedio días desde apertura hasta cierre de ticket',src:'CRM / Helpdesk',val:null,fmt:'num',nota:null},
       {n:'Penalidades',f:'Monto total de penalidades aplicadas en el período',src:'Sistema contable',val:null,fmt:'ars',nota:null},
     ];
@@ -1278,11 +1278,15 @@ function renderIndicadores(prod){
           {n:'Tasa error operativo',f:'Cartas con problema de impresión / total cartas × 100',src:'Sistema operativo',val:null,fmt:'pct',nota:null},
           {n:'Tiempo imposición (AWP→HFD)',f:'Promedio horas desde ingreso AWP hasta pase a HFD',src:'Sistema AWP/HFD',val:null,fmt:'num',nota:null},
           {n:'Tiempo digitalización acuses',f:'Promedio horas entre entrega y digitalización de acuse (addoc)',src:'Sistema addoc',val:null,fmt:'num',nota:null},
-          ...slaItems,
+          {n:'Efectividad 1ra vuelta',f:'Cartas entregadas en 1ra visita / Total cartas × 100',src:'Sistema operativo',val:null,fmt:'pct',nota:null},
+          {n:'Efectividad general',f:'Total entregas exitosas (todas las vueltas) / Total cartas × 100',src:'Supabase · sla_efectividad',val:efeVal,fmt:'pct',nota:efeLbl},
+          {n:'SLA',f:'Cartas entregadas en plazo contractual / Total × 100',src:'Supabase · sla_efectividad',val:slaVal,fmt:'pct',nota:slaLbl},
+          {n:'Causas de no entregado',f:'Distribución % de motivos de fallo',src:'Sistema operativo',val:null,fmt:'pct',nota:null},
         ]},
         {cat:'Experiencia del Cliente',color:'#009CA3',items:[
           ...cliItems,
           {n:'Tickets por cliente',f:'Distribución de tickets agrupados por cliente',src:'CRM / Helpdesk',val:null,fmt:'num',nota:null},
+          {n:'Principales motivos de tickets',f:'Top motivos de consulta/reclamo por frecuencia (Pareto)',src:'CRM / Helpdesk',val:null,fmt:'num',nota:null},
         ]},
       ],
       'Paqueteria E-Commerce B2C':[
@@ -1381,8 +1385,12 @@ function renderIndicadores(prod){
           {n:'Tasa de rechazo total',f:'Total rechazos / Total entregas × 100',src:'Sistema operativo',val:null,fmt:'pct',nota:null},
           {n:'Penalidades por rechazos',f:'Monto total de penalidades asociadas a rechazos',src:'Sistema contable',val:null,fmt:'ars',nota:null},
           {n:'Motivos de rechazo',f:'Distribución % por categoría de motivo',src:'Sistema operativo',val:null,fmt:'pct',nota:null},
-          {n:'Operación real vs diseño',f:'Desvíos por omisión, mala práctica o desconocimiento',src:'Operaciones',val:null,fmt:'pct',nota:null},
-          {n:'Costo operativo vs Facturación',f:'Costo total / Facturación del período × 100',src:'ERP / Contable',val:null,fmt:'pct',nota:null},
+          {n:'Operación real vs diseño',f:'Desvíos por omisión de diseño, mala práctica o desconocimiento',src:'Operaciones',val:null,fmt:'pct',nota:null},
+          {n:'Diseño de distribución',f:'Análisis de Semis y Chasis: capacidad, ocupación y desvíos vs diseño',src:'Operaciones',val:null,fmt:'pct',nota:null},
+          {n:'Recursos: m2 y personas',f:'Superficie utilizada vs disponible y dotación real vs planificada',src:'Operaciones',val:null,fmt:'num',nota:null},
+          {n:'Insumos clave: Embalaje',f:'Consumo y disponibilidad de insumos de embalaje vs planificado',src:'Operaciones',val:null,fmt:'num',nota:null},
+          {n:'Costo operativo vs Facturación',f:'Costo total operativo / Facturación del período × 100',src:'ERP / Contable',val:null,fmt:'pct',nota:null},
+          {n:'Clientes clave',f:'Performance específica por cliente: Molinos, Mercedes, Renault',src:'Sistema operativo',val:null,fmt:'num',nota:null},
         ]},
       ],
     };
