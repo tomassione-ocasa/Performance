@@ -426,15 +426,7 @@ main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
     </div>
     <div class="sdiv"></div>
     <div class="ssec">Productos</div>
-    <div class="ni" data-id="Cross Docking" onclick="go('Cross Docking',this)"><div class="nico">📦</div><div class="nt"><div class="nn">Cross Docking</div><div class="nu"><span class="pill pcd">Cross Dock</span></div></div></div>
-    <div class="ni" data-id="Paqueteria E-Commerce B2C" onclick="go('Paqueteria E-Commerce B2C',this)"><div class="nico">🛍️</div><div class="nt"><div class="nn">Paquetería E-Commerce B2C</div><div class="nu"><span class="pill pum">Última Milla</span></div></div></div>
-    <div class="ni" data-id="Warehousing" onclick="go('Warehousing',this)"><div class="nico">🏭</div><div class="nt"><div class="nn">Warehousing</div><div class="nu"><span class="pill psc">Supply Chain</span></div></div></div>
-    <div class="ni" data-id="Distribución de Tarjetas Valoradas" onclick="go('Distribución de Tarjetas Valoradas',this)"><div class="nico">💳</div><div class="nt"><div class="nn">Tarjetas Valorizadas</div><div class="nu"><span class="pill pum">Última Milla</span></div></div></div>
-    <div class="ni" data-id="Postal" onclick="go('Postal',this)"><div class="nico">✉️</div><div class="nt"><div class="nn">Postal</div><div class="nu"><span class="pill pum">Última Milla</span></div></div></div>
-    <div class="ni" data-id="Salud Warehousing" onclick="go('Salud Warehousing',this)"><div class="nico">🏥</div><div class="nt"><div class="nn">Salud Warehousing</div><div class="nu"><span class="pill psc">Supply Chain</span></div></div></div>
-    <div class="ni" data-id="Salud Distribucion" onclick="go('Salud Distribucion',this)"><div class="nico">💊</div><div class="nt"><div class="nn">Salud Distribución</div><div class="nu"><span class="pill psc">Supply Chain</span></div></div></div>
-    <div class="ni" data-id="Carta Documento Digital" onclick="go('Carta Documento Digital',this)"><div class="nico">📄</div><div class="nt"><div class="nn">Carta Documento Digital</div><div class="nu"><span class="pill pum">Última Milla</span></div></div><span class="nb nbw">NUEVO</span></div>
-    <div class="sdiv"></div>
+    <div id="sb-products"></div>
     <div style="padding:8px 18px 16px;font-size:10.5px;color:#666;line-height:1.9;">
       🔗 Ventas: Supabase<br>
       📈 SLA/Efec: Supabase<br>
@@ -730,17 +722,23 @@ const DESCS={
   'Salud Warehousing':'Almacenamiento especializado para logística sanitaria.',
   'Salud Distribucion':'Transporte y distribución de medicamentos.',
   'Carta Documento Digital':'Cartas documento digitales emitidas y distribuidas físicamente.',
+  'Entrega en Punto Pickit':'Entrega en puntos Pick It para paquetería B2C (Adidas).',
+  'Paqueteria E-Commerce B2C':'Distribución B2C con colecta propia y plataforma digital.',
+  'Distribucion Consumo Masivo y Palletizado':'Distribución a comercios y cadenas. Clientes: Molinos, Mercedes, Renault.',
 };
 const OWNERS={
   'Cross Docking':'Matias Bosch','Paqueteria E-Commerce B2C':'Victoria Duque',
   'Warehousing':'Victoria Duque','Distribución de Tarjetas Valoradas':'Victoria Duque',
   'Postal':'Victoria Duque','Salud Warehousing':'German Gallarini',
   'Salud Distribucion':'German Gallarini','Carta Documento Digital':'Victoria Duque',
+  'Entrega en Punto Pickit':'Victoria Duque','Paqueteria E-Commerce B2C':'Victoria Duque',
+  'Distribucion Consumo Masivo y Palletizado':'German Gallarini',
 };
-const META_NUMS={
+let META_NUMS={
   'Cross Docking':'01','Paqueteria E-Commerce B2C':'02','Warehousing':'03',
   'Distribución de Tarjetas Valoradas':'04','Postal':'05','Salud Warehousing':'06',
   'Salud Distribucion':'07','Carta Documento Digital':'09',
+  'Entrega en Punto Pickit':'10','Distribucion Consumo Masivo y Palletizado':'12',
 };
 
 // ── STATE ──
@@ -808,6 +806,82 @@ async function sbFetch(table,select,filters=''){
   return rows;
 }
 
+
+// ── BUILD SIDEBAR DINÁMICO DESDE material_producto ──
+function buildSidebar(mats){
+  const EXCLUIR=['Otros'];
+  const UN_PILL={'Ultima Milla':'pum','Supply Chain':'psc','Cross Dock':'pcd',
+    'Cross Border Transactions':'pcd','Global Forwarding':'pcd','Otros':'pum'};
+  const UN_LABEL={'Ultima Milla':'Última Milla','Supply Chain':'Supply Chain',
+    'Cross Dock':'Cross Dock','Cross Border Transactions':'Cross Border',
+    'Global Forwarding':'Global Forwarding','Otros':'Otros'};
+  const ICONOS={
+    'Cross Docking':'📦','Paqueteria E-Commerce B2C':'🛍️','Warehousing':'🏭',
+    'Distribución de Tarjetas Valoradas':'💳','Postal':'✉️',
+    'Salud Warehousing':'🏥','Salud Distribucion':'💊',
+    'Carta Documento Digital':'📄','Entrega en Punto Pickit':'📍',
+    'Distribucion Consumo Masivo y Palletizado':'🏗️','Fulfillment':'📫',
+    'Courier':'🚚','Check Mail':'📬','Mail Room':'🗂️',
+    'Colecta en Punto Drop Off':'📥','Distribucion de Biggers':'📦',
+    'Distribucion de Bolsines':'📮','Paqueteria y Mobiliario Corporativo':'🪑',
+    'Servicio Electoral':'🗳️','Servicio de Destruccion':'🔒',
+    'Transporte Aereo':'✈️','Transporte Marítimo':'🚢',
+    'Transporte Terrestre':'🚛','Transporte en Vehiculo Exclusivo':'🚐',
+  };
+
+  // Agrupar por unidad de negocio, excluir 'Otros'
+  const grupos={};
+  mats.filter(m=>!EXCLUIR.includes(m.producto)).forEach(m=>{
+    const un=m.unidad_negocio||'Otros';
+    if(!grupos[un]) grupos[un]=[];
+    if(!grupos[un].find(x=>x.producto===m.producto)){
+      grupos[un].push(m);
+    }
+  });
+
+  const cont=document.getElementById('sb-products');
+  cont.innerHTML='';
+
+  // Orden de UNs
+  const UN_ORDER=['Ultima Milla','Supply Chain','Cross Dock',
+    'Cross Border Transactions','Global Forwarding','Otros'];
+
+  // Agrupar por producto y tomar la unidad_negocio más frecuente
+  const prodMap={};
+  mats.filter(m=>m.producto&&m.producto!=='Otros').forEach(m=>{
+    if(!prodMap[m.producto]) prodMap[m.producto]={counts:{},first:m};
+    const un=m.unidad_negocio||'Otros';
+    prodMap[m.producto].counts[un]=(prodMap[m.producto].counts[un]||0)+1;
+  });
+  const unicos=Object.entries(prodMap).map(([prod,info])=>{
+    // tomar la unidad_negocio con más cod_material asignados
+    const unModa=Object.entries(info.counts).sort((a,b)=>b[1]-a[1])[0][0];
+    return {...info.first,producto:prod,unidad_negocio:unModa};
+  });
+  unicos.sort((a,b)=>{
+    const uA=a.unidad_negocio||'';const uB=b.unidad_negocio||'';
+    return uA!==uB?uA.localeCompare(uB,'es'):a.producto.localeCompare(b.producto,'es');
+  });
+
+  unicos.forEach(m=>{
+    const un=m.unidad_negocio||'';
+    const div=document.createElement('div');
+    div.className='ni';
+    div.setAttribute('data-id',m.producto);
+    div.onclick=function(){go(m.producto,this);};
+    const pill=UN_PILL[un]||'pum';
+    const ico=ICONOS[m.producto]||'📋';
+    const unLbl=UN_LABEL[un]||un||'Otros';
+    div.innerHTML=
+      '<div class="nico">'+ico+'</div>'+
+      '<div class="nt">'+
+        '<div class="nn">'+m.producto+'</div>'+
+        '<div class="nu"><span class="pill '+pill+'">'+unLbl+'</span></div>'+
+      '</div>';
+    cont.appendChild(div);
+  });
+}
+
 // ── LOAD ALL ──
 async function loadAll(){
   const gl=document.getElementById('gload');
@@ -829,7 +903,7 @@ async function loadAll(){
     const ventas=await sbFetch('ventas','anio,mes,cliente,unidad_negocio,cod_material,cantidad,venta_norm,escenario',vf);
 
     gt.textContent='Descargando materiales…';
-    const mats=await sbFetch('material_producto','cod_material,producto,owner','');
+    const mats=await sbFetch('material_producto','cod_material,producto,owner,unidad_negocio','');
 
     gt.textContent='Descargando SLA & Efectividad…';
     let slaData=[];
@@ -851,7 +925,8 @@ async function loadAll(){
     }
 
     const matMap={};
-    mats.forEach(m=>{matMap[m.cod_material]={producto:m.producto,owner:m.owner};});
+    mats.forEach(m=>{matMap[m.cod_material]={producto:m.producto,owner:m.owner,unidad_negocio:m.unidad_negocio};});
+    buildSidebar(mats);
     ventas.forEach(v=>{
       const m=matMap[v.cod_material]||{};
       v.producto=m.producto||'Otros';
@@ -1228,6 +1303,86 @@ function renderIndicadores(prod){
         {cat:'Experiencia del Cliente',color:'#1ABC9C',items:[
           ...cliItems,
           {n:'Tasa de retiro efectivo',f:'Paquetes retirados / total disponibles en punto × 100',src:'Sistema Pick It',val:null,fmt:'pct',nota:null},
+        ]},
+      ],
+      'Entrega en Punto Pickit':[
+        {cat:'Performance del Negocio',color:'#97BF0D',items:[
+          {n:'Facturación',f:'Suma venta normalizada (escenario Actual)',src:'Supabase · ventas',val:facUlt,fmt:'ars',nota:mesLbl},
+          {n:'Volumen',f:'Suma unidades del período',src:'Supabase · ventas',val:volUlt,fmt:'num',nota:mesLbl},
+          {n:'Clientes activos',f:'Clientes distintos con venta > 0',src:'Supabase · ventas',val:clisUlt.size,fmt:'num',nota:mesLbl},
+        ]},
+        {cat:'Entrega en el Punto',color:'#009CA3',items:[
+          {n:'Efectividad',f:'Entregas exitosas en punto / Total envíos a punto × 100',src:'Supabase · sla_efectividad',val:efeVal,fmt:'pct',nota:efeLbl},
+          {n:'SLA',f:'Envíos entregados en plazo / Total × 100',src:'Supabase · sla_efectividad',val:slaVal,fmt:'pct',nota:slaLbl},
+          {n:'Motivo de no entregado en punto Pick It',f:'Distribución % de causas de fallo',src:'Sistema Pick It',val:null,fmt:'pct',nota:null},
+        ]},
+        {cat:'Performance del Punto',color:'#C0392B',items:[
+          {n:'Tasa paquetes vencidos',f:'Paquetes > plazo máximo sin retiro / total en punto × 100',src:'Sistema Pick It',val:null,fmt:'pct',nota:null},
+          {n:'Incidentes en punto',f:'Cantidad de incidentes reportados en puntos',src:'Sistema Pick It',val:null,fmt:'num',nota:null},
+          {n:'Equipos sin actualización de red',f:'% equipos que no están en la red activa de Pick It',src:'Sistema Pick It',val:null,fmt:'pct',nota:null},
+        ]},
+        {cat:'Experiencia del Buyer',color:'#1ABC9C',items:[
+          {n:'Tasa de retiro efectivo',f:'Paquetes retirados / total disponibles en punto × 100',src:'Sistema Pick It',val:null,fmt:'pct',nota:null},
+          {n:'Tickets / 100 envíos',f:'Total tickets / Total envíos × 100',src:'CRM / Helpdesk',val:null,fmt:'num',nota:null},
+          {n:'Tiempo resolución tickets',f:'Promedio días apertura → cierre',src:'CRM / Helpdesk',val:null,fmt:'num',nota:null},
+        ]},
+      ],
+      'Paqueteria E-Commerce B2C':[
+        {cat:'Performance del Negocio',color:'#97BF0D',items:[
+          {n:'Facturación',f:'Suma venta normalizada (escenario Actual)',src:'Supabase · ventas',val:facUlt,fmt:'ars',nota:mesLbl},
+          {n:'Volumen',f:'Suma envíos del período',src:'Supabase · ventas',val:volUlt,fmt:'num',nota:mesLbl},
+          {n:'Margen Bruto',f:'Facturación − Costo directo',src:'ERP / Contable',val:null,fmt:'ars',nota:null},
+          {n:'Costo por envío',f:'Costo total / Total envíos',src:'ERP / Contable',val:null,fmt:'ars',nota:null},
+        ]},
+        {cat:'Clientes',color:'#2ECC71',items:[
+          {n:'Clientes activos',f:'Clientes con al menos un pedido en el período',src:'Supabase · ventas',val:clisUlt.size,fmt:'num',nota:mesLbl},
+          {n:'Nuevos clientes',f:'Altas de nuevos clientes en el período',src:'Supabase · ventas',val:nuevos,fmt:'num',nota:mesLbl},
+        ]},
+        {cat:'Plataforma',color:'#6B3FA0',items:[
+          {n:'Uptime plataforma',f:'Minutos disponibles / minutos totales × 100',src:'Monitoreo plataforma',val:null,fmt:'pct',nota:null},
+          {n:'Tasa errores al cargar envíos',f:'Cargas fallidas / total intentos × 100',src:'Logs plataforma',val:null,fmt:'pct',nota:null},
+        ]},
+        {cat:'Colecta',color:'#E67E22',items:[
+          {n:'Tasa colectas fallidas',f:'Colectas sin retiro / total colectas × 100',src:'Sistema operativo',val:null,fmt:'pct',nota:null},
+          {n:'Tiempo solicitud → colecta',f:'Promedio horas entre solicitud y ejecución',src:'Sistema operativo',val:null,fmt:'num',nota:null},
+        ]},
+        {cat:'Última Milla',color:'#009CA3',items:[
+          {n:'SLA',f:'Envíos en plazo / Total × 100',src:'Supabase · sla_efectividad',val:slaVal,fmt:'pct',nota:slaLbl},
+          {n:'Efectividad',f:'Entregas exitosas / Total × 100',src:'Supabase · sla_efectividad',val:efeVal,fmt:'pct',nota:efeLbl},
+          {n:'Causas de no entrega',f:'Distribución % de motivos de fallo',src:'Sistema operativo',val:null,fmt:'pct',nota:null},
+        ]},
+        {cat:'Experiencia del Cliente',color:'#1ABC9C',items:[
+          {n:'NPS',f:'% Promotores − % Detractores',src:'Encuesta NPS',val:null,fmt:'num',nota:null},
+          {n:'Tickets / 100 envíos',f:'Total tickets / Total envíos × 100',src:'CRM / Helpdesk',val:null,fmt:'num',nota:null},
+          {n:'Tiempo resolución tickets',f:'Promedio días apertura → cierre',src:'CRM / Helpdesk',val:null,fmt:'num',nota:null},
+        ]},
+      ],
+      'Distribucion Consumo Masivo y Palletizado':[
+        {cat:'Performance del Negocio',color:'#97BF0D',items:[
+          {n:'Facturación',f:'Suma venta normalizada (escenario Actual)',src:'Supabase · ventas',val:facUlt,fmt:'ars',nota:mesLbl},
+          {n:'Volumen',f:'Suma envíos del período',src:'Supabase · ventas',val:volUlt,fmt:'num',nota:mesLbl},
+          {n:'Margen Bruto',f:'Facturación − Costo operativo directo',src:'ERP / Contable',val:null,fmt:'ars',nota:null},
+          {n:'Costo por envío',f:'Costo total / Total envíos',src:'ERP / Contable',val:null,fmt:'ars',nota:null},
+          {n:'Clientes activos',f:'Clientes distintos con venta > 0',src:'Supabase · ventas',val:clisUlt.size,fmt:'num',nota:mesLbl},
+          {n:'Nuevos clientes',f:'Clientes sin actividad en mes anterior',src:'Supabase · ventas',val:nuevos,fmt:'num',nota:mesLbl},
+        ]},
+        {cat:'Colecta',color:'#E67E22',items:[
+          {n:'SLA colecta',f:'Colectas en plazo / total colectas × 100',src:'Sistema operativo',val:null,fmt:'pct',nota:null},
+          {n:'Tasa rechazo de colecta',f:'Colectas rechazadas / total × 100',src:'Sistema operativo',val:null,fmt:'pct',nota:null},
+        ]},
+        {cat:'Cross Docking Molinos',color:'#F29400',items:[
+          {n:'SLA Molinos',f:'Operaciones Molinos en plazo / total × 100',src:'Sistema operativo',val:null,fmt:'pct',nota:null},
+        ]},
+        {cat:'Última Milla',color:'#009CA3',items:[
+          {n:'SLA',f:'Entregas en plazo / Total × 100',src:'Supabase · sla_efectividad',val:slaVal,fmt:'pct',nota:slaLbl},
+          {n:'Efectividad',f:'Entregas exitosas / Total × 100',src:'Supabase · sla_efectividad',val:efeVal,fmt:'pct',nota:efeLbl},
+        ]},
+        {cat:'Rechazos y Devoluciones',color:'#C0392B',items:[
+          {n:'Tasa de rechazo total',f:'Total rechazos / Total entregas × 100',src:'Sistema operativo',val:null,fmt:'pct',nota:null},
+          {n:'Penalidades por rechazos',f:'Monto total de penalidades asociadas a rechazos',src:'Sistema contable',val:null,fmt:'ars',nota:null},
+          {n:'Motivos de rechazo',f:'Distribución % por categoría de motivo',src:'Sistema operativo',val:null,fmt:'pct',nota:null},
+          {n:'Operación real vs diseño',f:'Desvíos por omisión, mala práctica o desconocimiento',src:'Operaciones',val:null,fmt:'pct',nota:null},
+          {n:'Costo operativo vs Facturación',f:'Costo total / Facturación del período × 100',src:'ERP / Contable',val:null,fmt:'pct',nota:null},
         ]},
       ],
     };
