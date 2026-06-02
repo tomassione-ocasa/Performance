@@ -105,7 +105,7 @@ main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
 .pcont{flex:1;overflow:hidden;position:relative;}
 .tab-panel{display:none;height:100%;overflow-y:auto;flex-direction:column;gap:12px;padding:14px 18px 20px;}
 .tab-panel.on{display:flex;}
-.tab-full{display:none;position:absolute;inset:0;}
+.tab-full{display:none;position:absolute;inset:0;overflow:hidden;}
 .tab-full.on{display:flex;flex-direction:column;}
 /* CARDS */
 .mrow{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;}
@@ -149,21 +149,21 @@ main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
 .chart-box-s{font-size:10px;color:var(--gray);margin-bottom:10px;}
 .chwrap{position:relative;height:175px;}
 /* PBI */
-.pbi-full{flex:1;display:flex;flex-direction:column;background:#fff;}
+.pbi-full{flex:1;display:flex;flex-direction:column;background:#fff;overflow:hidden;}
 .pbi-toolbar{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;border-bottom:1px solid rgba(0,156,163,.15);flex-shrink:0;background:#fff;}
 .pbi-title{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;color:var(--black);display:flex;align-items:center;gap:8px;}
 .pbi-actions{display:flex;gap:8px;}
 .pbi-btn{display:flex;align-items:center;gap:6px;border:1.5px solid var(--teal);color:var(--teal);background:#fff;font-family:'Barlow',sans-serif;font-size:11px;font-weight:700;padding:6px 14px;border-radius:6px;cursor:pointer;text-transform:uppercase;text-decoration:none;transition:background .15s;}
 .pbi-btn:hover,.pbi-btn.prim{background:var(--teal);color:#fff;}
-.pbi-body{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;padding:24px;background:var(--surface);}
-.pbi-card{background:#fff;border:1px solid rgba(0,156,163,.2);border-radius:14px;padding:32px 40px;max-width:520px;width:100%;text-align:center;box-shadow:0 4px 20px rgba(0,156,163,.1);}
-.pbi-icon{font-size:48px;margin-bottom:12px;}
-.pbi-card-title{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:700;color:var(--black);margin-bottom:6px;}
-.pbi-card-sub{font-size:12px;color:var(--gray);line-height:1.6;margin-bottom:20px;}
-.pbi-open-btn{display:inline-flex;align-items:center;gap:8px;background:var(--teal);color:#fff;font-family:'Barlow',sans-serif;font-size:13px;font-weight:700;padding:12px 28px;border-radius:8px;cursor:pointer;text-decoration:none;border:none;text-transform:uppercase;letter-spacing:.5px;transition:background .15s;}
+.pbi-body{flex:1;overflow-y:auto;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:20px 16px 28px;background:var(--surface);}
+.pbi-card{background:#fff;border:1px solid rgba(0,156,163,.2);border-radius:14px;padding:24px 28px;max-width:540px;width:100%;text-align:center;box-shadow:0 2px 12px rgba(0,156,163,.08);}
+.pbi-icon{font-size:40px;margin-bottom:10px;}
+.pbi-card-title{font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:700;color:var(--black);margin-bottom:6px;}
+.pbi-card-sub{font-size:12px;color:var(--gray);line-height:1.7;margin-bottom:18px;text-align:left;}
+.pbi-open-btn{display:inline-flex;align-items:center;gap:8px;background:var(--teal);color:#fff;font-family:'Barlow',sans-serif;font-size:13px;font-weight:700;padding:11px 24px;border-radius:8px;cursor:pointer;text-decoration:none;border:none;text-transform:uppercase;letter-spacing:.5px;transition:background .15s;}
 .pbi-open-btn:hover{background:#007980;}
-.pbi-note{font-size:10px;color:var(--gray);margin-top:12px;}
-.pbi-meta{display:flex;gap:16px;justify-content:center;margin-top:18px;flex-wrap:wrap;}
+.pbi-note{font-size:10px;color:var(--gray);margin-top:10px;}
+.pbi-meta{display:flex;gap:16px;justify-content:center;margin-top:16px;flex-wrap:wrap;}
 .pbi-meta-item{text-align:center;}
 .pbi-meta-v{font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:700;color:var(--teal);}
 .pbi-meta-l{font-size:9px;color:var(--gray);text-transform:uppercase;letter-spacing:.5px;}
@@ -455,7 +455,8 @@ main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
         <div class="tab-btn"     data-tab="slaefec"     onclick="switchTab('slaefec',this)">📈 SLA & Efectividad</div>
         <div class="tab-btn"     data-tab="comparativa" onclick="switchTab('comparativa',this)">📆 Comparativa</div>
         <div class="tab-btn"     data-tab="ranking"     onclick="switchTab('ranking',this)">🏆 Ranking</div>
-        <div class="tab-btn"     data-tab="pbi"         onclick="switchTab('pbi',this)">⚡ Performance BI</div>
+        <div class="tab-btn"     data-tab="pbi"         onclick="switchTab('pbi',this)">💰 Margen Bruto BI</div>
+        <div class="tab-btn" data-tab="cxbi" onclick="switchTab('cxbi',this)">🎯 Experiencia del Cliente BI</div>
       </div>
       <div class="ts">Última actualización: <span id="tsv">—</span></div>
       <div class="pcont">
@@ -465,6 +466,7 @@ main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
         <div class="tab-panel"    id="tab-comparativa"></div>
         <div class="tab-panel"    id="tab-ranking"></div>
         <div class="tab-full"     id="tab-pbi"><div class="pbi-full" id="pbi-content"></div></div>
+        <div class="tab-full"     id="tab-cxbi"><div class="pbi-full" id="cxbi-content"></div></div>
       </div>
     </div>
   </main>
@@ -528,6 +530,7 @@ initMobNav();
 const SB_URL='https://rdfdefkhsbjpaukesnto.supabase.co';
 const SB_KEY='sb_publishable_qNz5DKgtDfFTzj-EIsy8Cw_S8mamGPk';
 const PBI_REPORT_URL='https://app.powerbi.com/groups/me/reports/da5805a4-e56d-4d6c-af82-56d55ce65d82/d050495042d3d060d741?ctid=91a5b5c8-673e-4a80-871c-5ed3412dd451&experience=power-bi';
+const PBI_MARGEN_URL='https://app.powerbi.com/reportEmbed?reportId=14350c8e-8242-4d38-91b6-738e082417de&autoAuth=true&ctid=91a5b5c8-673e-4a80-871c-5ed3412dd451';
 const MO=['ENERO','FEBRERO','MARZO','ABRIL','MAYO','JUNIO','JULIO','AGOSTO','SEPTIEMBRE','OCTUBRE','NOVIEMBRE','DICIEMBRE'];
 const MS=['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
 const ML={ENERO:'Enero',FEBRERO:'Febrero',MARZO:'Marzo',ABRIL:'Abril',MAYO:'Mayo',JUNIO:'Junio',JULIO:'Julio',AGOSTO:'Agosto',SEPTIEMBRE:'Septiembre',OCTUBRE:'Octubre',NOVIEMBRE:'Noviembre',DICIEMBRE:'Diciembre'};
@@ -565,10 +568,6 @@ const INDICADORES={
       {nombre:'Margen Bruto',formula:'Facturación − Costo directo',fuente:'Sistema contable / ERP',frec:'Mensual',resp:'Victoria Duque',est:'wip'},
       {nombre:'Costo por envío',formula:'Costo total / Total envíos del período',fuente:'Sistema contable / ERP',frec:'Mensual',resp:'Victoria Duque',est:'wip'},
       {nombre:'Nuevos clientes',formula:'Clientes con primera facturación en el mes',fuente:'Supabase · ventas',frec:'Mensual',resp:'Victoria Duque',est:'ok'},
-    ]},
-    {cat:'Plataforma',color:'#6B3FA0',items:[
-      {nombre:'Uptime plataforma',formula:'Minutos disponibles / Minutos totales del período × 100',fuente:'Monitoreo plataforma',frec:'Mensual',resp:'Victoria Duque',est:'pend'},
-      {nombre:'Tasa error de cargas',formula:'Cargas fallidas / Total cargas intentadas × 100',fuente:'Logs plataforma',frec:'Mensual',resp:'Victoria Duque',est:'pend'},
     ]},
     {cat:'Colecta',color:'#F29400',items:[
       {nombre:'Tasa colectas fallidas',formula:'Colectas donde no se retiró mercadería / Total colectas × 100',fuente:'Sistema operativo',frec:'Mensual',resp:'Victoria Duque',est:'pend'},
@@ -688,10 +687,6 @@ const INDICADORES={
       {nombre:'Margen Bruto',formula:'Facturación − Costo (impresión + distribución)',fuente:'Sistema contable / ERP',frec:'Mensual',resp:'Victoria Duque',est:'wip'},
       {nombre:'Costo por envío',formula:'Costo total / Cartas emitidas',fuente:'Sistema contable / ERP',frec:'Mensual',resp:'Victoria Duque',est:'wip'},
       {nombre:'Nuevos clientes / Bajas',formula:'Altas y bajas respecto al mes anterior',fuente:'Supabase · ventas',frec:'Mensual',resp:'Victoria Duque',est:'wip'},
-    ]},
-    {cat:'Plataforma Web',color:'#6B3FA0',items:[
-      {nombre:'Uptime plataforma',formula:'Minutos disponibles / Minutos totales × 100',fuente:'Monitoreo plataforma AWP',frec:'Mensual',resp:'Victoria Duque',est:'pend'},
-      {nombre:'Tasa de error de cargas',formula:'Cargas fallidas al subir archivos / Total intentos × 100',fuente:'Logs plataforma',frec:'Mensual',resp:'Victoria Duque',est:'pend'},
     ]},
     {cat:'Operación',color:'#F29400',items:[
       {nombre:'Tasa de error operativo',formula:'Cartas con problema de impresión / Total cartas × 100',fuente:'Sistema operativo',frec:'Mensual',resp:'Victoria Duque',est:'pend'},
@@ -1080,6 +1075,9 @@ function switchTab(tab,el){
   if(tab==='pbi'){
     document.getElementById('tab-pbi').classList.add('on');
     renderPBI(cur);
+  } else if(tab==='cxbi'){
+    document.getElementById('tab-cxbi').classList.add('on');
+    renderCXBI(cur);
   } else {
     const panel=document.getElementById('tab-'+tab);
     if(panel){ panel.classList.add('on'); }
@@ -1251,7 +1249,6 @@ function renderIndicadores(prod){
       {n:'Nuevos clientes',f:'Clientes sin actividad en mes anterior',src:'Supabase · ventas',val:nuevos,fmt:'num',nota:mesLbl},
       {n:'Bajas (Churn qty)',f:'Clientes del mes anterior sin actividad en mes actual',src:'Supabase · ventas',val:bajas,fmt:'num',nota:mesLbl},
       {n:'ARPU',f:'Facturación / Clientes activos del período',src:'Supabase · ventas',val:arpu>0?arpu:null,fmt:'ars',nota:mesLbl},
-      {n:'Margen Bruto',f:'Facturación − Costo operativo directo',src:'ERP / Contable',val:null,fmt:'ars',nota:null},
       {n:'Costo por envío',f:'Costo total / Cartas emitidas en el período',src:'ERP / Contable',val:null,fmt:'ars',nota:null},
     ];
     const slaItems=[
@@ -1262,18 +1259,12 @@ function renderIndicadores(prod){
     ];
     const cliItems=[
       {n:'NPS',f:'% Promotores − % Detractores (encuesta)',src:'Encuesta NPS',val:null,fmt:'num',nota:null},
-      {n:'Tickets / 100 cartas',f:'Total tickets del período / Cartas emitidas × 100',src:'CRM / Helpdesk',val:null,fmt:'num',nota:null},
-      {n:'Tiempo resolución',f:'Promedio días desde apertura hasta cierre de ticket',src:'CRM / Helpdesk',val:null,fmt:'num',nota:null},
       {n:'Penalidades',f:'Monto total de penalidades aplicadas en el período',src:'Sistema contable',val:null,fmt:'ars',nota:null},
     ];
 
     const specific={
       'Carta Documento Digital':[
         {cat:'Performance del Negocio',color:'#97BF0D',items:comun},
-        {cat:'Plataforma Web',color:'#6B3FA0',items:[
-          {n:'Uptime plataforma',f:'Minutos disponibles / minutos totales del período × 100',src:'Monitoreo AWP',val:null,fmt:'pct',nota:null},
-          {n:'Tasa error de cargas',f:'Cargas fallidas al subir archivos / total intentos × 100',src:'Logs plataforma',val:null,fmt:'pct',nota:null},
-        ]},
         {cat:'Operación',color:'#F29400',items:[
           {n:'Tasa error operativo',f:'Cartas con problema de impresión / total cartas × 100',src:'Sistema operativo',val:null,fmt:'pct',nota:null},
           {n:'Tiempo imposición (AWP→HFD)',f:'Promedio horas desde ingreso AWP hasta pase a HFD',src:'Sistema AWP/HFD',val:null,fmt:'num',nota:null},
@@ -1285,16 +1276,10 @@ function renderIndicadores(prod){
         ]},
         {cat:'Experiencia del Cliente',color:'#009CA3',items:[
           ...cliItems,
-          {n:'Tickets por cliente',f:'Distribución de tickets agrupados por cliente',src:'CRM / Helpdesk',val:null,fmt:'num',nota:null},
-          {n:'Principales motivos de tickets',f:'Top motivos de consulta/reclamo por frecuencia (Pareto)',src:'CRM / Helpdesk',val:null,fmt:'num',nota:null},
         ]},
       ],
       'Paqueteria E-Commerce B2C':[
         {cat:'Performance del Negocio',color:'#97BF0D',items:comun},
-        {cat:'Plataforma',color:'#6B3FA0',items:[
-          {n:'Uptime plataforma',f:'Minutos disponibles / minutos totales × 100',src:'Monitoreo plataforma',val:null,fmt:'pct',nota:null},
-          {n:'Tasa error de cargas',f:'Cargas fallidas / total intentos × 100',src:'Logs plataforma',val:null,fmt:'pct',nota:null},
-        ]},
         {cat:'Colecta',color:'#E67E22',items:[
           {n:'Tasa colectas fallidas',f:'Colectas donde no se retiró mercadería / total × 100',src:'Sistema operativo',val:null,fmt:'pct',nota:null},
           {n:'Tiempo solicitud → colecta',f:'Promedio horas entre solicitud y ejecución de colecta',src:'Sistema operativo',val:null,fmt:'num',nota:null},
@@ -1327,24 +1312,17 @@ function renderIndicadores(prod){
         ]},
         {cat:'Experiencia del Buyer',color:'#1ABC9C',items:[
           {n:'Tasa de retiro efectivo',f:'Paquetes retirados / total disponibles en punto × 100',src:'Sistema Pick It',val:null,fmt:'pct',nota:null},
-          {n:'Tickets / 100 envíos',f:'Total tickets / Total envíos × 100',src:'CRM / Helpdesk',val:null,fmt:'num',nota:null},
-          {n:'Tiempo resolución tickets',f:'Promedio días apertura → cierre',src:'CRM / Helpdesk',val:null,fmt:'num',nota:null},
         ]},
       ],
       'Paqueteria E-Commerce B2C':[
         {cat:'Performance del Negocio',color:'#97BF0D',items:[
           {n:'Facturación',f:'Suma venta normalizada (escenario Actual)',src:'Supabase · ventas',val:facUlt,fmt:'ars',nota:mesLbl},
           {n:'Volumen',f:'Suma envíos del período',src:'Supabase · ventas',val:volUlt,fmt:'num',nota:mesLbl},
-          {n:'Margen Bruto',f:'Facturación − Costo directo',src:'ERP / Contable',val:null,fmt:'ars',nota:null},
           {n:'Costo por envío',f:'Costo total / Total envíos',src:'ERP / Contable',val:null,fmt:'ars',nota:null},
         ]},
         {cat:'Clientes',color:'#2ECC71',items:[
           {n:'Clientes activos',f:'Clientes con al menos un pedido en el período',src:'Supabase · ventas',val:clisUlt.size,fmt:'num',nota:mesLbl},
           {n:'Nuevos clientes',f:'Altas de nuevos clientes en el período',src:'Supabase · ventas',val:nuevos,fmt:'num',nota:mesLbl},
-        ]},
-        {cat:'Plataforma',color:'#6B3FA0',items:[
-          {n:'Uptime plataforma',f:'Minutos disponibles / minutos totales × 100',src:'Monitoreo plataforma',val:null,fmt:'pct',nota:null},
-          {n:'Tasa errores al cargar envíos',f:'Cargas fallidas / total intentos × 100',src:'Logs plataforma',val:null,fmt:'pct',nota:null},
         ]},
         {cat:'Colecta',color:'#E67E22',items:[
           {n:'Tasa colectas fallidas',f:'Colectas sin retiro / total colectas × 100',src:'Sistema operativo',val:null,fmt:'pct',nota:null},
@@ -1357,15 +1335,12 @@ function renderIndicadores(prod){
         ]},
         {cat:'Experiencia del Cliente',color:'#1ABC9C',items:[
           {n:'NPS',f:'% Promotores − % Detractores',src:'Encuesta NPS',val:null,fmt:'num',nota:null},
-          {n:'Tickets / 100 envíos',f:'Total tickets / Total envíos × 100',src:'CRM / Helpdesk',val:null,fmt:'num',nota:null},
-          {n:'Tiempo resolución tickets',f:'Promedio días apertura → cierre',src:'CRM / Helpdesk',val:null,fmt:'num',nota:null},
         ]},
       ],
       'Distribucion Consumo Masivo y Palletizado':[
         {cat:'Performance del Negocio',color:'#97BF0D',items:[
           {n:'Facturación',f:'Suma venta normalizada (escenario Actual)',src:'Supabase · ventas',val:facUlt,fmt:'ars',nota:mesLbl},
           {n:'Volumen',f:'Suma envíos del período',src:'Supabase · ventas',val:volUlt,fmt:'num',nota:mesLbl},
-          {n:'Margen Bruto',f:'Facturación − Costo operativo directo',src:'ERP / Contable',val:null,fmt:'ars',nota:null},
           {n:'Costo por envío',f:'Costo total / Total envíos',src:'ERP / Contable',val:null,fmt:'ars',nota:null},
           {n:'Clientes activos',f:'Clientes distintos con venta > 0',src:'Supabase · ventas',val:clisUlt.size,fmt:'num',nota:mesLbl},
           {n:'Nuevos clientes',f:'Clientes sin actividad en mes anterior',src:'Supabase · ventas',val:nuevos,fmt:'num',nota:mesLbl},
@@ -1628,46 +1603,49 @@ function renderSlaEfec(prod){
   }));
 }
 
+// ── EXPERIENCIA DEL CLIENTE BI ──
+function renderCXBI(prod){
+  const cont=document.getElementById('cxbi-content');
+  cont.innerHTML='';
+  const CX_URL='https://app.powerbi.com/reportEmbed?reportId=14350c8e-8242-4d38-91b6-738e082417de&autoAuth=true&ctid=91a5b5c8-673e-4a80-871c-5ed3412dd451';
+  cont.innerHTML=
+    '<div class="pbi-toolbar">'+
+      '<div class="pbi-title"><span style="font-size:20px">🎯</span> Experiencia del Cliente BI · '+prod+'</div>'+
+    '</div>'+
+    '<div class="pbi-body">'+
+      '<div class="pbi-card" style="border-color:rgba(0,156,163,.3)">'+
+        '<div class="pbi-icon">🎯</div>'+
+        '<div class="pbi-card-title">Experiencia del Cliente · '+prod+'</div>'+
+        '<div class="pbi-card-sub">Tickets, motivos y tiempos de resolución de atención al cliente.</div>'+
+        '<a href="'+CX_URL+'" target="_blank" class="pbi-open-btn">'+
+          '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>'+
+          'Abrir Experiencia del Cliente en Power BI'+
+        '</a>'+
+        '<div class="pbi-note">Requiere acceso Power BI con cuenta OCASA</div>'+
+      '</div>'+
+    '</div>';
+}
+
 // ── PERFORMANCE BI ──
 function renderPBI(prod){
   const cont=document.getElementById('pbi-content');
   cont.innerHTML='';
-  const owner=OWNERS[prod]||'—';
-  const slaRows=allSlaEfec.filter(r=>(r.producto||'').trim()===prod.trim()&&r.sla_pct!=null&&r.sla_pct!=='');
-  const lastSla=slaRows.length?Number(slaRows[slaRows.length-1].sla_pct):null;
-
-  cont.innerHTML=`
-  <div class="pbi-toolbar">
-    <div class="pbi-title">
-      <span style="font-size:20px">⚡</span>
-      Performance BI · ${prod}
-    </div>
-
-  </div>
-  <div class="pbi-body">
-    <div class="pbi-card">
-      <div class="pbi-icon">📊</div>
-      <div class="pbi-card-title">Reporte Power BI · ${prod}</div>
-      <div class="pbi-card-sub">
-        El reporte completo de este producto está disponible en Power BI Online.<br>
-        Incluye análisis de margen, evolución de ventas, comparativas y drill-down por cliente.
-      </div>
-      <a href="${PBI_REPORT_URL}" target="_blank" class="pbi-open-btn">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-        Abrir reporte completo
-      </a>
-      <div class="pbi-note">Se abre en una nueva pestaña · Requiere acceso a Power BI con tu cuenta OCASA</div>
-    </div>
-    <div class="pbi-card" style="background:var(--surface);border-color:rgba(0,156,163,.15)">
-      <div style="font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:700;color:var(--black);margin-bottom:10px">📋 Resumen del producto</div>
-      <div class="pbi-meta">
-        ${lastSla!==null?`<div class="pbi-meta-item"><div class="pbi-meta-v" style="color:${slaColor(lastSla)}">${lastSla.toFixed(1)}%</div><div class="pbi-meta-l">SLA último mes</div></div>`:''}
-        <div class="pbi-meta-item"><div class="pbi-meta-v">${INDICADORES[prod]?INDICADORES[prod].reduce((a,s)=>a+s.items.length,0):0}</div><div class="pbi-meta-l">Indicadores</div></div>
-        <div class="pbi-meta-item"><div class="pbi-meta-v">${META_NUMS[prod]||'—'}</div><div class="pbi-meta-l">Nro. producto</div></div>
-        <div class="pbi-meta-item"><div class="pbi-meta-v" style="font-size:12px">${owner.split(' ')[0]}</div><div class="pbi-meta-l">Owner</div></div>
-      </div>
-    </div>
-  </div>`;
+  cont.innerHTML=
+    '<div class="pbi-toolbar">'+
+      '<div class="pbi-title"><span style="font-size:20px">💰</span> Margen Bruto BI · '+prod+'</div>'+
+    '</div>'+
+    '<div class="pbi-body">'+
+      '<div class="pbi-card" style="border-color:rgba(151,191,13,.3)">'+
+        '<div class="pbi-icon">💰</div>'+
+        '<div class="pbi-card-title">Margen Bruto · '+prod+'</div>'+
+        '<div class="pbi-card-sub">Análisis de margen bruto, costo vs facturación y evolución por período.</div>'+
+        '<a href="'+PBI_REPORT_URL+'" target="_blank" class="pbi-open-btn" style="background:#97BF0D">'+
+          '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>'+
+          'Abrir Margen Bruto en Power BI'+
+        '</a>'+
+        '<div class="pbi-note">Requiere acceso Power BI con cuenta OCASA</div>'+
+      '</div>'+
+    '</div>';
 }
 
 // ── COMPARATIVA ──
