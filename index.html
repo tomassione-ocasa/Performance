@@ -385,11 +385,12 @@ main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
     </div>
   </div>
   <div class="hr">
-    <span class="hlbl">Escenario</span>
-    <select class="hsel" id="fEsc" onchange="reloadAll()">
+
+    <span class="hlbl">Año</span>
+    <select class="hsel" id="fAnio" onchange="reloadAll()">
       <option value="">Todos</option>
-      <option value="Actual" selected>Actual</option>
-      <option value="Presupuesto">Presupuesto</option>
+      <option value="2025">2025</option>
+      <option value="2026" selected>2026</option>
     </select>
     <span class="hlbl">Mes</span>
     <select class="hsel" id="fMes" onchange="reloadAll()">
@@ -408,7 +409,7 @@ main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
       <span class="cli-arrow">▾</span>
       <div class="cli-drop" id="cliDrop"></div>
     </div>
-    <div class="live"><div class="pdot"></div><span class="live-t">SUPABASE</span></div>
+
     <button class="btn-ref" onclick="reloadAll()">
       <svg id="refIco" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
         <polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
@@ -888,11 +889,11 @@ async function loadAll(){
   document.getElementById('pp').classList.remove('vis');
   document.getElementById('pp').style.display='none';
   try{
-    const esc=document.getElementById('fEsc').value;
     const mes=document.getElementById('fMes').value;
-    let vf='';
-    if(esc) vf+='&escenario=eq.'+encodeURIComponent(esc);
+    const anio=document.getElementById('fAnio').value;
+    let vf='&escenario=eq.Actual';
     if(mes) vf+='&mes=eq.'+encodeURIComponent(mes);
+    if(anio) vf+='&anio=eq.'+encodeURIComponent(anio);
 
     gt.textContent='Descargando ventas…';
     const ventas=await sbFetch('ventas','anio,mes,cliente,unidad_negocio,cod_material,cantidad,venta_norm,escenario',vf);
@@ -968,9 +969,9 @@ function gv(){return cliActual?allVentas.filter(v=>v.cliente===cliActual):allVen
 function updateHeader(){
   const v=gv();
   const years=[...new Set(v.map(x=>x.anio))].sort();
-  const esc=document.getElementById('fEsc').value;
   const mes=document.getElementById('fMes').value;
-  const parts=[years.join('–'),mes?ML[mes]||mes:'',esc,v.length.toLocaleString()+' reg'].filter(Boolean);
+  const anio=document.getElementById('fAnio').value;
+  const parts=[anio||years.join('–'),mes?ML[mes]||mes:'',v.length.toLocaleString()+' reg'].filter(Boolean);
   document.getElementById('hperiodo').textContent='Dashboard · '+parts.join(' · ');
 }
 
