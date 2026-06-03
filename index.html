@@ -858,10 +858,18 @@ function buildSidebar(mats){
     const unModa=Object.entries(info.counts).sort((a,b)=>b[1]-a[1])[0][0];
     return {...info.first,producto:prod,unidad_negocio:unModa};
   });
-  unicos.sort((a,b)=>{
-    const uA=a.unidad_negocio||'';const uB=b.unidad_negocio||'';
-    return uA!==uB?uA.localeCompare(uB,'es'):a.producto.localeCompare(b.producto,'es');
-  });
+  // Ordenar por facturación interanual (último mes 2026 + mismo mes 2025)
+  const MO_SB=Object.fromEntries(MO.map((m,i)=>[m,i]));
+  const meses26sb=[...new Set((allVentas||[]).filter(x=>x.anio===2026).map(x=>x.mes))]
+    .sort((a,b)=>(MO_SB[a]||0)-(MO_SB[b]||0));
+  const ultMsb=meses26sb[meses26sb.length-1]||null;
+  function facInterSB(prod){
+    if(!allVentas) return 0;
+    // Suma total del período interanual: todos los meses de 2025 + 2026 disponibles
+    return (allVentas||[]).filter(x=>x.producto===prod)
+      .reduce((a,b)=>a+(Number(b.venta_norm)||0),0);
+  }
+  unicos.sort((a,b)=>facInterSB(b.producto)-facInterSB(a.producto));
 
   unicos.forEach(m=>{
     const un=m.unidad_negocio||'';
@@ -923,7 +931,6 @@ async function loadAll(){
 
     const matMap={};
     mats.forEach(m=>{matMap[m.cod_material]={producto:m.producto,owner:m.owner,unidad_negocio:m.unidad_negocio};});
-    buildSidebar(mats);
     ventas.forEach(v=>{
       const m=matMap[v.cod_material]||{};
       v.producto=m.producto||'Otros';
@@ -933,6 +940,7 @@ async function loadAll(){
     allVentas=ventas;
     allSlaEfec=slaData;
     allClientes=[...new Set(ventas.map(v=>v.cliente).filter(Boolean))].sort();
+    buildSidebar(mats);
     buildCliDrop('');
     gl.classList.add('hide');
     if(cur==='overview') buildOverview();
@@ -957,13 +965,17 @@ async function loadAll(){
 // ── FILTER AND RENDER (sin re-fetch) ──
 function filterAndRender(){
   updateHeader();
-  if(cur==='overview') buildOverview();
-  else {
-    // limpiar lazy panels para re-render con nuevo filtro
-    ['indicadores','slaefec','comparativa','ranking'].forEach(t=>{
-      const el=document.getElementById('tab-'+t);
-      if(el) el.innerHTML='';
-    });
+  if(cur==='overview'){
+    buildOverview();
+  } else {
+    // Volver al tab resumen y re-renderizar
+    document.querySelectorAll('.tab-btn').forEach(t=>t.classList.remove('on'));
+    document.querySelectorAll('.tab-panel').forEach(p=>{p.classList.remove('on');p.innerHTML='';});
+    document.querySelectorAll('.tab-full').forEach(p=>p.classList.remove('on'));
+    const resBtn=document.querySelector('.tab-btn[data-tab="resumen"]');
+    const resPanel=document.getElementById('tab-resumen');
+    if(resBtn) resBtn.classList.add('on');
+    if(resPanel) resPanel.classList.add('on');
     render(cur);
   }
 }
@@ -1065,13 +1077,19 @@ function buildOverview(){
     if((x.anio||0)>byP[p].anio)byP[p].anio=x.anio;
   });
 
+  // Calcular facturación interanual: último mes 2026 + mismo mes 2025
+  const MO_I2=Object.fromEntries(MO.map((m,i)=>[m,i]));
+  const meses26ov=[...new Set(vTodos.filter(x=>x.anio===2026).map(x=>x.mes))]
+    .sort((a,b)=>(MO_I2[a]||0)-(MO_I2[b]||0));
+  const ultMes26ov=meses26ov[meses26ov.length-1]||null;
+  function facInteranual(prod){
+    // Suma total del período: todos los meses 2025 + 2026
+    return byP[prod]?.fac||0;
+  }
+
   const grid=document.getElementById('og');grid.innerHTML='';
-  // Ordenar productos por facturación interanual descendente
-  const prodsSorted=Object.entries(META_NUMS).sort((a,b)=>{
-    const fa=(byP[a[0]]?.fac||0);
-    const fb=(byP[b[0]]?.fac||0);
-    return fb-fa;
-  });
+  // Ordenar por facturación interanual (último mes 2026 + mismo mes 2025)
+  const prodsSorted=Object.entries(META_NUMS).sort((a,b)=>facInteranual(b[0])-facInteranual(a[0]));
   prodsSorted.forEach(([prod,num])=>{
     const d=byP[prod]||{fac:0,vol:0,cli:new Set(),anio:2025};
     const bc=colorAnio(d.anio);
@@ -1236,16 +1254,16 @@ function renderResumen(prod,v,fac,vol,clis){
       const card1=document.createElement('div');
       card1.style.cssText='background:#fff;border:1px solid rgba(0,0,0,.07);border-top:3px solid '+(pct1>=0?'#97BF0D':'#C0392B')+';border-radius:10px;padding:14px;';
       card1.innerHTML=
-        '<div style="font-size:10px;font-weight:700;color:var(--gray);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">'+mesLabel(ultM26)+' 2026 vs '+mesLabel(ultM26)+' 2025</div>'+
+        '<div style="font-size:10px;font-weight:700;color:var(--gray);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">'+mesLabel(ultM26)+' 2025 → '+mesLabel(ultM26)+' 2026</div>'+
         '<div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap">'+
           '<div>'+
-            '<div style="font-size:9px;color:var(--gray)">'+mesLabel(ultM26)+' 2026</div>'+
-            '<div style="font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:700;color:#97BF0D">'+fmtARS(fUlt26)+'</div>'+
+            '<div style="font-size:9px;color:var(--gray)">'+mesLabel(ultM26)+' 2025</div>'+
+            '<div style="font-family:Barlow Condensed,sans-serif;font-size:22px;font-weight:700;color:var(--orange)">'+fmtARS(fMismo25)+'</div>'+
           '</div>'+
           '<div style="color:var(--gray);font-size:18px">→</div>'+
           '<div>'+
-            '<div style="font-size:9px;color:var(--gray)">'+mesLabel(ultM26)+' 2025</div>'+
-            '<div style="font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:700;color:var(--orange)">'+fmtARS(fMismo25)+'</div>'+
+            '<div style="font-size:9px;color:var(--gray)">'+mesLabel(ultM26)+' 2026</div>'+
+            '<div style="font-family:Barlow Condensed,sans-serif;font-size:22px;font-weight:700;color:#97BF0D">'+fmtARS(fUlt26)+'</div>'+
           '</div>'+
         '</div>'+
         '<div style="margin-top:6px">'+pctBadge(pct1)+'<span style="font-size:10px;color:var(--gray);margin-left:4px">interanual</span></div>';
@@ -1258,19 +1276,19 @@ function renderResumen(prod,v,fac,vol,clis){
       const card2=document.createElement('div');
       card2.style.cssText='background:#fff;border:1px solid rgba(0,0,0,.07);border-top:3px solid '+(pct2>=0?'#97BF0D':'#C0392B')+';border-radius:10px;padding:14px;';
       card2.innerHTML=
-        '<div style="font-size:10px;font-weight:700;color:var(--gray);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">'+mesLabel(ultM26)+' 2026 vs '+mesLabel(antM26)+' 2026</div>'+
+        '<div style="font-size:10px;font-weight:700;color:var(--gray);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">'+mesLabel(antM26)+' 2026 → '+mesLabel(ultM26)+' 2026</div>'+
         '<div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap">'+
           '<div>'+
-            '<div style="font-size:9px;color:var(--gray)">'+mesLabel(ultM26)+' 2026</div>'+
-            '<div style="font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:700;color:#97BF0D">'+fmtARS(fUlt26)+'</div>'+
+            '<div style="font-size:9px;color:var(--gray)">'+mesLabel(antM26)+' 2026</div>'+
+            '<div style="font-family:Barlow Condensed,sans-serif;font-size:22px;font-weight:700;color:#97BF0D">'+fmtARS(fAnt26)+'</div>'+
           '</div>'+
           '<div style="color:var(--gray);font-size:18px">→</div>'+
           '<div>'+
-            '<div style="font-size:9px;color:var(--gray)">'+mesLabel(antM26)+' 2026</div>'+
-            '<div style="font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:700;color:#97BF0D">'+fmtARS(fAnt26)+'</div>'+
+            '<div style="font-size:9px;color:var(--gray)">'+mesLabel(ultM26)+' 2026</div>'+
+            '<div style="font-family:Barlow Condensed,sans-serif;font-size:22px;font-weight:700;color:#97BF0D">'+fmtARS(fUlt26)+'</div>'+
           '</div>'+
         '</div>'+
-        '<div style="margin-top:6px">'+pctBadge(pct2)+'<span style="font-size:10px;color:var(--gray);margin-left:4px">vs mes anterior</span></div>';
+        '<div style="margin-top:6px">'+pctBadge(pct2)+'<span style="font-size:10px;color:var(--gray);margin-left:4px">variación mensual</span></div>';
       compRow.appendChild(card2);
     }
     if(compRow.children.length) pc.appendChild(compRow);
@@ -1779,21 +1797,85 @@ function renderComparativa(prod){
   const pc=document.getElementById('tab-comparativa');
   const v=allVentas.filter(x=>x.producto===prod&&x.escenario==='Actual');
   if(!v.length){pc.innerHTML='<div class="nodatabadge">Sin datos.</div>';return;}
+
+  // Calcular dinámicamente el último mes disponible en 2026
+  const MO_IC=Object.fromEntries(MO.map((m,i)=>[m,i]));
+  const meses26c=[...new Set(v.filter(x=>x.anio===2026).map(x=>x.mes))]
+    .sort((a,b)=>(MO_IC[a]||0)-(MO_IC[b]||0));
+  const ultM=meses26c[meses26c.length-1]||null;
+  const antM=meses26c[meses26c.length-2]||null;
+
+  function facMesComp(anio,mes){
+    return v.filter(x=>x.anio===anio&&x.mes===mes).reduce((a,b)=>a+(Number(b.venta_norm)||0),0);
+  }
+  function mesLbl(m){return m?m.charAt(0)+m.slice(1).toLowerCase():'—';}
+  function pct(a,b){return b&&b!==0?((a-b)/Math.abs(b)*100):null;}
+  function pctHtml(p){
+    if(p===null)return'';
+    const col=p>=0?'#4D7200':'#C0392B';
+    return '<span style="font-size:13px;font-weight:700;color:'+col+'">'+(p>=0?'+':'')+p.toFixed(1)+'%</span>';
+  }
+
+  const f26=ultM?facMesComp(2026,ultM):0;
+  const f25=ultM?facMesComp(2025,ultM):0;
+  const fAnt=antM?facMesComp(2026,antM):0;
+
+  // ── Tarjeta 1: último mes 2026 vs mismo mes 2025 ──
+  const card1=document.createElement('div');
+  card1.style.cssText='background:#fff;border:1px solid rgba(0,0,0,.07);border-top:3px solid '+(pct(f26,f25)>=0?'#97BF0D':'#C0392B')+';border-radius:10px;padding:18px;';
+  card1.innerHTML=
+    '<div style="font-size:10px;font-weight:700;color:var(--gray);text-transform:uppercase;letter-spacing:.6px;margin-bottom:12px">'+
+      mesLbl(ultM)+' 2026 vs '+mesLbl(ultM)+' 2025'+
+    '</div>'+
+    '<div style="display:flex;gap:16px;align-items:flex-end;flex-wrap:wrap;margin-bottom:10px">'+
+      '<div>'+
+        '<div style="font-size:9px;color:var(--gray);margin-bottom:2px">'+mesLbl(ultM)+' 2026</div>'+
+        '<div style="font-family:Barlow Condensed,sans-serif;font-size:28px;font-weight:700;color:#97BF0D">'+fmtARS(f26)+'</div>'+
+      '</div>'+
+      '<div style="font-size:20px;color:#ccc;padding-bottom:4px">↔</div>'+
+      '<div>'+
+        '<div style="font-size:9px;color:var(--gray);margin-bottom:2px">'+mesLbl(ultM)+' 2025</div>'+
+        '<div style="font-family:Barlow Condensed,sans-serif;font-size:28px;font-weight:700;color:#F29400">'+fmtARS(f25)+'</div>'+
+      '</div>'+
+    '</div>'+
+    '<div>'+pctHtml(pct(f26,f25))+'<span style="font-size:11px;color:var(--gray);margin-left:6px">variación interanual</span></div>';
+
+  // ── Tarjeta 2: último mes 2026 vs mes anterior 2026 ──
+  const card2=document.createElement('div');
+  card2.style.cssText='background:#fff;border:1px solid rgba(0,0,0,.07);border-top:3px solid '+(antM&&pct(f26,fAnt)>=0?'#97BF0D':'#C0392B')+';border-radius:10px;padding:18px;';
+  card2.innerHTML=
+    '<div style="font-size:10px;font-weight:700;color:var(--gray);text-transform:uppercase;letter-spacing:.6px;margin-bottom:12px">'+
+      mesLbl(antM)+' 2026 vs '+mesLbl(ultM)+' 2026'+
+    '</div>'+
+    '<div style="display:flex;gap:16px;align-items:flex-end;flex-wrap:wrap;margin-bottom:10px">'+
+      '<div>'+
+        '<div style="font-size:9px;color:var(--gray);margin-bottom:2px">'+mesLbl(antM)+' 2026</div>'+
+        '<div style="font-family:Barlow Condensed,sans-serif;font-size:28px;font-weight:700;color:#97BF0D">'+fmtARS(fAnt)+'</div>'+
+      '</div>'+
+      '<div style="font-size:20px;color:#ccc;padding-bottom:4px">→</div>'+
+      '<div>'+
+        '<div style="font-size:9px;color:var(--gray);margin-bottom:2px">'+mesLbl(ultM)+' 2026</div>'+
+        '<div style="font-family:Barlow Condensed,sans-serif;font-size:28px;font-weight:700;color:#97BF0D">'+fmtARS(f26)+'</div>'+
+      '</div>'+
+    '</div>'+
+    (antM?'<div>'+pctHtml(pct(f26,fAnt))+'<span style="font-size:11px;color:var(--gray);margin-left:6px">variación mensual</span></div>':'<div style="font-size:11px;color:var(--gray)">Solo un mes disponible en 2026</div>');
+
+  const row=document.createElement('div');
+  row.style.cssText='display:grid;grid-template-columns:1fr 1fr;gap:14px;';
+  row.appendChild(card1);
+  row.appendChild(card2);
+  pc.appendChild(row);
+
+  // ── Gráfico anual completo ──
   const byAM={};
   v.forEach(x=>{const k=x.anio+'|'+(x.mes||'').toUpperCase();byAM[k]=(byAM[k]||0)+(Number(x.venta_norm)||0);});
   const years=[...new Set(v.map(x=>x.anio))].sort();
   const yr1=years[0],yr2=years[years.length-1];
   const d1=MO.map(m=>byAM[yr1+'|'+m]||0);
   const d2=years.length>1?MO.map(m=>byAM[yr2+'|'+m]||0):null;
-  const t1=d1.reduce((a,b)=>a+b,0),t2=d2?d2.reduce((a,b)=>a+b,0):0;
-  const vp=t1>0&&t2>0?((t2-t1)/t1*100):null;
-  const cards=document.createElement('div');cards.className='comp-row';
-  cards.innerHTML=`<div class="comp-card"><h4>${yr1} — Total</h4><div style="font-family:'Barlow Condensed',sans-serif;font-size:26px;font-weight:700;color:${colorAnio(yr1)}">${fmtARS(t1)}</div></div>
-    ${d2?`<div class="comp-card"><h4>${yr2} — Total</h4><div style="font-family:'Barlow Condensed',sans-serif;font-size:26px;font-weight:700;color:${colorAnio(yr2)}">${fmtARS(t2)}</div>${vp!=null?`<div style="font-size:11px;margin-top:4px">vs ${yr1}: <strong style="color:${vp>=0?'#4D7200':'#A06800'}">${vp>=0?'+':''}${vp.toFixed(1)}%</strong></div>`:''}</div>`:''} `;
-  pc.appendChild(cards);
   const cg=document.createElement('div');
   cg.style.cssText='background:#fff;border:1px solid rgba(0,0,0,.07);border-radius:10px;padding:14px;';
-  cg.innerHTML=`<div style="font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;margin-bottom:3px">Facturación mensual${d2?' — '+yr1+' vs '+yr2:''}</div><div style="font-size:10px;color:var(--gray);margin-bottom:8px">ARS M</div><div style="position:relative;height:200px"><canvas id="cc-comp"></canvas></div>`;
+  cg.innerHTML='<div style="font-family:Barlow Condensed,sans-serif;font-size:13px;font-weight:700;margin-bottom:3px">Facturación mensual — '+yr1+(d2?' vs '+yr2:'')+'</div><div style="font-size:10px;color:var(--gray);margin-bottom:8px">ARS M</div><div style="position:relative;height:200px"><canvas id="cc-comp"></canvas></div>';
   pc.appendChild(cg);
   const ds=[{label:String(yr1),data:d1.map(x=>+(x/1e6).toFixed(1)),backgroundColor:'rgba(242,148,0,.75)',borderRadius:4}];
   if(d2) ds.push({label:String(yr2),data:d2.map(x=>+(x/1e6).toFixed(1)),backgroundColor:'rgba(151,191,13,.75)',borderRadius:4});
