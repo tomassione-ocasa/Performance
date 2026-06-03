@@ -387,13 +387,13 @@ main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
   <div class="hr">
 
     <span class="hlbl">Año</span>
-    <select class="hsel" id="fAnio" onchange="reloadAll()">
+    <select class="hsel" id="fAnio" onchange="filterAndRender()">
       <option value="">Todos</option>
       <option value="2025">2025</option>
       <option value="2026" selected>2026</option>
     </select>
     <span class="hlbl">Mes</span>
-    <select class="hsel" id="fMes" onchange="reloadAll()">
+    <select class="hsel" id="fMes" onchange="filterAndRender()">
       <option value="">Todos</option>
       <option value="ENERO">Enero</option><option value="FEBRERO">Febrero</option>
       <option value="MARZO">Marzo</option><option value="ABRIL">Abril</option>
@@ -530,7 +530,7 @@ initMobNav();
 // ── CONFIG ──
 const SB_URL='https://rdfdefkhsbjpaukesnto.supabase.co';
 const SB_KEY='sb_publishable_qNz5DKgtDfFTzj-EIsy8Cw_S8mamGPk';
-const PBI_REPORT_URL='https://app.powerbi.com/groups/me/reports/da5805a4-e56d-4d6c-af82-56d55ce65d82/d050495042d3d060d741?ctid=91a5b5c8-673e-4a80-871c-5ed3412dd451&experience=power-bi';
+const PBI_REPORT_URL='https://app.powerbi.com/groups/me/reports/2ea1b575-1feb-4464-8a24-dac0ac0387e1/d050495042d3d060d741?ctid=91a5b5c8-673e-4a80-871c-5ed3412dd451&experience=power-bi';
 const PBI_MARGEN_URL='https://app.powerbi.com/reportEmbed?reportId=14350c8e-8242-4d38-91b6-738e082417de&autoAuth=true&ctid=91a5b5c8-673e-4a80-871c-5ed3412dd451';
 const MO=['ENERO','FEBRERO','MARZO','ABRIL','MAYO','JUNIO','JULIO','AGOSTO','SEPTIEMBRE','OCTUBRE','NOVIEMBRE','DICIEMBRE'];
 const MS=['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
@@ -779,19 +779,23 @@ function slaColor(v){
 
 // ── SUPABASE FETCH ──
 async function sbFetch(table,select,filters=''){
-  const H={
-    'apikey':SB_KEY,
-    'Authorization':'Bearer '+SB_KEY,
-    'Content-Type':'application/json',
-    'Prefer':'return=representation'
-  };
+  const H={'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY};
   let url=SB_URL+'/rest/v1/'+table+'?select='+encodeURIComponent(select)+filters;
   let rows=[],off=0;
   while(true){
-    const r=await fetch(url+'&offset='+off+'&limit=1000',{headers:H});
+    const ctrl=new AbortController();
+    const tid=setTimeout(()=>ctrl.abort(),30000);
+    let r;
+    try{
+      r=await fetch(url+'&offset='+off+'&limit=1000',{headers:H,signal:ctrl.signal});
+    }catch(e){
+      clearTimeout(tid);
+      throw new Error('Timeout o red: '+table+' — '+e.message);
+    }
+    clearTimeout(tid);
     if(!r.ok){
-      const txt=await r.text();
-      throw new Error('HTTP '+r.status+' '+table+': '+txt.slice(0,200));
+      const txt=await r.text().catch(()=>'');
+      throw new Error('HTTP '+r.status+' ('+table+'): '+txt.slice(0,150));
     }
     const d=await r.json();
     if(!Array.isArray(d)||!d.length)break;
@@ -889,11 +893,8 @@ async function loadAll(){
   document.getElementById('pp').classList.remove('vis');
   document.getElementById('pp').style.display='none';
   try{
-    const mes=document.getElementById('fMes').value;
-    const anio=document.getElementById('fAnio').value;
-    let vf='&escenario=eq.Actual';
-    if(mes) vf+='&mes=eq.'+encodeURIComponent(mes);
-    if(anio) vf+='&anio=eq.'+encodeURIComponent(anio);
+    // Traer TODOS los datos Actual — el filtrado de año/mes lo hace gv() en memoria
+    const vf='&escenario=eq.Actual';
 
     gt.textContent='Descargando ventas…';
     const ventas=await sbFetch('ventas','anio,mes,cliente,unidad_negocio,cod_material,cantidad,venta_norm,escenario',vf);
@@ -938,9 +939,32 @@ async function loadAll(){
     else{ showPP(); render(cur); }
     setTs(); updateHeader();
   }catch(e){
-    gt.textContent='Error: '+e.message;
     gt.style.color='#E05A5A';
+    gt.style.fontSize='13px';
+    gt.style.maxWidth='600px';
+    gt.style.textAlign='center';
+    gt.textContent='Error al cargar: '+e.message;
     console.error(e);
+    // Mostrar botón de reintentar
+    const btn=document.createElement('button');
+    btn.textContent='🔄 Reintentar';
+    btn.style.cssText='margin-top:12px;padding:8px 20px;background:var(--teal);color:#fff;border:none;border-radius:6px;cursor:pointer;font-family:Barlow,sans-serif;font-size:13px;font-weight:700;';
+    btn.onclick=loadAll;
+    document.getElementById('gload').appendChild(btn);
+  }
+}
+
+// ── FILTER AND RENDER (sin re-fetch) ──
+function filterAndRender(){
+  updateHeader();
+  if(cur==='overview') buildOverview();
+  else {
+    // limpiar lazy panels para re-render con nuevo filtro
+    ['indicadores','slaefec','comparativa','ranking'].forEach(t=>{
+      const el=document.getElementById('tab-'+t);
+      if(el) el.innerHTML='';
+    });
+    render(cur);
   }
 }
 
@@ -957,14 +981,22 @@ function buildCliDrop(q){
     drop.appendChild(d);
   });
 }
-function setCli(val){cliActual=val;document.getElementById('fCliInput').value=val;closeDrop();if(cur==='overview')buildOverview();else render(cur);}
+function setCli(val){cliActual=val;document.getElementById('fCliInput').value=val;closeDrop();filterAndRender();}
 function onCliInput(){buildCliDrop(document.getElementById('fCliInput').value);openDrop();}
 function openDrop(){document.getElementById('cliDrop').classList.add('open');}
 function closeDrop(){document.getElementById('cliDrop').classList.remove('open');}
 document.getElementById('fCliInput').addEventListener('focus',()=>{if(allClientes.length)openDrop();});
 document.addEventListener('click',e=>{if(!e.target.closest('.cli-wrap'))closeDrop();});
 
-function gv(){return cliActual?allVentas.filter(v=>v.cliente===cliActual):allVentas;}
+function gv(){
+  const mes=(document.getElementById('fMes')?.value||'').toUpperCase();
+  const anio=document.getElementById('fAnio')?.value||'';
+  return allVentas.filter(v=>
+    (!cliActual||v.cliente===cliActual)&&
+    (!mes||v.mes===mes)&&
+    (!anio||String(v.anio)===String(anio))
+  );
+}
 
 function updateHeader(){
   const v=gv();
@@ -1023,8 +1055,10 @@ function buildOverview(){
   });
   statsEl.innerHTML+=`<div class="osc"><div class="osc-l">Total</div><div class="osc-v">${fmtARS(total)}</div><div class="osc-s">${Object.keys(META_NUMS).length} productos</div></div>`;
 
+  // Para ordenar por facturación interanual: tomar TODOS los datos sin filtro de año/mes
+  const vTodos=cliActual?allVentas.filter(x=>x.cliente===cliActual):allVentas;
   const byP={};
-  v.forEach(x=>{
+  vTodos.forEach(x=>{
     const p=x.producto;if(!byP[p])byP[p]={fac:0,vol:0,cli:new Set(),anio:x.anio||2025};
     byP[p].fac+=Number(x.venta_norm)||0;byP[p].vol+=Number(x.cantidad)||0;
     if(x.cliente)byP[p].cli.add(x.cliente);
@@ -1032,7 +1066,13 @@ function buildOverview(){
   });
 
   const grid=document.getElementById('og');grid.innerHTML='';
-  Object.entries(META_NUMS).forEach(([prod,num])=>{
+  // Ordenar productos por facturación interanual descendente
+  const prodsSorted=Object.entries(META_NUMS).sort((a,b)=>{
+    const fa=(byP[a[0]]?.fac||0);
+    const fb=(byP[b[0]]?.fac||0);
+    return fb-fa;
+  });
+  prodsSorted.forEach(([prod,num])=>{
     const d=byP[prod]||{fac:0,vol:0,cli:new Set(),anio:2025};
     const bc=colorAnio(d.anio);
     // SLA from supabase
@@ -1141,6 +1181,40 @@ function renderResumen(prod,v,fac,vol,clis){
 
   const top1=Object.entries(v.reduce((a,b)=>{if(!b.cliente)return a;a[b.cliente]=(a[b.cliente]||0)+(Number(b.venta_norm)||0);return a;},{})).sort((a,b)=>b[1]-a[1])[0];
 
+  // ── Calcular comparativas dinámicas ──
+  // Obtener todos los datos del producto sin filtro de año/mes para comparativas
+  const vProdTodos=(cliActual?allVentas.filter(x=>x.cliente===cliActual):allVentas).filter(x=>x.producto===prod);
+  const MO_IDX2=Object.fromEntries(MO.map((m,i)=>[m,i]));
+  // Meses disponibles ordenados
+  const mesesDisp2=[...new Set(vProdTodos.map(x=>x.anio+'|'+x.mes))]
+    .sort((a,b)=>{const[ya,ma]=a.split('|');const[yb,mb]=b.split('|');
+      return ya!==yb?Number(ya)-Number(yb):(MO_IDX2[ma]||0)-(MO_IDX2[mb]||0);});
+  // Último mes 2026
+  const meses26=mesesDisp2.filter(k=>k.startsWith('2026|'));
+  const ultK26=meses26[meses26.length-1]||'';
+  const[,ultM26]=ultK26.split('|');
+  // Mismo mes 2025
+  const mismoK25=ultM26?('2025|'+ultM26):'';
+  // Mes anterior al último 2026
+  const antK26=meses26[meses26.length-2]||'';
+  const[,antM26]=antK26.split('|');
+
+  function facMes(anio,mes){
+    return vProdTodos.filter(x=>String(x.anio)===String(anio)&&x.mes===mes)
+      .reduce((a,b)=>a+(Number(b.venta_norm)||0),0);
+  }
+  const fUlt26=ultM26?facMes(2026,ultM26):null;
+  const fMismo25=ultM26?facMes(2025,ultM26):null;
+  const fAnt26=antM26?facMes(2026,antM26):null;
+
+  function mesLabel(mes){if(!mes)return'—';return mes.charAt(0)+mes.slice(1).toLowerCase();}
+  function diffPct(a,b){if(!b||b===0)return null;return((a-b)/Math.abs(b)*100);}
+  function pctBadge(pct){
+    if(pct===null)return'';
+    const col=pct>=0?'#4D7200':'#C0392B';
+    return '<span style="font-size:11px;font-weight:700;color:'+col+'">'+(pct>=0?'+':'')+pct.toFixed(1)+'%</span>';
+  }
+
   const mrow=document.createElement('div');mrow.className='mrow';
   mrow.innerHTML=`
     <div class="mc"><div class="mc-l">Facturación</div><div class="mc-v">${fmtARS(fac)}</div><div class="mc-s">Venta normalizada</div></div>
@@ -1150,6 +1224,57 @@ function renderResumen(prod,v,fac,vol,clis){
     ${lastEfec!==null?`<div class="mc" style="border-top-color:${slaColor(lastEfec)}"><div class="mc-l">Efectividad último mes</div><div class="mc-v" style="color:${slaColor(lastEfec)}">${lastEfec.toFixed(1)}%</div><div class="mc-s">Entrega exitosa</div></div>`:''}
     ${top1?`<div class="mc"><div class="mc-l">Top cliente</div><div class="mc-v" style="font-size:15px">${fmtARS(top1[1])}</div><div class="mc-s">${top1[0]}</div></div>`:''}`;
   pc.appendChild(mrow);
+
+  // ── Tarjetas comparativas ──
+  if(fUlt26!==null||fMismo25!==null||fAnt26!==null){
+    const compRow=document.createElement('div');
+    compRow.style.cssText='display:grid;grid-template-columns:1fr 1fr;gap:12px;';
+
+    // Tarjeta 1: mismo mes año anterior
+    if(fUlt26!==null&&fMismo25!==null){
+      const pct1=diffPct(fUlt26,fMismo25);
+      const card1=document.createElement('div');
+      card1.style.cssText='background:#fff;border:1px solid rgba(0,0,0,.07);border-top:3px solid '+(pct1>=0?'#97BF0D':'#C0392B')+';border-radius:10px;padding:14px;';
+      card1.innerHTML=
+        '<div style="font-size:10px;font-weight:700;color:var(--gray);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">'+mesLabel(ultM26)+' 2026 vs '+mesLabel(ultM26)+' 2025</div>'+
+        '<div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap">'+
+          '<div>'+
+            '<div style="font-size:9px;color:var(--gray)">'+mesLabel(ultM26)+' 2026</div>'+
+            '<div style="font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:700;color:#97BF0D">'+fmtARS(fUlt26)+'</div>'+
+          '</div>'+
+          '<div style="color:var(--gray);font-size:18px">→</div>'+
+          '<div>'+
+            '<div style="font-size:9px;color:var(--gray)">'+mesLabel(ultM26)+' 2025</div>'+
+            '<div style="font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:700;color:var(--orange)">'+fmtARS(fMismo25)+'</div>'+
+          '</div>'+
+        '</div>'+
+        '<div style="margin-top:6px">'+pctBadge(pct1)+'<span style="font-size:10px;color:var(--gray);margin-left:4px">interanual</span></div>';
+      compRow.appendChild(card1);
+    }
+
+    // Tarjeta 2: mes actual vs mes anterior
+    if(fUlt26!==null&&fAnt26!==null&&antM26){
+      const pct2=diffPct(fUlt26,fAnt26);
+      const card2=document.createElement('div');
+      card2.style.cssText='background:#fff;border:1px solid rgba(0,0,0,.07);border-top:3px solid '+(pct2>=0?'#97BF0D':'#C0392B')+';border-radius:10px;padding:14px;';
+      card2.innerHTML=
+        '<div style="font-size:10px;font-weight:700;color:var(--gray);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">'+mesLabel(ultM26)+' 2026 vs '+mesLabel(antM26)+' 2026</div>'+
+        '<div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap">'+
+          '<div>'+
+            '<div style="font-size:9px;color:var(--gray)">'+mesLabel(ultM26)+' 2026</div>'+
+            '<div style="font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:700;color:#97BF0D">'+fmtARS(fUlt26)+'</div>'+
+          '</div>'+
+          '<div style="color:var(--gray);font-size:18px">→</div>'+
+          '<div>'+
+            '<div style="font-size:9px;color:var(--gray)">'+mesLabel(antM26)+' 2026</div>'+
+            '<div style="font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:700;color:#97BF0D">'+fmtARS(fAnt26)+'</div>'+
+          '</div>'+
+        '</div>'+
+        '<div style="margin-top:6px">'+pctBadge(pct2)+'<span style="font-size:10px;color:var(--gray);margin-left:4px">vs mes anterior</span></div>';
+      compRow.appendChild(card2);
+    }
+    if(compRow.children.length) pc.appendChild(compRow);
+  }
 
   // Gráficos fac + vol
   const byAM={};
