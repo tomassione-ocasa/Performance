@@ -429,13 +429,13 @@ main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
     <div class="ssec">Productos</div>
     <div id="sb-products"></div>
     <div style="padding:8px 18px 16px;font-size:10.5px;color:#666;line-height:1.9;">
-      🔗 Ventas: Supabase<br>
-      📈 SLA/Efec: Supabase<br>
+      🔗 Ventas: Google Drive<br>
+      📈 SLA/Efec: Google Drive<br>
       ⚡ BI: Power BI Online
     </div>
   </aside>
   <main>
-    <div class="gload" id="gload"><div class="spin"></div><div class="spin-t" id="gload-t">Conectando a Supabase…</div></div>
+    <div class="gload" id="gload"><div class="spin"></div><div class="spin-t" id="gload-t">Conectando a Google Drive…</div></div>
     <div class="ov" id="pov">
       <div id="ov-banner"></div>
       <div class="ostats" id="ovStats"></div>
@@ -528,8 +528,9 @@ window.addEventListener('resize',initMobNav);
 initMobNav();
 
 // ── CONFIG ──
-const SB_URL='https://rdfdefkhsbjpaukesnto.supabase.co';
-const SB_KEY='sb_publishable_qNz5DKgtDfFTzj-EIsy8Cw_S8mamGPk';
+const ID_VENTAS='1QL_ywDFzzUyaHmgg5sqUz9_YULlcsAF-Y9sIOKRRU3Y';
+const ID_MATERIALES='18DvuTpU8aY0PzAu0jIBQAf1IKzqep_7Q0SkMKHrqp-o';
+const ID_SLA='14oWS4N8_r8tYWi93nnsQ6HwD2LfM0yb7-O25kjMaUKc';
 const PBI_REPORT_URL='https://app.powerbi.com/groups/me/reports/2ea1b575-1feb-4464-8a24-dac0ac0387e1/d050495042d3d060d741?ctid=91a5b5c8-673e-4a80-871c-5ed3412dd451&experience=power-bi';
 const PBI_MARGEN_URL='https://app.powerbi.com/reportEmbed?reportId=14350c8e-8242-4d38-91b6-738e082417de&autoAuth=true&ctid=91a5b5c8-673e-4a80-871c-5ed3412dd451';
 const MO=['ENERO','FEBRERO','MARZO','ABRIL','MAYO','JUNIO','JULIO','AGOSTO','SEPTIEMBRE','OCTUBRE','NOVIEMBRE','DICIEMBRE'];
@@ -777,33 +778,43 @@ function slaColor(v){
   return v>=95?'#4D7200':v>=80?'#A06800':'#C0392B';
 }
 
-// ── SUPABASE FETCH ──
-async function sbFetch(table,select,filters=''){
-  const H={'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY};
-  let url=SB_URL+'/rest/v1/'+table+'?select='+encodeURIComponent(select)+filters;
-  let rows=[],off=0;
-  while(true){
-    const ctrl=new AbortController();
-    const tid=setTimeout(()=>ctrl.abort(),30000);
-    let r;
-    try{
-      r=await fetch(url+'&offset='+off+'&limit=1000',{headers:H,signal:ctrl.signal});
-    }catch(e){
-      clearTimeout(tid);
-      throw new Error('Timeout o red: '+table+' — '+e.message);
-    }
-    clearTimeout(tid);
-    if(!r.ok){
-      const txt=await r.text().catch(()=>'');
-      throw new Error('HTTP '+r.status+' ('+table+'): '+txt.slice(0,150));
-    }
-    const d=await r.json();
-    if(!Array.isArray(d)||!d.length)break;
-    rows.push(...d);
-    if(d.length<1000)break;
-    off+=1000;
-  }
-  return rows;
+// ── GOOGLE SHEETS JSONP FETCH (sin CORS) ──
+let _jsonpIdx=0;
+function sheetFetch(sheetId,name){
+  return new Promise((resolve,reject)=>{
+    const cb='_gviz'+(_jsonpIdx++);
+    const timeout=setTimeout(()=>{
+      delete window[cb];
+      if(s.parentNode)s.parentNode.removeChild(s);
+      reject(new Error('Timeout ('+name+')'));
+    },30000);
+    window[cb]=function(resp){
+      clearTimeout(timeout);
+      delete window[cb];
+      if(s.parentNode)s.parentNode.removeChild(s);
+      try{
+        const cols=resp.table.cols.map(c=>c.label||c.id);
+        const rows=resp.table.rows.map(r=>{
+          const obj={};
+          cols.forEach((col,i)=>{
+            const cell=r.c&&r.c[i];
+            const v=cell?cell.v:null;
+            obj[col]=(v===null||v===undefined)?null:v;
+          });
+          return obj;
+        }).filter(r=>Object.values(r).some(v=>v!==null&&v!==''));
+        resolve(rows);
+      }catch(e){reject(new Error('Parse error ('+name+'): '+e.message));}
+    };
+    const s=document.createElement('script');
+    s.onerror=()=>{
+      clearTimeout(timeout);
+      delete window[cb];
+      reject(new Error('Error de red ('+name+'): archivo no público o ID incorrecto'));
+    };
+    s.src='https://docs.google.com/spreadsheets/d/'+sheetId+'/gviz/tq?tqx=out:json;responseHandler:'+cb+'&tq=select+*';
+    document.head.appendChild(s);
+  });
 }
 
 
@@ -896,24 +907,23 @@ async function loadAll(){
   const gt=document.getElementById('gload-t');
   gl.classList.remove('hide');
   gt.style.color='';
-  gt.textContent='Conectando a Supabase…';
+  gt.textContent='Conectando a Google Drive…';
   document.getElementById('pov').classList.remove('vis');
   document.getElementById('pp').classList.remove('vis');
   document.getElementById('pp').style.display='none';
   try{
-    // Traer TODOS los datos Actual — el filtrado de año/mes lo hace gv() en memoria
-    const vf='&escenario=eq.Actual';
-
     gt.textContent='Descargando ventas…';
-    const ventas=await sbFetch('ventas','anio,mes,cliente,unidad_negocio,cod_material,cantidad,venta_norm,escenario',vf);
+    const ventasTodas=await sheetFetch(ID_VENTAS,'ventas');
+    // Solo escenario Actual
+    const ventas=ventasTodas.filter(v=>v.escenario==='Actual');
 
     gt.textContent='Descargando materiales…';
-    const mats=await sbFetch('material_producto','cod_material,producto,owner,unidad_negocio','');
+    const mats=await sheetFetch(ID_MATERIALES,'material_producto');
 
     gt.textContent='Descargando SLA & Efectividad…';
     let slaData=[];
     try{
-      slaData=await sbFetch('sla_efectividad','producto,mes,anio,sla_pct,efectividad_pct','');
+      slaData=await sheetFetch(ID_SLA,'sla_efectividad');
       console.log('sla_efectividad cargada: '+slaData.length+' filas');
       if(slaData.length>0){
         console.log('Ejemplo fila SLA:', JSON.stringify(slaData[0]));
@@ -921,12 +931,7 @@ async function loadAll(){
       }
     }
     catch(e){
-      console.warn('Tabla sla_efectividad error:',e.message);
-      // Si falla el fetch, intentar con nombre alternativo
-      try{
-        slaData=await sbFetch('sla_efectividad','*','');
-        console.log('sla_efectividad (fallback *): '+slaData.length+' filas');
-      }catch(e2){ console.warn('Fallback SLA también falló:',e2.message); }
+      console.warn('sla_efectividad error:',e.message);
     }
 
     const matMap={};
@@ -1328,7 +1333,7 @@ function renderResumen(prod,v,fac,vol,clis){
 
   pc.appendChild(Object.assign(document.createElement('div'),{
     className:'src-badge',
-    innerHTML:`<span>🔗 <strong>Supabase · ventas</strong> · ${v.length.toLocaleString()} registros &nbsp;|&nbsp; 📈 <strong>Supabase · sla_efectividad</strong> · ${slaRows.length} registros</span>`
+    innerHTML:`<span>🔗 <strong>Google Drive · ventas</strong> · ${v.length.toLocaleString()} registros &nbsp;|&nbsp; 📈 <strong>Google Drive · sla_efectividad</strong> · ${slaRows.length} registros</span>`
   }));
 }
 
@@ -1637,7 +1642,7 @@ function renderIndicadores(prod){
   // footer
   const foot=document.createElement('div');
   foot.style.cssText='background:#fff;border:1.5px solid rgba(0,156,163,.3);border-radius:10px;padding:9px 14px;font-size:11px;color:var(--gray);';
-  foot.innerHTML='<span>📋 Valores calculados desde <strong style="color:var(--teal)">Supabase · ventas</strong> y <strong style="color:var(--teal)">sla_efectividad</strong> · Se actualizan al hacer clic en Actualizar</span>';
+  foot.innerHTML='<span>📋 Valores calculados desde <strong style="color:var(--teal)">Google Drive · ventas</strong> y <strong style="color:var(--teal)">sla_efectividad</strong> · Se actualizan al hacer clic en Actualizar</span>';
   pc.appendChild(foot);
 }
 
@@ -1732,7 +1737,7 @@ function renderSlaEfec(prod){
 
   // Tabla detalle mensual
   const tbl=document.createElement('div');tbl.className='ctb';
-  tbl.innerHTML=`<h3>Detalle mensual · Fuente: Supabase · sla_efectividad</h3>
+  tbl.innerHTML=`<h3>Detalle mensual · Fuente: Google Drive · sla_efectividad</h3>
     <table class="ct"><thead><tr><th>Mes</th><th>Año</th>${hasSla?'<th style="text-align:right">SLA</th>':''}${hasEfec?'<th style="text-align:right">Efectividad</th>':''}</tr></thead>
     <tbody>${rows.map(r=>{
       const s=r.sla_pct!=null&&r.sla_pct!==''?Number(r.sla_pct):null;
@@ -1743,7 +1748,7 @@ function renderSlaEfec(prod){
 
   pc.appendChild(Object.assign(document.createElement('div'),{
     className:'src-badge',
-    innerHTML:`<span>📈 Fuente: <strong>Supabase · sla_efectividad</strong> · ${rows.length} registros · Tabla: <code>sla_efectividad</code></span>`
+    innerHTML:`<span>📈 Fuente: <strong>Google Drive · sla_efectividad</strong> · ${rows.length} registros</span>`
   }));
 }
 
