@@ -1406,7 +1406,7 @@ function renderIndicadores(prod){
     const slaItems=[
       {n:'SLA',f:'Entregas / operaciones en plazo sobre total × 100',src:'Google Drive · sla_efectividad',val:slaVal,fmt:'pct',nota:slaLbl},
       {n:'Efectividad',f:'Entregas exitosas sobre total de intentos × 100',src:'Google Drive · sla_efectividad',val:efeVal,fmt:'pct',nota:efeLbl},
-      ...(efec1Val!==null?[{n:'Efectividad 1ra vuelta',f:'Entregas exitosas en 1er intento / Total × 100',src:'Google Drive · sla_efectividad',val:efec1Val,fmt:'pct',nota:efec1Lbl}]:[]),
+      {n:'Efectividad 1ra vuelta',f:'Entregas exitosas en 1er intento / Total × 100',src:'Google Drive · sla_efectividad',val:efec1Val,fmt:'pct',nota:efec1Lbl},
       {n:'Causas de no entrega',f:'Distribución % de motivos de fallo por categoría',src:'Sistema operativo',val:null,fmt:'pct',nota:null},
       {n:'Errores / rechazos',f:'Operaciones con error o rechazo / Total × 100',src:'Sistema operativo',val:null,fmt:'pct',nota:null},
     ];
@@ -1456,7 +1456,7 @@ function renderIndicadores(prod){
         {cat:'Entrega en el Punto',color:'#009CA3',items:[
           {n:'Efectividad',f:'Entregas exitosas en punto / Total envíos a punto × 100',src:'Google Drive · sla_efectividad',val:efeVal,fmt:'pct',nota:efeLbl},
           {n:'SLA',f:'Envíos entregados en plazo / Total × 100',src:'Google Drive · sla_efectividad',val:slaVal,fmt:'pct',nota:slaLbl},
-          ...(efec1Val!==null?[{n:'Efectividad 1ra vuelta',f:'Entregas exitosas en 1er intento / Total × 100',src:'Google Drive · sla_efectividad',val:efec1Val,fmt:'pct',nota:efec1Lbl}]:[]),
+          {n:'Efectividad 1ra vuelta',f:'Entregas exitosas en 1er intento / Total × 100',src:'Google Drive · sla_efectividad',val:efec1Val,fmt:'pct',nota:efec1Lbl},
           {n:'Motivo de no entregado en punto Pick It',f:'Distribución % de causas de fallo',src:'Sistema Pick It',val:null,fmt:'pct',nota:null},
         ]},
         {cat:'Performance del Punto',color:'#C0392B',items:[
@@ -1485,7 +1485,7 @@ function renderIndicadores(prod){
         {cat:'Última Milla',color:'#009CA3',items:[
           {n:'SLA',f:'Envíos en plazo / Total × 100',src:'Google Drive · sla_efectividad',val:slaVal,fmt:'pct',nota:slaLbl},
           {n:'Efectividad',f:'Entregas exitosas / Total × 100',src:'Google Drive · sla_efectividad',val:efeVal,fmt:'pct',nota:efeLbl},
-          ...(efec1Val!==null?[{n:'Efectividad 1ra vuelta',f:'Entregas exitosas en 1er intento / Total × 100',src:'Google Drive · sla_efectividad',val:efec1Val,fmt:'pct',nota:efec1Lbl}]:[]),
+          {n:'Efectividad 1ra vuelta',f:'Entregas exitosas en 1er intento / Total × 100',src:'Google Drive · sla_efectividad',val:efec1Val,fmt:'pct',nota:efec1Lbl},
           {n:'Causas de no entrega',f:'Distribución % de motivos de fallo',src:'Sistema operativo',val:null,fmt:'pct',nota:null},
         ]},
         {cat:'Experiencia del Cliente',color:'#1ABC9C',items:[
@@ -1510,6 +1510,7 @@ function renderIndicadores(prod){
         {cat:'Última Milla',color:'#009CA3',items:[
           {n:'SLA',f:'Entregas en plazo / Total × 100',src:'Google Drive · sla_efectividad',val:slaVal,fmt:'pct',nota:slaLbl},
           {n:'Efectividad',f:'Entregas exitosas / Total × 100',src:'Google Drive · sla_efectividad',val:efeVal,fmt:'pct',nota:efeLbl},
+          {n:'Efectividad 1ra vuelta',f:'Entregas exitosas en 1er intento / Total × 100',src:'Google Drive · sla_efectividad',val:efec1Val,fmt:'pct',nota:efec1Lbl},
         ]},
         {cat:'Rechazos y Devoluciones',color:'#C0392B',items:[
           {n:'Tasa de rechazo total',f:'Total rechazos / Total entregas × 100',src:'Sistema operativo',val:null,fmt:'pct',nota:null},
