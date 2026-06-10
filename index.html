@@ -1366,10 +1366,13 @@ function renderIndicadores(prod){
   slaP.sort((a,b)=>Number(a.anio)!==Number(b.anio)?Number(a.anio)-Number(b.anio):(MO_I[a.mes]||0)-(MO_I[b.mes]||0));
   const lSla=slaP.filter(r=>r.sla_pct!=null&&r.sla_pct!=='').pop();
   const lEfe=slaP.filter(r=>r.efectividad_pct!=null&&r.efectividad_pct!=='').pop();
+  const lEfe1=slaP.filter(r=>r.efectividad_1ra_vuelta!=null&&r.efectividad_1ra_vuelta!=='').pop();
   const slaVal=lSla?parseFloat(lSla.sla_pct):null;
   const efeVal=lEfe?parseFloat(lEfe.efectividad_pct):null;
+  const efec1Val=lEfe1?parseFloat(lEfe1.efectividad_1ra_vuelta):null;
   const slaLbl=lSla?(lSla.mes.charAt(0)+lSla.mes.slice(1).toLowerCase()+' '+lSla.anio):'—';
   const efeLbl=lEfe?(lEfe.mes.charAt(0)+lEfe.mes.slice(1).toLowerCase()+' '+lEfe.anio):'—';
+  const efec1Lbl=lEfe1?(lEfe1.mes.charAt(0)+lEfe1.mes.slice(1).toLowerCase()+' '+lEfe1.anio):'—';
   const mesLbl=ultM?(ultM.charAt(0)+ultM.slice(1).toLowerCase()+' '+ultA):'—';
 
   function fv(val,fmt,nota){
@@ -1392,17 +1395,18 @@ function renderIndicadores(prod){
   // Definición indicadores por producto
   function getItems(){
     const comun=[
-      {n:'Facturación',f:'Suma venta normalizada (escenario Actual)',src:'Supabase · ventas',val:facUlt,fmt:'ars',nota:mesLbl},
-      {n:'Volumen',f:'Suma unidades del período',src:'Supabase · ventas',val:volUlt,fmt:'num',nota:mesLbl},
-      {n:'Clientes activos',f:'Clientes distintos con venta > 0',src:'Supabase · ventas',val:clisUlt.size,fmt:'num',nota:mesLbl},
-      {n:'Nuevos clientes',f:'Clientes sin actividad en mes anterior',src:'Supabase · ventas',val:nuevos,fmt:'num',nota:mesLbl},
-      {n:'Bajas (Churn qty)',f:'Clientes del mes anterior sin actividad en mes actual',src:'Supabase · ventas',val:bajas,fmt:'num',nota:mesLbl},
-      {n:'ARPU',f:'Facturación / Clientes activos del período',src:'Supabase · ventas',val:arpu>0?arpu:null,fmt:'ars',nota:mesLbl},
+      {n:'Facturación',f:'Suma venta normalizada (escenario Actual)',src:'Google Drive · ventas',val:facUlt,fmt:'ars',nota:mesLbl},
+      {n:'Volumen',f:'Suma unidades del período',src:'Google Drive · ventas',val:volUlt,fmt:'num',nota:mesLbl},
+      {n:'Clientes activos',f:'Clientes distintos con venta > 0',src:'Google Drive · ventas',val:clisUlt.size,fmt:'num',nota:mesLbl},
+      {n:'Nuevos clientes',f:'Clientes sin actividad en mes anterior',src:'Google Drive · ventas',val:nuevos,fmt:'num',nota:mesLbl},
+      {n:'Bajas (Churn qty)',f:'Clientes del mes anterior sin actividad en mes actual',src:'Google Drive · ventas',val:bajas,fmt:'num',nota:mesLbl},
+      {n:'ARPU',f:'Facturación / Clientes activos del período',src:'Google Drive · ventas',val:arpu>0?arpu:null,fmt:'ars',nota:mesLbl},
       {n:'Costo por envío',f:'Costo total / Cartas emitidas en el período',src:'ERP / Contable',val:null,fmt:'ars',nota:null},
     ];
     const slaItems=[
-      {n:'SLA',f:'Entregas / operaciones en plazo sobre total × 100',src:'Supabase · sla_efectividad',val:slaVal,fmt:'pct',nota:slaLbl},
-      {n:'Efectividad',f:'Entregas exitosas sobre total de intentos × 100',src:'Supabase · sla_efectividad',val:efeVal,fmt:'pct',nota:efeLbl},
+      {n:'SLA',f:'Entregas / operaciones en plazo sobre total × 100',src:'Google Drive · sla_efectividad',val:slaVal,fmt:'pct',nota:slaLbl},
+      {n:'Efectividad',f:'Entregas exitosas sobre total de intentos × 100',src:'Google Drive · sla_efectividad',val:efeVal,fmt:'pct',nota:efeLbl},
+      ...(efec1Val!==null?[{n:'Efectividad 1ra vuelta',f:'Entregas exitosas en 1er intento / Total × 100',src:'Google Drive · sla_efectividad',val:efec1Val,fmt:'pct',nota:efec1Lbl}]:[]),
       {n:'Causas de no entrega',f:'Distribución % de motivos de fallo por categoría',src:'Sistema operativo',val:null,fmt:'pct',nota:null},
       {n:'Errores / rechazos',f:'Operaciones con error o rechazo / Total × 100',src:'Sistema operativo',val:null,fmt:'pct',nota:null},
     ];
@@ -1418,9 +1422,9 @@ function renderIndicadores(prod){
           {n:'Tasa error operativo',f:'Cartas con problema de impresión / total cartas × 100',src:'Sistema operativo',val:null,fmt:'pct',nota:null},
           {n:'Tiempo imposición (AWP→HFD)',f:'Promedio horas desde ingreso AWP hasta pase a HFD',src:'Sistema AWP/HFD',val:null,fmt:'num',nota:null},
           {n:'Tiempo digitalización acuses',f:'Promedio horas entre entrega y digitalización de acuse (addoc)',src:'Sistema addoc',val:null,fmt:'num',nota:null},
-          {n:'Efectividad 1ra vuelta',f:'Cartas entregadas en 1ra visita / Total cartas × 100',src:'Sistema operativo',val:null,fmt:'pct',nota:null},
-          {n:'Efectividad general',f:'Total entregas exitosas (todas las vueltas) / Total cartas × 100',src:'Supabase · sla_efectividad',val:efeVal,fmt:'pct',nota:efeLbl},
-          {n:'SLA',f:'Cartas entregadas en plazo contractual / Total × 100',src:'Supabase · sla_efectividad',val:slaVal,fmt:'pct',nota:slaLbl},
+          {n:'Efectividad 1ra vuelta',f:'Cartas entregadas en 1ra visita / Total cartas × 100',src:'Google Drive · sla_efectividad',val:efec1Val,fmt:'pct',nota:efec1Lbl},
+          {n:'Efectividad general',f:'Total entregas exitosas (todas las vueltas) / Total cartas × 100',src:'Google Drive · sla_efectividad',val:efeVal,fmt:'pct',nota:efeLbl},
+          {n:'SLA',f:'Cartas entregadas en plazo contractual / Total × 100',src:'Google Drive · sla_efectividad',val:slaVal,fmt:'pct',nota:slaLbl},
           {n:'Causas de no entregado',f:'Distribución % de motivos de fallo',src:'Sistema operativo',val:null,fmt:'pct',nota:null},
         ]},
         {cat:'Experiencia del Cliente',color:'#009CA3',items:[
@@ -1445,13 +1449,14 @@ function renderIndicadores(prod){
       ],
       'Entrega en Punto Pickit':[
         {cat:'Performance del Negocio',color:'#97BF0D',items:[
-          {n:'Facturación',f:'Suma venta normalizada (escenario Actual)',src:'Supabase · ventas',val:facUlt,fmt:'ars',nota:mesLbl},
-          {n:'Volumen',f:'Suma unidades del período',src:'Supabase · ventas',val:volUlt,fmt:'num',nota:mesLbl},
-          {n:'Clientes activos',f:'Clientes distintos con venta > 0',src:'Supabase · ventas',val:clisUlt.size,fmt:'num',nota:mesLbl},
+          {n:'Facturación',f:'Suma venta normalizada (escenario Actual)',src:'Google Drive · ventas',val:facUlt,fmt:'ars',nota:mesLbl},
+          {n:'Volumen',f:'Suma unidades del período',src:'Google Drive · ventas',val:volUlt,fmt:'num',nota:mesLbl},
+          {n:'Clientes activos',f:'Clientes distintos con venta > 0',src:'Google Drive · ventas',val:clisUlt.size,fmt:'num',nota:mesLbl},
         ]},
         {cat:'Entrega en el Punto',color:'#009CA3',items:[
-          {n:'Efectividad',f:'Entregas exitosas en punto / Total envíos a punto × 100',src:'Supabase · sla_efectividad',val:efeVal,fmt:'pct',nota:efeLbl},
-          {n:'SLA',f:'Envíos entregados en plazo / Total × 100',src:'Supabase · sla_efectividad',val:slaVal,fmt:'pct',nota:slaLbl},
+          {n:'Efectividad',f:'Entregas exitosas en punto / Total envíos a punto × 100',src:'Google Drive · sla_efectividad',val:efeVal,fmt:'pct',nota:efeLbl},
+          {n:'SLA',f:'Envíos entregados en plazo / Total × 100',src:'Google Drive · sla_efectividad',val:slaVal,fmt:'pct',nota:slaLbl},
+          ...(efec1Val!==null?[{n:'Efectividad 1ra vuelta',f:'Entregas exitosas en 1er intento / Total × 100',src:'Google Drive · sla_efectividad',val:efec1Val,fmt:'pct',nota:efec1Lbl}]:[]),
           {n:'Motivo de no entregado en punto Pick It',f:'Distribución % de causas de fallo',src:'Sistema Pick It',val:null,fmt:'pct',nota:null},
         ]},
         {cat:'Performance del Punto',color:'#C0392B',items:[
@@ -1465,21 +1470,22 @@ function renderIndicadores(prod){
       ],
       'Paqueteria E-Commerce B2C':[
         {cat:'Performance del Negocio',color:'#97BF0D',items:[
-          {n:'Facturación',f:'Suma venta normalizada (escenario Actual)',src:'Supabase · ventas',val:facUlt,fmt:'ars',nota:mesLbl},
-          {n:'Volumen',f:'Suma envíos del período',src:'Supabase · ventas',val:volUlt,fmt:'num',nota:mesLbl},
+          {n:'Facturación',f:'Suma venta normalizada (escenario Actual)',src:'Google Drive · ventas',val:facUlt,fmt:'ars',nota:mesLbl},
+          {n:'Volumen',f:'Suma envíos del período',src:'Google Drive · ventas',val:volUlt,fmt:'num',nota:mesLbl},
           {n:'Costo por envío',f:'Costo total / Total envíos',src:'ERP / Contable',val:null,fmt:'ars',nota:null},
         ]},
         {cat:'Clientes',color:'#2ECC71',items:[
-          {n:'Clientes activos',f:'Clientes con al menos un pedido en el período',src:'Supabase · ventas',val:clisUlt.size,fmt:'num',nota:mesLbl},
-          {n:'Nuevos clientes',f:'Altas de nuevos clientes en el período',src:'Supabase · ventas',val:nuevos,fmt:'num',nota:mesLbl},
+          {n:'Clientes activos',f:'Clientes con al menos un pedido en el período',src:'Google Drive · ventas',val:clisUlt.size,fmt:'num',nota:mesLbl},
+          {n:'Nuevos clientes',f:'Altas de nuevos clientes en el período',src:'Google Drive · ventas',val:nuevos,fmt:'num',nota:mesLbl},
         ]},
         {cat:'Colecta',color:'#E67E22',items:[
           {n:'Tasa colectas fallidas',f:'Colectas sin retiro / total colectas × 100',src:'Sistema operativo',val:null,fmt:'pct',nota:null},
           {n:'Tiempo solicitud → colecta',f:'Promedio horas entre solicitud y ejecución',src:'Sistema operativo',val:null,fmt:'num',nota:null},
         ]},
         {cat:'Última Milla',color:'#009CA3',items:[
-          {n:'SLA',f:'Envíos en plazo / Total × 100',src:'Supabase · sla_efectividad',val:slaVal,fmt:'pct',nota:slaLbl},
-          {n:'Efectividad',f:'Entregas exitosas / Total × 100',src:'Supabase · sla_efectividad',val:efeVal,fmt:'pct',nota:efeLbl},
+          {n:'SLA',f:'Envíos en plazo / Total × 100',src:'Google Drive · sla_efectividad',val:slaVal,fmt:'pct',nota:slaLbl},
+          {n:'Efectividad',f:'Entregas exitosas / Total × 100',src:'Google Drive · sla_efectividad',val:efeVal,fmt:'pct',nota:efeLbl},
+          ...(efec1Val!==null?[{n:'Efectividad 1ra vuelta',f:'Entregas exitosas en 1er intento / Total × 100',src:'Google Drive · sla_efectividad',val:efec1Val,fmt:'pct',nota:efec1Lbl}]:[]),
           {n:'Causas de no entrega',f:'Distribución % de motivos de fallo',src:'Sistema operativo',val:null,fmt:'pct',nota:null},
         ]},
         {cat:'Experiencia del Cliente',color:'#1ABC9C',items:[
@@ -1488,11 +1494,11 @@ function renderIndicadores(prod){
       ],
       'Distribucion Consumo Masivo y Palletizado':[
         {cat:'Performance del Negocio',color:'#97BF0D',items:[
-          {n:'Facturación',f:'Suma venta normalizada (escenario Actual)',src:'Supabase · ventas',val:facUlt,fmt:'ars',nota:mesLbl},
-          {n:'Volumen',f:'Suma envíos del período',src:'Supabase · ventas',val:volUlt,fmt:'num',nota:mesLbl},
+          {n:'Facturación',f:'Suma venta normalizada (escenario Actual)',src:'Google Drive · ventas',val:facUlt,fmt:'ars',nota:mesLbl},
+          {n:'Volumen',f:'Suma envíos del período',src:'Google Drive · ventas',val:volUlt,fmt:'num',nota:mesLbl},
           {n:'Costo por envío',f:'Costo total / Total envíos',src:'ERP / Contable',val:null,fmt:'ars',nota:null},
-          {n:'Clientes activos',f:'Clientes distintos con venta > 0',src:'Supabase · ventas',val:clisUlt.size,fmt:'num',nota:mesLbl},
-          {n:'Nuevos clientes',f:'Clientes sin actividad en mes anterior',src:'Supabase · ventas',val:nuevos,fmt:'num',nota:mesLbl},
+          {n:'Clientes activos',f:'Clientes distintos con venta > 0',src:'Google Drive · ventas',val:clisUlt.size,fmt:'num',nota:mesLbl},
+          {n:'Nuevos clientes',f:'Clientes sin actividad en mes anterior',src:'Google Drive · ventas',val:nuevos,fmt:'num',nota:mesLbl},
         ]},
         {cat:'Colecta',color:'#E67E22',items:[
           {n:'SLA colecta',f:'Colectas en plazo / total colectas × 100',src:'Sistema operativo',val:null,fmt:'pct',nota:null},
@@ -1502,8 +1508,8 @@ function renderIndicadores(prod){
           {n:'SLA Molinos',f:'Operaciones Molinos en plazo / total × 100',src:'Sistema operativo',val:null,fmt:'pct',nota:null},
         ]},
         {cat:'Última Milla',color:'#009CA3',items:[
-          {n:'SLA',f:'Entregas en plazo / Total × 100',src:'Supabase · sla_efectividad',val:slaVal,fmt:'pct',nota:slaLbl},
-          {n:'Efectividad',f:'Entregas exitosas / Total × 100',src:'Supabase · sla_efectividad',val:efeVal,fmt:'pct',nota:efeLbl},
+          {n:'SLA',f:'Entregas en plazo / Total × 100',src:'Google Drive · sla_efectividad',val:slaVal,fmt:'pct',nota:slaLbl},
+          {n:'Efectividad',f:'Entregas exitosas / Total × 100',src:'Google Drive · sla_efectividad',val:efeVal,fmt:'pct',nota:efeLbl},
         ]},
         {cat:'Rechazos y Devoluciones',color:'#C0392B',items:[
           {n:'Tasa de rechazo total',f:'Total rechazos / Total entregas × 100',src:'Sistema operativo',val:null,fmt:'pct',nota:null},
