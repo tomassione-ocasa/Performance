@@ -1572,20 +1572,20 @@ function renderIndicadores(prod){
 
     // colgroup para anchos fijos
     tbl.innerHTML='<colgroup>'+
-      '<col style="width:17%"><col style="width:28%"><col style="width:16%">'+
-      '<col style="width:16%"><col style="width:7%"><col style="width:16%">'+
+      '<col style="width:22%"><col style="width:40%">'+
+      '<col style="width:20%"><col style="width:9%"><col style="width:9%">'+
       '</colgroup>';
 
     // thead
     const thead=tbl.createTHead();
     const hr=thead.insertRow();
     hr.style.cssText='background:#f5fafa;';
-    ['Indicador','Fórmula / Definición','Fuente','Valor actual','Frec.','Estado'].forEach(function(txt,ci){
+    ['Indicador','Fórmula / Definición','Valor actual','Frec.','Estado'].forEach(function(txt,ci){
       const th=document.createElement('th');
       th.style.cssText='text-align:left;font-size:9px;font-weight:700;color:#aaa;text-transform:uppercase;letter-spacing:.5px;padding:6px 10px;border-bottom:1px solid rgba(0,0,0,.06);';
-      if(ci===2) th.className='col-fuente';
-      if(ci===4) th.className='col-frec';
-      if(ci===5) th.className='col-resp';
+      if(ci===2) th.style.textAlign='right';
+      if(ci===3) th.className='col-frec';
+      if(ci===4) th.className='col-resp';
       th.textContent=txt;
       hr.appendChild(th);
     });
@@ -1610,22 +1610,15 @@ function renderIndicadores(prod){
       const td2=mkTd('font-size:11px;color:#555;line-height:1.4;');
       td2.textContent=item.f;
 
-      // Col 3: fuente
-      const td3=mkTd('');td3.className='col-fuente';
-      const srcBadge=document.createElement('span');
-      srcBadge.style.cssText='font-size:10px;background:rgba(0,156,163,.08);padding:2px 6px;border-radius:4px;white-space:nowrap;display:inline-block;';
-      srcBadge.textContent=item.src;
-      td3.appendChild(srcBadge);
-
-      // Col 4: valor
+      // Col 3: valor
       const td4=mkTd('text-align:right;');
       td4.appendChild(fv(item.val,item.fmt,item.nota));
 
-      // Col 5: frecuencia
+      // Col 4: frecuencia
       const td5=mkTd('font-size:11px;color:var(--gray);');td5.className='col-frec';
       td5.textContent='Mensual';
 
-      // Col 6: estado
+      // Col 5: estado
       const td6=mkTd('');td6.className='col-resp';
       const stBadge=document.createElement('span');
       stBadge.style.cssText='font-size:9px;font-weight:700;padding:2px 7px;border-radius:10px;white-space:nowrap;'+
@@ -1688,12 +1681,15 @@ function renderSlaEfec(prod){
 
   const slaRows=rows.filter(r=>r.sla_pct!=null&&r.sla_pct!==''&&!isNaN(parseFloat(r.sla_pct)));
   const efecRows=rows.filter(r=>r.efectividad_pct!=null&&r.efectividad_pct!==''&&!isNaN(parseFloat(r.efectividad_pct)));
-  const hasSla=slaRows.length>0, hasEfec=efecRows.length>0;
+  const efec1Rows=rows.filter(r=>r.efectividad_1ra_vuelta!=null&&r.efectividad_1ra_vuelta!==''&&!isNaN(parseFloat(r.efectividad_1ra_vuelta)));
+  const hasSla=slaRows.length>0, hasEfec=efecRows.length>0, hasEfec1=efec1Rows.length>0;
 
   const lastSla=hasSla?Number(slaRows[slaRows.length-1].sla_pct):null;
   const lastEfec=hasEfec?Number(efecRows[efecRows.length-1].efectividad_pct):null;
+  const lastEfec1=hasEfec1?Number(efec1Rows[efec1Rows.length-1].efectividad_1ra_vuelta):null;
   const avgSla=hasSla?slaRows.reduce((a,b)=>a+Number(b.sla_pct),0)/slaRows.length:null;
   const avgEfec=hasEfec?efecRows.reduce((a,b)=>a+Number(b.efectividad_pct),0)/efecRows.length:null;
+  const avgEfec1=hasEfec1?efec1Rows.reduce((a,b)=>a+Number(b.efectividad_1ra_vuelta),0)/efec1Rows.length:null;
   const minSla=hasSla?Math.min(...slaRows.map(r=>Number(r.sla_pct))):null;
 
   // KPIs
@@ -1703,6 +1699,8 @@ function renderSlaEfec(prod){
   if(minSla!==null) kpis.innerHTML+=`<div class="sla-k"><div class="sla-kl">SLA mínimo</div><div class="sla-kv" style="color:${slaColor(minSla)}">${minSla.toFixed(1)}%</div><div class="sla-kt">peor mes</div></div>`;
   if(lastEfec!==null) kpis.innerHTML+=`<div class="sla-k"><div class="sla-kl">Efectividad último mes</div><div class="sla-kv" style="color:${slaColor(lastEfec)}">${lastEfec.toFixed(1)}%</div><div class="sla-kt">${efecRows[efecRows.length-1].mes.charAt(0)+efecRows[efecRows.length-1].mes.slice(1).toLowerCase()} ${efecRows[efecRows.length-1].anio}</div></div>`;
   if(avgEfec!==null) kpis.innerHTML+=`<div class="sla-k"><div class="sla-kl">Efectividad promedio</div><div class="sla-kv" style="color:${slaColor(avgEfec)}">${avgEfec.toFixed(1)}%</div><div class="sla-kt">${efecRows.length} meses</div></div>`;
+  if(lastEfec1!==null) kpis.innerHTML+=`<div class="sla-k"><div class="sla-kl">Efectividad 1ª vuelta último mes</div><div class="sla-kv" style="color:${slaColor(lastEfec1)}">${lastEfec1.toFixed(1)}%</div><div class="sla-kt">${efec1Rows[efec1Rows.length-1].mes.charAt(0)+efec1Rows[efec1Rows.length-1].mes.slice(1).toLowerCase()} ${efec1Rows[efec1Rows.length-1].anio}</div></div>`;
+  if(avgEfec1!==null) kpis.innerHTML+=`<div class="sla-k"><div class="sla-kl">Efectividad 1ª vuelta promedio</div><div class="sla-kv" style="color:${slaColor(avgEfec1)}">${avgEfec1.toFixed(1)}%</div><div class="sla-kt">${efec1Rows.length} meses</div></div>`;
   pc.appendChild(kpis);
 
   // Gráfico SLA
@@ -1735,14 +1733,30 @@ function renderSlaEfec(prod){
     });
   }
 
+  // Gráfico Efectividad 1ª vuelta
+  if(hasEfec1){
+    const lbls=efec1Rows.map(r=>MS[MO_IDX[r.mes]]+"'"+String(r.anio).slice(-2));
+    const vals=efec1Rows.map(r=>Number(r.efectividad_1ra_vuelta));
+    const ptCols=vals.map(v=>v>=95?'#4D7200':v>=80?'#A06800':'#C0392B');
+    const box=document.createElement('div');box.className='chart-box';
+    box.innerHTML=`<div class="chart-box-t">🚀 Efectividad 1ª Vuelta</div><div class="chart-box-s">Porcentaje de entregas exitosas en el primer intento</div><div class="chwrap"><canvas id="ch-efec1"></canvas></div>`;
+    pc.appendChild(box);
+    const refLine={id:'r95e1',afterDraw(c){const{ctx,chartArea:{left,right},scales:{y}}=c;const py=y.getPixelForValue(95);ctx.save();ctx.beginPath();ctx.strokeStyle='rgba(0,156,163,.5)';ctx.setLineDash([5,3]);ctx.lineWidth=1.5;ctx.moveTo(left,py);ctx.lineTo(right,py);ctx.stroke();ctx.restore();}};
+    requestAnimationFrame(()=>{
+      dc('ch-efec1');const el=document.getElementById('ch-efec1');
+      if(el) CI['ch-efec1']=new Chart(el.getContext('2d'),{type:'line',data:{labels:lbls,datasets:[{data:vals,borderColor:'#F29400',backgroundColor:'rgba(242,148,0,.07)',pointBackgroundColor:ptCols,pointRadius:5,tension:.3,fill:true}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.raw.toFixed(1)+'%'}}},scales:{x:{grid:{display:false},ticks:{font:{size:9}}},y:{min:0,max:100,ticks:{callback:v=>v+'%',stepSize:20},grid:{color:'rgba(0,0,0,.04)'}}}},plugins:[refLine]});
+    });
+  }
+
   // Tabla detalle mensual
   const tbl=document.createElement('div');tbl.className='ctb';
   tbl.innerHTML=`<h3>Detalle mensual · Fuente: Google Drive · sla_efectividad</h3>
-    <table class="ct"><thead><tr><th>Mes</th><th>Año</th>${hasSla?'<th style="text-align:right">SLA</th>':''}${hasEfec?'<th style="text-align:right">Efectividad</th>':''}</tr></thead>
+    <table class="ct"><thead><tr><th>Mes</th><th>Año</th>${hasSla?'<th style="text-align:right">SLA</th>':''}${hasEfec?'<th style="text-align:right">Efectividad</th>':''}${hasEfec1?'<th style="text-align:right">Efect. 1ª vuelta</th>':''}</tr></thead>
     <tbody>${rows.map(r=>{
       const s=r.sla_pct!=null&&r.sla_pct!==''?Number(r.sla_pct):null;
       const e=r.efectividad_pct!=null&&r.efectividad_pct!==''?Number(r.efectividad_pct):null;
-      return `<tr><td>${r.mes.charAt(0)+r.mes.slice(1).toLowerCase()}</td><td>${r.anio}</td>${hasSla?`<td style="text-align:right;font-weight:600;color:${s!==null?slaColor(s):'#ccc'}">${s!==null?s.toFixed(1)+'%':'—'}</td>`:''}${hasEfec?`<td style="text-align:right;font-weight:600;color:${e!==null?slaColor(e):'#ccc'}">${e!==null?e.toFixed(1)+'%':'—'}</td>`:''}</tr>`;
+      const e1=r.efectividad_1ra_vuelta!=null&&r.efectividad_1ra_vuelta!==''?Number(r.efectividad_1ra_vuelta):null;
+      return `<tr><td>${r.mes.charAt(0)+r.mes.slice(1).toLowerCase()}</td><td>${r.anio}</td>${hasSla?`<td style="text-align:right;font-weight:600;color:${s!==null?slaColor(s):'#ccc'}">${s!==null?s.toFixed(1)+'%':'—'}</td>`:''}${hasEfec?`<td style="text-align:right;font-weight:600;color:${e!==null?slaColor(e):'#ccc'}">${e!==null?e.toFixed(1)+'%':'—'}</td>`:''}${hasEfec1?`<td style="text-align:right;font-weight:600;color:${e1!==null?slaColor(e1):'#ccc'}">${e1!==null?e1.toFixed(1)+'%':'—'}</td>`:''}</tr>`;
     }).join('')}</tbody></table>`;
   pc.appendChild(tbl);
 
