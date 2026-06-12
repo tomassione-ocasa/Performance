@@ -82,7 +82,7 @@ main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
 .pp.vis{display:flex;}
 .ptop{background:#fff;border-bottom:1px solid rgba(0,0,0,.07);padding:10px 20px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;gap:12px;}
 .pi{display:flex;align-items:center;gap:11px;}
-.pnum{font-family:'Barlow Condensed',sans-serif;font-size:38px;font-weight:700;opacity:.25;line-height:1;}
+.pnum{font-family:'Barlow Condensed',sans-serif;font-size:38px;font-weight:700;opacity:.55;line-height:1;}
 .pname{font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:700;color:var(--black);}
 .pdesc{font-size:11px;color:var(--gray);margin-top:2px;max-width:400px;}
 .pmeta{display:flex;align-items:center;gap:14px;flex-shrink:0;}
@@ -402,13 +402,14 @@ main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
       <option value="SEPTIEMBRE">Septiembre</option><option value="OCTUBRE">Octubre</option>
       <option value="NOVIEMBRE">Noviembre</option><option value="DICIEMBRE">Diciembre</option>
     </select>
-    <span class="hlbl">Cliente</span>
+    <span class="hlbl">Producto</span>
     <div class="cli-wrap">
-      <input class="hsel" id="fCliInput" placeholder="Buscar…" autocomplete="off"
-        style="max-width:170px;padding-right:22px;" oninput="onCliInput()">
+      <input class="hsel" id="fProdInput" placeholder="Buscar…" autocomplete="off"
+        style="max-width:170px;padding-right:22px;" oninput="onProdInput()">
       <span class="cli-arrow">▾</span>
-      <div class="cli-drop" id="cliDrop"></div>
+      <div class="cli-drop" id="prodDrop"></div>
     </div>
+
 
     <button class="btn-ref" onclick="reloadAll()">
       <svg id="refIco" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -734,37 +735,58 @@ const OWNERS={
 let META_NUMS={
   'Bonded Warehouse – Deposito Fiscal':'01',
   'Bonded Warehouse - Deposito Fiscal':'01',
+  'Bonded Warehouse – Depósito Fiscal':'01',
+  'Bonded Warehouse - Depósito Fiscal':'01',
   'Courier Personas (Customs Clearance)':'02',
+  'Courier Personas':'02',
   'Courier Comercial':'03',
   'Courier':'03',
   'Impo aérea':'04',
   'Impo Aérea':'04',
+  'Impo aerea':'04',
+  'Impo Aerea':'04',
+  'Importación Aérea':'04',
+  'Importacion Aerea':'04',
   'Impo maritima':'05',
   'Impo Maritima':'05',
+  'Impo Marítima':'05',
+  'Importación Marítima':'05',
+  'Importacion Maritima':'05',
   'Importación Terrestre':'06',
   'Importacion Terrestre':'06',
   'Exportación Aérea':'07',
   'Exportacion Aerea':'07',
+  'Exportación Marítima':'08',
   'Exportación Maritima':'08',
   'Exportacion Maritima':'08',
+  'Exportacion Marítima':'08',
   'Exportación Terrestre':'09',
   'Exportacion Terrestre':'09',
   'Distribucion Consumo Masivo y Palletizado':'10',
   'Distribución Consumo Masivo y Paletizado':'10',
+  'Distribucion Consumo Masivo y Paletizado':'10',
+  'Distribución Consumo Masivo y Palletizado':'10',
   'Salud Distribucion':'11',
+  'Salud Distribución':'11',
   'Distribución Salud':'11',
+  'Distribucion Salud':'11',
   'Salud Warehousing':'12',
   'Warehousing Salud':'12',
   'Servicio de destrucción':'13',
   'Servicio de Destruccion':'13',
+  'Servicio de Destrucción':'13',
   'Transporte en vehículo exclusivo':'14',
   'Transporte en Vehiculo Exclusivo':'14',
+  'Transporte en Vehículo Exclusivo':'14',
   'Warehousing':'15',
   'Distribución Automotriz':'16',
   'Distribucion Automotriz':'16',
   'WHS y Transporte Minería':'17',
   'WHS y Transporte Mineria':'17',
+  'Warehousing y Transporte Mineria':'17',
+  'Warehousing y Transporte Minería':'17',
   'WHS Oil and Gas':'18',
+  'Warehousing Oil and Gas':'18',
   'Carta Documento Digital':'19',
   'Checkmail':'20',
   'Check Mail':'20',
@@ -773,6 +795,8 @@ let META_NUMS={
   'Distribucion Biggers B2C':'21',
   'Distribucion de Biggers':'21',
   'Distribución de Biggers':'21',
+  'Distribucion de Biggers B2C':'21',
+  'Distribución de Biggers B2C':'21',
   'Biggers B2C':'21',
   'Distribución de Bolsines':'22',
   'Distribucion de Bolsines':'22',
@@ -780,8 +804,11 @@ let META_NUMS={
   'Mailroom':'24',
   'Mail Room':'24',
   'Paqueteria E-Commerce B2C':'25',
+  'Paquetería E-Commerce B2C':'25',
   'Paquetería ecommerce B2C':'25',
+  'Paqueteria ecommerce B2C':'25',
   'Paqueteria y Mobiliario Corporativo':'26',
+  'Paquetería y Mobiliario Corporativo':'26',
   'Paquetería y Mobiliario corporativo':'26',
   'Postal':'27',
   'Postal Simple':'27',
@@ -797,7 +824,19 @@ let META_NUMS={
 };
 
 // ── STATE ──
-let allVentas=[], allSlaEfec=[], cur='overview', cliActual='', allClientes=[];
+let allVentas=[], allSlaEfec=[], cur='overview', prodActual='', allProductos=[];
+
+// Normaliza: minúsculas, sin tildes, espacios colapsados, trim
+function norm(s){
+  return (s||'').toString().toLowerCase()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g,'')
+    .replace(/\s+/g,' ').trim();
+}
+const META_NUMS_NORM={};
+Object.entries(META_NUMS).forEach(([k,v])=>{META_NUMS_NORM[norm(k)]=v;});
+function getNum(prod){
+  return META_NUMS[prod]||META_NUMS_NORM[norm(prod)]||'—';
+}
 
 // ── CHART HELPERS ──
 Chart.defaults.font.family="'Barlow',sans-serif";
@@ -1002,9 +1041,9 @@ async function loadAll(){
 
     allVentas=ventas;
     allSlaEfec=slaData;
-    allClientes=[...new Set(ventas.map(v=>v.cliente).filter(Boolean))].sort();
+    allProductos=[...new Set(ventas.map(v=>v.producto).filter(p=>p&&p!=='Otros'))].sort();
     buildSidebar(mats);
-    buildCliDrop('');
+    buildProdDrop('');
     gl.classList.add('hide');
     if(cur==='overview') buildOverview();
     else{ showPP(); render(cur); }
@@ -1043,31 +1082,50 @@ function filterAndRender(){
   }
 }
 
-// ── CLIENTE DROPDOWN ──
-function buildCliDrop(q){
-  const drop=document.getElementById('cliDrop');
-  const lista=q?allClientes.filter(c=>c.toLowerCase().includes(q.toLowerCase())):allClientes;
-  drop.innerHTML='<div class="cli-item all" onclick="setCli(\'\')">Todos ('+allClientes.length+')</div>';
-  lista.slice(0,100).forEach(c=>{
+// ── PRODUCTO DROPDOWN ──
+function buildProdDrop(q){
+  const drop=document.getElementById('prodDrop');
+  const lista=q?allProductos.filter(p=>p.toLowerCase().includes(q.toLowerCase())):allProductos;
+  drop.innerHTML='<div class="cli-item all" onclick="setProd(\'\')">Todos ('+allProductos.length+')</div>';
+  lista.slice(0,100).forEach(p=>{
     const d=document.createElement('div');
-    d.className='cli-item'+(c===cliActual?' sel':'');
-    d.textContent=c;
-    d.onclick=()=>setCli(c);
+    d.className='cli-item'+(p===prodActual?' sel':'');
+    const num=getNum(p);
+    d.textContent=num+' · '+p;
+    d.onclick=()=>setProd(p);
     drop.appendChild(d);
   });
 }
-function setCli(val){cliActual=val;document.getElementById('fCliInput').value=val;closeDrop();filterAndRender();}
-function onCliInput(){buildCliDrop(document.getElementById('fCliInput').value);openDrop();}
-function openDrop(){document.getElementById('cliDrop').classList.add('open');}
-function closeDrop(){document.getElementById('cliDrop').classList.remove('open');}
-document.getElementById('fCliInput').addEventListener('focus',()=>{if(allClientes.length)openDrop();});
-document.addEventListener('click',e=>{if(!e.target.closest('.cli-wrap'))closeDrop();});
+function setProd(val){
+  prodActual=val;document.getElementById('fProdInput').value=val;closeProdDrop();
+  if(val){
+    cur=val;
+    document.querySelectorAll('.ni').forEach(n=>n.classList.remove('on'));
+    const el=document.querySelector(`.ni[data-id="${val}"]`);
+    if(el)el.classList.add('on');
+    showPP();
+    document.querySelectorAll('.tab-btn').forEach(t=>t.classList.remove('on'));
+    document.querySelectorAll('.tab-panel').forEach(p=>{p.classList.remove('on');p.innerHTML='';});
+    document.querySelectorAll('.tab-full').forEach(p=>p.classList.remove('on'));
+    document.querySelector('.tab-btn[data-tab="resumen"]').classList.add('on');
+    document.getElementById('tab-resumen').classList.add('on');
+    render(val);
+    updateHeader();
+  } else {
+    filterAndRender();
+  }
+}
+function onProdInput(){buildProdDrop(document.getElementById('fProdInput').value);openProdDrop();}
+function openProdDrop(){document.getElementById('prodDrop').classList.add('open');}
+function closeProdDrop(){document.getElementById('prodDrop').classList.remove('open');}
+document.getElementById('fProdInput').addEventListener('focus',()=>{if(allProductos.length)openProdDrop();});
+document.addEventListener('click',e=>{if(!e.target.closest('.cli-wrap'))closeProdDrop();});
 
 function gv(){
   const mes=(document.getElementById('fMes')?.value||'').toUpperCase();
   const anio=document.getElementById('fAnio')?.value||'';
   return allVentas.filter(v=>
-    (!cliActual||v.cliente===cliActual)&&
+    (!prodActual||v.producto===prodActual)&&
     (!mes||v.mes===mes)&&
     (!anio||String(v.anio)===String(anio))
   );
@@ -1131,7 +1189,8 @@ function buildOverview(){
   statsEl.innerHTML+=`<div class="osc"><div class="osc-l">Total</div><div class="osc-v">${fmtARS(total)}</div><div class="osc-s">${Object.keys(META_NUMS).length} productos</div></div>`;
 
   // Para ordenar por facturación interanual: tomar TODOS los datos sin filtro de año/mes
-  const vTodos=cliActual?allVentas.filter(x=>x.cliente===cliActual):allVentas;
+  let vTodos=allVentas;
+  if(prodActual) vTodos=vTodos.filter(x=>x.producto===prodActual);
   const byP={};
   vTodos.forEach(x=>{
     const p=x.producto;if(!byP[p])byP[p]={fac:0,vol:0,cli:new Set(),anio:x.anio||2025};
@@ -1152,7 +1211,7 @@ function buildOverview(){
 
   const grid=document.getElementById('og');grid.innerHTML='';
   // Ordenar por facturación interanual (último mes 2026 + mismo mes 2025)
-  const prodsSorted=Object.entries(META_NUMS).filter(([prod])=>byP[prod]&&byP[prod].fac>0).sort((a,b)=>facInteranual(b[0])-facInteranual(a[0]));
+  const prodsSorted=Object.keys(byP).filter(prod=>byP[prod]&&byP[prod].fac>0&&(!prodActual||prod===prodActual)).map(prod=>[prod,getNum(prod)]).sort((a,b)=>facInteranual(b[0])-facInteranual(a[0]));
   prodsSorted.forEach(([prod,num])=>{
     const d=byP[prod]||{fac:0,vol:0,cli:new Set(),anio:2025};
     const bc=colorAnio(d.anio);
@@ -1178,6 +1237,7 @@ function go(id,el){
   if(el)el.classList.add('on');
   cur=id;
   if(id==='overview'){buildOverview();return;}
+  if(prodActual&&prodActual!==id){prodActual='';document.getElementById('fProdInput').value='';buildProdDrop('');}
   showPP();
   // reset tabs
   document.querySelectorAll('.tab-btn').forEach(t=>t.classList.remove('on'));
@@ -1212,7 +1272,7 @@ function switchTab(tab,el){
 
 // ── RENDER PRODUCT ──
 function render(prod){
-  const num=META_NUMS[prod]||'—';
+  const num=getNum(prod);
   const v=gv().filter(x=>x.producto===prod);
   const fac=v.reduce((a,b)=>a+(Number(b.venta_norm)||0),0);
   const vol=v.reduce((a,b)=>a+(Number(b.cantidad)||0),0);
@@ -1264,7 +1324,7 @@ function renderResumen(prod,v,fac,vol,clis){
 
   // ── Calcular comparativas dinámicas ──
   // Obtener todos los datos del producto sin filtro de año/mes para comparativas
-  const vProdTodos=(cliActual?allVentas.filter(x=>x.cliente===cliActual):allVentas).filter(x=>x.producto===prod);
+  const vProdTodos=allVentas.filter(x=>x.producto===prod);
   const MO_IDX2=Object.fromEntries(MO.map((m,i)=>[m,i]));
   // Meses disponibles ordenados
   const mesesDisp2=[...new Set(vProdTodos.map(x=>x.anio+'|'+x.mes))]
