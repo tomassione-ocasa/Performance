@@ -1152,7 +1152,7 @@ function buildOverview(){
 
   const grid=document.getElementById('og');grid.innerHTML='';
   // Ordenar por facturación interanual (último mes 2026 + mismo mes 2025)
-  const prodsSorted=Object.entries(META_NUMS).sort((a,b)=>facInteranual(b[0])-facInteranual(a[0]));
+  const prodsSorted=Object.entries(META_NUMS).filter(([prod])=>byP[prod]&&byP[prod].fac>0).sort((a,b)=>facInteranual(b[0])-facInteranual(a[0]));
   prodsSorted.forEach(([prod,num])=>{
     const d=byP[prod]||{fac:0,vol:0,cli:new Set(),anio:2025};
     const bc=colorAnio(d.anio);
