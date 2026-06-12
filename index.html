@@ -409,7 +409,13 @@ main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
       <span class="cli-arrow">▾</span>
       <div class="cli-drop" id="prodDrop"></div>
     </div>
-
+    <span class="hlbl">Cliente</span>
+    <div class="cli-wrap">
+      <input class="hsel" id="fCliInput" placeholder="Buscar…" autocomplete="off"
+        style="max-width:170px;padding-right:22px;" oninput="onCliInput()">
+      <span class="cli-arrow">▾</span>
+      <div class="cli-drop" id="cliDrop"></div>
+    </div>
 
     <button class="btn-ref" onclick="reloadAll()">
       <svg id="refIco" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -824,7 +830,7 @@ let META_NUMS={
 };
 
 // ── STATE ──
-let allVentas=[], allSlaEfec=[], cur='overview', prodActual='', allProductos=[];
+let allVentas=[], allSlaEfec=[], cur='overview', prodActual='', allProductos=[], cliActual='', allClientes=[];
 
 // Normaliza: minúsculas, sin tildes, espacios colapsados, trim
 function norm(s){
@@ -1042,6 +1048,7 @@ async function loadAll(){
     allVentas=ventas;
     allSlaEfec=slaData;
     allProductos=[...new Set(ventas.map(v=>v.producto).filter(p=>p&&p!=='Otros'))].sort();
+    allClientes=[...new Set(ventas.map(v=>v.cliente).filter(Boolean))].sort();
     buildSidebar(mats);
     buildProdDrop('');
     gl.classList.add('hide');
@@ -1119,13 +1126,31 @@ function onProdInput(){buildProdDrop(document.getElementById('fProdInput').value
 function openProdDrop(){document.getElementById('prodDrop').classList.add('open');}
 function closeProdDrop(){document.getElementById('prodDrop').classList.remove('open');}
 document.getElementById('fProdInput').addEventListener('focus',()=>{if(allProductos.length)openProdDrop();});
-document.addEventListener('click',e=>{if(!e.target.closest('.cli-wrap'))closeProdDrop();});
+
+function buildCliDrop(q){
+  const drop=document.getElementById('cliDrop');
+  const lista=q?allClientes.filter(c=>c.toLowerCase().includes(q.toLowerCase())):allClientes;
+  drop.innerHTML='<div class="cli-item all" onclick="setCli(\'\')">Todos ('+allClientes.length+')</div>';
+  lista.slice(0,80).forEach(c=>{
+    const d=document.createElement('div');
+    d.textContent=c;d.className='cli-item'+(c===cliActual?' sel':'');
+    d.onclick=()=>setCli(c);drop.appendChild(d);
+  });
+}
+function setCli(val){cliActual=val;document.getElementById('fCliInput').value=val;closeCliDrop();filterAndRender();}
+function onCliInput(){buildCliDrop(document.getElementById('fCliInput').value);openCliDrop();}
+function openCliDrop(){document.getElementById('cliDrop').classList.add('open');}
+function closeCliDrop(){document.getElementById('cliDrop').classList.remove('open');}
+document.getElementById('fCliInput').addEventListener('focus',()=>{if(allClientes.length){buildCliDrop('');openCliDrop();}});
+
+document.addEventListener('click',e=>{if(!e.target.closest('.cli-wrap')){closeProdDrop();closeCliDrop();}});
 
 function gv(){
   const mes=(document.getElementById('fMes')?.value||'').toUpperCase();
   const anio=document.getElementById('fAnio')?.value||'';
   return allVentas.filter(v=>
     (!prodActual||v.producto===prodActual)&&
+    (!cliActual||v.cliente===cliActual)&&
     (!mes||v.mes===mes)&&
     (!anio||String(v.anio)===String(anio))
   );
@@ -1238,6 +1263,9 @@ function go(id,el){
   cur=id;
   if(id==='overview'){buildOverview();return;}
   if(prodActual&&prodActual!==id){prodActual='';document.getElementById('fProdInput').value='';buildProdDrop('');}
+  // Actualizar dropdown de clientes con los del producto seleccionado
+  allClientes=[...new Set(allVentas.filter(x=>x.producto===id).map(v=>v.cliente).filter(Boolean))].sort();
+  cliActual='';document.getElementById('fCliInput').value='';buildCliDrop('');
   showPP();
   // reset tabs
   document.querySelectorAll('.tab-btn').forEach(t=>t.classList.remove('on'));
@@ -1324,7 +1352,7 @@ function renderResumen(prod,v,fac,vol,clis){
 
   // ── Calcular comparativas dinámicas ──
   // Obtener todos los datos del producto sin filtro de año/mes para comparativas
-  const vProdTodos=allVentas.filter(x=>x.producto===prod);
+  const vProdTodos=allVentas.filter(x=>x.producto===prod&&(!cliActual||x.cliente===cliActual));
   const MO_IDX2=Object.fromEntries(MO.map((m,i)=>[m,i]));
   // Meses disponibles ordenados
   const mesesDisp2=[...new Set(vProdTodos.map(x=>x.anio+'|'+x.mes))]
@@ -1460,7 +1488,7 @@ function renderIndicadores(prod){
   const pc=document.getElementById('tab-indicadores');
   pc.innerHTML='';
 
-  const vProd=allVentas.filter(x=>x.producto===prod&&x.escenario==='Actual');
+  const vProd=allVentas.filter(x=>x.producto===prod&&x.escenario==='Actual'&&(!cliActual||x.cliente===cliActual));
   const MO_I=Object.fromEntries(MO.map((m,i)=>[m,i]));
   const mesesDisp=[...new Set(vProd.map(x=>x.anio+'|'+x.mes))].sort((a,b)=>{
     const[ya,ma]=a.split('|');const[yb,mb]=b.split('|');
@@ -1939,7 +1967,7 @@ function renderPBI(prod){
 // ── COMPARATIVA ──
 function renderComparativa(prod){
   const pc=document.getElementById('tab-comparativa');
-  const v=allVentas.filter(x=>x.producto===prod&&x.escenario==='Actual');
+  const v=allVentas.filter(x=>x.producto===prod&&x.escenario==='Actual'&&(!cliActual||x.cliente===cliActual));
   if(!v.length){pc.innerHTML='<div class="nodatabadge">Sin datos.</div>';return;}
 
   // Calcular dinámicamente el último mes disponible en 2026
@@ -2029,7 +2057,7 @@ function renderComparativa(prod){
 // ── RANKING ──
 function renderRanking(prod){
   const pc=document.getElementById('tab-ranking');
-  const v=allVentas.filter(x=>x.producto===prod&&x.escenario==='Actual');
+  const v=allVentas.filter(x=>x.producto===prod&&x.escenario==='Actual'&&(!cliActual||x.cliente===cliActual));
   if(!v.length){pc.innerHTML='<div class="nodatabadge">Sin datos.</div>';return;}
   const years=[...new Set(v.map(x=>x.anio))].sort();
   const yr2=years[years.length-1];
