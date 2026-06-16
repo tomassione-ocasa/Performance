@@ -540,6 +540,7 @@ const ID_MATERIALES='18DvuTpU8aY0PzAu0jIBQAf1IKzqep_7Q0SkMKHrqp-o';
 const ID_SLA='14oWS4N8_r8tYWi93nnsQ6HwD2LfM0yb7-O25kjMaUKc';
 const ID_KPIS='1xjh0quAo6y7ZCjWL5-qI1N2mgE7yq2lwGYT6iBhPnvI';
 const ID_MOTIVOS='1-VccjQJTRR16fL_JqlIiyRoBIQw9LmZlizFCLp-Qqu0';
+const ID_PICKIT_VOL='16TWKmyh55EeyPIBxNWI0TGNFytRKgS1kHFu6gVJ-to4';
 const PBI_REPORT_URL='https://app.powerbi.com/groups/me/reports/2ea1b575-1feb-4464-8a24-dac0ac0387e1/d050495042d3d060d741?ctid=91a5b5c8-673e-4a80-871c-5ed3412dd451&experience=power-bi';
 const PBI_MARGEN_URL='https://app.powerbi.com/reportEmbed?reportId=14350c8e-8242-4d38-91b6-738e082417de&autoAuth=true&ctid=91a5b5c8-673e-4a80-871c-5ed3412dd451';
 const MO=['ENERO','FEBRERO','MARZO','ABRIL','MAYO','JUNIO','JULIO','AGOSTO','SEPTIEMBRE','OCTUBRE','NOVIEMBRE','DICIEMBRE'];
@@ -834,7 +835,7 @@ let META_NUMS={
 };
 
 // ── STATE ──
-let allVentas=[], allSlaEfec=[], allKpisAd=[], allMotivos=[], cur='overview', prodActual='', allProductos=[], cliActual='', allClientes=[];
+let allVentas=[], allSlaEfec=[], allKpisAd=[], allMotivos=[], allPickitVol=[], cur='overview', prodActual='', allProductos=[], cliActual='', allClientes=[];
 
 // Normaliza: minúsculas, sin tildes, espacios colapsados, trim
 function norm(s){
@@ -1049,6 +1050,13 @@ async function loadAll(){
     }
     catch(e){ console.warn('motivos_noentrega error:',e.message); }
 
+    let pickitVolData=[];
+    try{
+      pickitVolData=await sheetFetch(ID_PICKIT_VOL,'pickit_volumen');
+      console.log('pickit_volumen cargado: '+pickitVolData.length+' filas');
+    }
+    catch(e){ console.warn('pickit_volumen error:',e.message); }
+
     const PROD_ALIAS={
       'Entrega en un Punto':'Entrega en Punto Pickit',
       'Entrega en Un Punto':'Entrega en Punto Pickit',
@@ -1076,6 +1084,7 @@ async function loadAll(){
     allSlaEfec=slaData;
     allKpisAd=kpisData;
     allMotivos=motivosData;
+    allPickitVol=pickitVolData;
     allProductos=[...new Set(ventas.map(v=>v.producto).filter(p=>p&&p!=='Otros'))].sort();
     allClientes=[...new Set(ventas.map(v=>v.cliente).filter(Boolean))].sort();
     buildSidebar(mats);
@@ -1233,7 +1242,7 @@ function buildOverview(){
   } else { banner.style.display='none'; }
 
   const byUN={};
-  v.forEach(x=>{byUN[x.unidad_negocio||'Otros']=(byUN[x.unidad_negocio||'Otros']||0)+(Number(x.venta_norm)||0);});
+  v.filter(x=>x.producto!=='Entrega en Punto Pickit').forEach(x=>{byUN[x.unidad_negocio||'Otros']=(byUN[x.unidad_negocio||'Otros']||0)+(Number(x.venta_norm)||0);});
   const statsEl=document.getElementById('ovStats');
   statsEl.innerHTML='';
   let total=0; Object.values(byUN).forEach(x=>total+=x);
@@ -1265,7 +1274,7 @@ function buildOverview(){
 
   const grid=document.getElementById('og');grid.innerHTML='';
   // Ordenar por facturación interanual (último mes 2026 + mismo mes 2025)
-  const prodsSorted=Object.keys(byP).filter(prod=>byP[prod]&&byP[prod].fac>0&&(!prodActual||prod===prodActual)).map(prod=>[prod,getNum(prod)]).sort((a,b)=>facInteranual(b[0])-facInteranual(a[0]));
+  const prodsSorted=Object.keys(byP).filter(prod=>byP[prod]&&byP[prod].fac>0&&prod!=='Entrega en Punto Pickit'&&(!prodActual||prod===prodActual)).map(prod=>[prod,getNum(prod)]).sort((a,b)=>facInteranual(b[0])-facInteranual(a[0]));
   prodsSorted.forEach(([prod,num])=>{
     const d=byP[prod]||{fac:0,vol:0,cli:new Set(),anio:2025};
     const bc=colorAnio(d.anio);
@@ -1414,6 +1423,24 @@ function renderResumen(prod,v,fac,vol,clis){
   }
 
   const mrow=document.createElement('div');mrow.className='mrow';
+  if(prod==='Entrega en Punto Pickit'){
+    const MES_MAP_R={ene:'ENERO',feb:'FEBRERO',mar:'MARZO',abr:'ABRIL',may:'MAYO',jun:'JUNIO',jul:'JULIO',ago:'AGOSTO',sep:'SEPTIEMBRE',oct:'OCTUBRE',nov:'NOVIEMBRE',dic:'DICIEMBRE'};
+    const fMesFilt=(document.getElementById('fMes')?.value||'').toUpperCase();
+    const pvFiltered=allPickitVol.filter(r=>{
+      const m=String(r['Mes ']||r['Mes']||'').trim().toLowerCase();
+      if(!m||m==='total general') return false;
+      const mn=MES_MAP_R[m]||m.toUpperCase();
+      return !fMesFilt||mn===fMesFilt;
+    });
+    const pvAll=allPickitVol.filter(r=>{const m=String(r['Mes ']||r['Mes']||'').trim().toLowerCase();return m&&m!=='total general';});
+    const pvLast=pvAll[pvAll.length-1];
+    const pvVolTotal=pvFiltered.length?pvFiltered.reduce((a,b)=>a+(Number(b['Volumen'])||0),0):(pvLast?Number(pvLast['Volumen'])||0:0);
+    const pvLbl=pvLast?String(pvLast['Mes ']||pvLast['Mes']||'').trim():'';
+    mrow.innerHTML=`
+      <div class="mc"><div class="mc-l">Volumen</div><div class="mc-v">${Math.round(pvVolTotal).toLocaleString()}</div><div class="mc-s">Envíos en punto Pick It · ${pvLbl}</div></div>
+      ${lastSla!==null?`<div class="mc" style="border-top-color:${slaColor(lastSla)}"><div class="mc-l">SLA último mes</div><div class="mc-v" style="color:${slaColor(lastSla)}">${lastSla.toFixed(1)}%</div><div class="mc-s">Cumplimiento</div></div>`:''}
+      ${lastEfec!==null?`<div class="mc" style="border-top-color:${slaColor(lastEfec)}"><div class="mc-l">Efectividad último mes</div><div class="mc-v" style="color:${slaColor(lastEfec)}">${lastEfec.toFixed(1)}%</div><div class="mc-s">Entrega exitosa</div></div>`:''}`;
+  } else {
   mrow.innerHTML=`
     <div class="mc"><div class="mc-l">Facturación</div><div class="mc-v">${fmtARS(fac)}</div><div class="mc-s">Venta normalizada</div></div>
     <div class="mc"><div class="mc-l">Volumen</div><div class="mc-v">${Math.round(vol).toLocaleString()}</div><div class="mc-s">Unidades</div></div>
@@ -1421,10 +1448,11 @@ function renderResumen(prod,v,fac,vol,clis){
     ${lastSla!==null?`<div class="mc" style="border-top-color:${slaColor(lastSla)}"><div class="mc-l">SLA último mes</div><div class="mc-v" style="color:${slaColor(lastSla)}">${lastSla.toFixed(1)}%</div><div class="mc-s">Cumplimiento</div></div>`:''}
     ${lastEfec!==null?`<div class="mc" style="border-top-color:${slaColor(lastEfec)}"><div class="mc-l">Efectividad último mes</div><div class="mc-v" style="color:${slaColor(lastEfec)}">${lastEfec.toFixed(1)}%</div><div class="mc-s">Entrega exitosa</div></div>`:''}
     ${top1?`<div class="mc"><div class="mc-l">Top cliente</div><div class="mc-v" style="font-size:15px">${fmtARS(top1[1])}</div><div class="mc-s">${top1[0]}</div></div>`:''}`;
+  }
   pc.appendChild(mrow);
 
   // ── Tarjetas comparativas ──
-  if(fUlt26!==null||fMismo25!==null||fAnt26!==null){
+  if(prod!=='Entrega en Punto Pickit'&&(fUlt26!==null||fMismo25!==null||fAnt26!==null)){
     const compRow=document.createElement('div');
     compRow.style.cssText='display:grid;grid-template-columns:1fr 1fr;gap:12px;';
 
@@ -1475,10 +1503,24 @@ function renderResumen(prod,v,fac,vol,clis){
   }
 
   // Gráficos fac + vol
+  const isPickit=prod==='Entrega en Punto Pickit';
   const byAM={};
-  v.forEach(x=>{const k=x.anio+'|'+(x.mes||'').toUpperCase();byAM[k]=(byAM[k]||0)+(Number(x.venta_norm)||0);});
+  if(!isPickit) v.forEach(x=>{const k=x.anio+'|'+(x.mes||'').toUpperCase();byAM[k]=(byAM[k]||0)+(Number(x.venta_norm)||0);});
   const sorted=Object.entries(byAM).map(([k,val])=>({anio:parseInt(k),mes:k.split('|')[1],val})).filter(x=>MO.includes(x.mes)).sort((a,b)=>a.anio!==b.anio?a.anio-b.anio:MO.indexOf(a.mes)-MO.indexOf(b.mes));
-  if(sorted.length){
+
+  if(isPickit){
+    // Para Pickit: solo gráfico de volumen mensual desde la planilla Drive
+    const MES_MAP_G={ene:'ENE',feb:'FEB',mar:'MAR',abr:'ABR',may:'MAY',jun:'JUN',jul:'JUL',ago:'AGO',sep:'SEP',oct:'OCT',nov:'NOV',dic:'DIC'};
+    const pvRows=allPickitVol.filter(r=>{const m=String(r['Mes ']||r['Mes']||'').trim().toLowerCase();return m&&m!=='total general';});
+    if(pvRows.length){
+      const pvLbls=pvRows.map(r=>MES_MAP_G[String(r['Mes ']||r['Mes']||'').trim().toLowerCase()]||'');
+      const pvVals=pvRows.map(r=>Number(r['Volumen'])||0);
+      const cg=document.createElement('div');cg.style.cssText='background:#fff;border:1px solid rgba(0,0,0,.07);border-radius:10px;padding:14px;';
+      cg.innerHTML=`<div style="font-family:Barlow Condensed,sans-serif;font-size:13px;font-weight:700;margin-bottom:3px">Volumen mensual 2026</div><div style="font-size:10px;color:var(--gray);margin-bottom:8px">Envíos en punto Pick It</div><div style="position:relative;height:200px"><canvas id="cv-pickit"></canvas></div>`;
+      pc.appendChild(cg);
+      requestAnimationFrame(()=>mkChart('cv-pickit','bar',pvLbls,[{data:pvVals,backgroundColor:'rgba(0,156,163,.75)',borderRadius:4}],{}));
+    }
+  } else if(sorted.length){
     const lbls=sorted.map(x=>MS[MO.indexOf(x.mes)]+"'"+String(x.anio).slice(-2));
     const vals=sorted.map(x=>+(x.val/1e6).toFixed(1));
     const cols=sorted.map(x=>x.anio>=2026?'rgba(151,191,13,.8)':'rgba(242,148,0,.8)');
@@ -1496,13 +1538,16 @@ function renderResumen(prod,v,fac,vol,clis){
   }
 
   // Top clientes
+  const CLI_ALIAS=isPickit?{'PICK IT ARGENTINA':'Adidas entrega en punto'}:{};
   const byC={};
-  v.forEach(x=>{if(!x.cliente)return;byC[x.cliente]=(byC[x.cliente]||0)+(Number(x.venta_norm)||0);});
+  v.forEach(x=>{if(!x.cliente)return;const cn=CLI_ALIAS[x.cliente]||x.cliente;byC[cn]=(byC[cn]||0)+(Number(x.venta_norm)||0);});
   const topC=Object.entries(byC).sort((a,b)=>b[1]-a[1]).slice(0,8);
   if(topC.length){
     const ct=document.createElement('div');ct.className='ctb';
-    ct.innerHTML=`<h3>Top Clientes</h3><table class="ct"><thead><tr><th>Cliente</th><th style="text-align:right">Facturación</th></tr></thead><tbody>
-      ${topC.map(([n,f],i)=>`<tr><td>${i+1}. ${n}</td><td style="text-align:right;font-weight:600;color:var(--teal)">${fmtARS(f)}</td></tr>`).join('')}</tbody></table>`;
+    const colHdr=isPickit?'Volumen':'Facturación';
+    const pickitTotalVol=isPickit?allPickitVol.filter(r=>{const m=String(r['Mes ']||r['Mes']||'').trim().toLowerCase();return m&&m!=='total general';}).reduce((a,b)=>a+(Number(b['Volumen'])||0),0):0;
+    ct.innerHTML=`<h3>Top Clientes</h3><table class="ct"><thead><tr><th>Cliente</th><th style="text-align:right">${colHdr}</th></tr></thead><tbody>
+      ${topC.map(([n,f],i)=>`<tr><td>${i+1}. ${n}</td><td style="text-align:right;font-weight:600;color:var(--teal)">${isPickit?Math.round(pickitTotalVol).toLocaleString('es-AR'):fmtARS(f)}</td></tr>`).join('')}</tbody></table>`;
     pc.appendChild(ct);
   }
 
@@ -1557,8 +1602,13 @@ function renderIndicadores(prod){
   const mesLbl=ultM?(ultM.charAt(0)+ultM.slice(1).toLowerCase()+' '+ultA):'—';
 
   function fv(val,fmt,nota){
-    const ok=val!==null&&val!==undefined&&!isNaN(val);
     const d=document.createElement('div');
+    if(fmt==='txt'){
+      d.style.cssText='font-weight:600;font-size:12px;color:#333';
+      d.textContent=val||'—';
+      return d;
+    }
+    const ok=val!==null&&val!==undefined&&!isNaN(val);
     if(!ok){
       d.style.cssText='color:#bbb;font-size:11px';d.textContent='Sin datos';
       return d;
@@ -1626,11 +1676,25 @@ function renderIndicadores(prod){
           {n:'Tasa de retiro efectivo',f:'Paquetes retirados / total disponibles en punto × 100',src:'Sistema Pick It',val:null,fmt:'pct',nota:null},
         ]},
       ],
-      'Entrega en Punto Pickit':[
+      'Entrega en Punto Pickit':(()=>{
+        const MES_MAP={ene:'ENERO',feb:'FEBRERO',mar:'MARZO',abr:'ABRIL',may:'MAYO',jun:'JUNIO',jul:'JULIO',ago:'AGOSTO',sep:'SEPTIEMBRE',oct:'OCTUBRE',nov:'NOVIEMBRE',dic:'DICIEMBRE'};
+        const fMes=(document.getElementById('fMes')?.value||'').toUpperCase();
+        const fAnio=document.getElementById('fAnio')?.value||'';
+        const pvRows=allPickitVol.filter(r=>{
+          const m=String(r['Mes ']||r['Mes']||'').trim().toLowerCase();
+          if(!m||m==='total general') return false;
+          const mesNorm=MES_MAP[m]||m.toUpperCase();
+          if(fMes&&mesNorm!==fMes) return false;
+          return true;
+        });
+        const pickitVolTotal=pvRows.reduce((a,b)=>a+(Number(b['Volumen'])||0),0);
+        const pvAll=allPickitVol.filter(r=>{const m=String(r['Mes ']||r['Mes']||'').trim().toLowerCase();return m&&m!=='total general';});
+        const pvLast=pvAll[pvAll.length-1];
+        const pvLbl=pvLast?String(pvLast['Mes ']||pvLast['Mes']||'').trim():'';
+        const pickitVolDisp=pvRows.length>0?pickitVolTotal:(pvLast?Number(pvLast['Volumen'])||0:null);
+        return [
         {cat:'Performance del Negocio',color:'#97BF0D',items:[
-          {n:'Facturación',f:'Suma venta normalizada (escenario Actual)',src:'Google Drive · ventas',val:facUlt,fmt:'ars',nota:mesLbl},
-          {n:'Volumen',f:'Suma unidades del período',src:'Google Drive · ventas',val:volUlt,fmt:'num',nota:mesLbl},
-          {n:'Clientes activos',f:'Clientes distintos con venta > 0',src:'Google Drive · ventas',val:clisUlt.size,fmt:'num',nota:mesLbl},
+          {n:'Volumen',f:'Envíos entregados en punto Pick It',src:'Google Drive · pickit_volumen',val:pickitVolDisp,fmt:'num',nota:pvLbl||mesLbl},
         ]},
         {cat:'Entrega en el Punto',color:'#009CA3',items:[
           {n:'Efectividad',f:'Entregas exitosas en punto / Total envíos a punto × 100',src:'Google Drive · sla_efectividad',val:efeVal,fmt:'pct',nota:efeLbl},
@@ -1646,7 +1710,7 @@ function renderIndicadores(prod){
         {cat:'Experiencia del Buyer',color:'#1ABC9C',items:[
           {n:'Tasa de retiro efectivo',f:'Paquetes retirados / total disponibles en punto × 100',src:'Sistema Pick It',val:null,fmt:'pct',nota:null},
         ]},
-      ],
+        ];})(),
       'Paqueteria E-Commerce B2C':[
         {cat:'Performance del Negocio',color:'#97BF0D',items:[
           {n:'Facturación',f:'Suma venta normalizada (escenario Actual)',src:'Google Drive · ventas',val:facUlt,fmt:'ars',nota:mesLbl},
@@ -2037,6 +2101,7 @@ function renderPBI(prod){
 // ── COMPARATIVA ──
 function renderComparativa(prod){
   const pc=document.getElementById('tab-comparativa');
+  if(prod==='Entrega en Punto Pickit'){pc.innerHTML='<div class="nodatabadge">Sin datos de facturación para comparativa.</div>';return;}
   const v=allVentas.filter(x=>x.producto===prod&&x.escenario==='Actual'&&(!cliActual||x.cliente===cliActual));
   if(!v.length){pc.innerHTML='<div class="nodatabadge">Sin datos.</div>';return;}
 
@@ -2127,12 +2192,14 @@ function renderComparativa(prod){
 // ── RANKING ──
 function renderRanking(prod){
   const pc=document.getElementById('tab-ranking');
+  if(prod==='Entrega en Punto Pickit'){pc.innerHTML='<div class="nodatabadge">Sin datos de facturación para ranking.</div>';return;}
   const v=allVentas.filter(x=>x.producto===prod&&x.escenario==='Actual'&&(!cliActual||x.cliente===cliActual));
   if(!v.length){pc.innerHTML='<div class="nodatabadge">Sin datos.</div>';return;}
   const years=[...new Set(v.map(x=>x.anio))].sort();
   const yr2=years[years.length-1];
+  const CLI_ALIAS_RANK=prod==='Entrega en Punto Pickit'?{'PICK IT ARGENTINA':'Adidas entrega en punto'}:{};
   const byC2={};
-  v.filter(x=>x.anio===yr2).forEach(x=>{if(!x.cliente)return;byC2[x.cliente]=(byC2[x.cliente]||0)+(Number(x.venta_norm)||0);});
+  v.filter(x=>x.anio===yr2).forEach(x=>{if(!x.cliente)return;const cn=CLI_ALIAS_RANK[x.cliente]||x.cliente;byC2[cn]=(byC2[cn]||0)+(Number(x.venta_norm)||0);});
   const sorted=Object.entries(byC2).sort((a,b)=>b[1]-a[1]).filter(([,x])=>x>0);
   if(!sorted.length){pc.innerHTML='<div class="nodatabadge">Sin datos para '+yr2+'.</div>';return;}
   const top20=sorted.slice(0,20),maxF=top20[0][1];
