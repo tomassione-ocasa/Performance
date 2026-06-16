@@ -827,6 +827,8 @@ let META_NUMS={
   'Colecta en Punto Drop off':'30',
   'Colecta en Punto Drop Off':'30',
   'Entrega en Punto Pickit':'31',
+  'Entrega en un Punto':'31',
+  'Entrega en Un Punto':'31',
   'Cross Docking':'32',
   'Crossdocking':'32',
 };
@@ -1047,6 +1049,21 @@ async function loadAll(){
     }
     catch(e){ console.warn('motivos_noentrega error:',e.message); }
 
+    const PROD_ALIAS={
+      'Entrega en un Punto':'Entrega en Punto Pickit',
+      'Entrega en Un Punto':'Entrega en Punto Pickit',
+      'entrega en un punto':'Entrega en Punto Pickit',
+      'Distribucion Consumo Masivo y Paletizado':'Distribucion Consumo Masivo y Palletizado',
+      'Distribucion Salud':'Salud Distribucion',
+      'Distribucion Salud ':'Salud Distribucion',
+      'Warehousing Salud':'Salud Warehousing',
+      'Postal Simple':'Postal',
+      'Checkmail':'Check Mail',
+      'Distribucion de Biggers B2C':'Distribucion de Biggers',
+      'Courier Personas':'Courier Personas (Customs Clearance)',
+    };
+    // Normalizar nombres en materiales (afecta sidebar + matMap)
+    mats.forEach(m=>{ m.producto=PROD_ALIAS[m.producto]||m.producto; });
     const matMap={};
     mats.forEach(m=>{matMap[m.cod_material]={producto:m.producto,owner:m.owner,unidad_negocio:m.unidad_negocio};});
     ventas.forEach(v=>{
