@@ -1032,6 +1032,12 @@ async function loadAll(){
     let slaData=[];
     try{
       slaData=await sheetFetch(ID_SLA,'sla_efectividad');
+      // Normalizar nombres de columna con espacios/mayúsculas → snake_case
+      slaData=slaData.map(r=>{
+        const n={};
+        Object.keys(r).forEach(k=>{n[k.toLowerCase().replace(/ /g,'_')]=r[k];});
+        return n;
+      });
       console.log('sla_efectividad cargada: '+slaData.length+' filas');
     }
     catch(e){ console.warn('sla_efectividad error:',e.message); }
@@ -1719,6 +1725,13 @@ function renderIndicadores(prod){
         const pvLast=pvAll[pvAll.length-1];
         const pvLbl=pvLast?String(pvLast['Mes ']||pvLast['Mes']||'').trim():'';
         const pickitVolDisp=pvRows.length>0?pickitVolTotal:(pvLast?Number(pvLast['Volumen'])||0:null);
+        // Efectividad en pp y vencidos desde sla_efectividad
+        const ppRows=slaP.filter(r=>r.efectividad_en_pp!=null&&r.efectividad_en_pp!=='');
+        const vcRows=slaP.filter(r=>r.vencidos_en_pp!=null&&r.vencidos_en_pp!=='');
+        const ppVal=ppRows.length?Number(ppRows[ppRows.length-1].efectividad_en_pp):null;
+        const ppLbl=ppRows.length?(ppRows[ppRows.length-1].mes.charAt(0)+ppRows[ppRows.length-1].mes.slice(1).toLowerCase()+' '+ppRows[ppRows.length-1].anio):'';
+        const vcVal=vcRows.length?Number(vcRows[vcRows.length-1].vencidos_en_pp):null;
+        const vcLbl=vcRows.length?(vcRows[vcRows.length-1].mes.charAt(0)+vcRows[vcRows.length-1].mes.slice(1).toLowerCase()+' '+vcRows[vcRows.length-1].anio):'';
         return [
         {cat:'Performance del Negocio',color:'#97BF0D',items:[
           {n:'Volumen',f:'Envíos entregados en punto Pick It',src:'Google Drive · pickit_volumen',val:pickitVolDisp,fmt:'num',nota:pvLbl||mesLbl},
@@ -1727,15 +1740,6 @@ function renderIndicadores(prod){
           {n:'Efectividad',f:'Entregas exitosas en punto / Total envíos a punto × 100',src:'Google Drive · sla_efectividad',val:efeVal,fmt:'pct',nota:efeLbl},
           {n:'SLA',f:'Envíos entregados en plazo / Total × 100',src:'Google Drive · sla_efectividad',val:slaVal,fmt:'pct',nota:slaLbl},
           {n:'Efectividad 1ra vuelta',f:'Entregas exitosas en 1er intento / Total × 100',src:'Google Drive · sla_efectividad',val:efec1Val,fmt:'pct',nota:efec1Lbl},
-          {n:'Motivo de no entregado en punto Pick It',f:'Distribución % de causas de fallo',src:'Sistema Pick It',val:null,fmt:'pct',nota:null},
-        ]},
-        {cat:'Performance del Punto',color:'#C0392B',items:[
-          {n:'Tasa paquetes vencidos',f:'Paquetes > plazo máximo sin retiro / total en punto × 100',src:'Sistema Pick It',val:null,fmt:'pct',nota:null},
-          {n:'Incidentes en punto',f:'Cantidad de incidentes reportados en puntos',src:'Sistema Pick It',val:null,fmt:'num',nota:null},
-          {n:'Equipos sin actualización de red',f:'% equipos que no están en la red activa de Pick It',src:'Sistema Pick It',val:null,fmt:'pct',nota:null},
-        ]},
-        {cat:'Experiencia del Buyer',color:'#1ABC9C',items:[
-          {n:'Tasa de retiro efectivo',f:'Paquetes retirados / total disponibles en punto × 100',src:'Sistema Pick It',val:null,fmt:'pct',nota:null},
         ]},
         ];})(),
       'Paqueteria E-Commerce B2C':[
@@ -1909,6 +1913,35 @@ function renderIndicadores(prod){
     pc.appendChild(wrap);
   });
 
+  // ── Gráficos Efectividad en Punto y Vencidos en Punto (solo Pickit) ──
+  if(prod==='Entrega en Punto Pickit'){
+    const fMesI=(document.getElementById('fMes')?.value||'').toUpperCase();
+    const fAnioI=document.getElementById('fAnio')?.value||'';
+    // slaP ya está filtrado por producto; aplicar filtro de mes/año si existe
+    const slaFilt=slaP.filter(r=>{
+      if(fMesI&&(r.mes||'').toUpperCase()!==fMesI) return false;
+      if(fAnioI&&String(r.anio)!==String(fAnioI)) return false;
+      return true;
+    });
+    const chartRows=slaFilt.length>0?slaFilt:slaP;
+    function mesShort(r){const m=(r.mes||'').charAt(0)+(r.mes||'').slice(1).toLowerCase();return m+' '+(r.anio||'');}
+    // Tabla estilo "Detalle mensual" para efectividad_en_pp y vencidos_en_pp
+    const ppTbl=document.createElement('div');ppTbl.className='ctb';
+    const ppRows=chartRows.filter(r=>r.efectividad_en_pp!=null&&r.efectividad_en_pp!=='');
+    const vcRows=chartRows.filter(r=>r.vencidos_en_pp!=null&&r.vencidos_en_pp!=='');
+    const hasPP=ppRows.length>0||vcRows.length>0;
+    ppTbl.innerHTML=`<h3>Efectividad en Punto · Vencidos en Punto · Fuente: Google Drive · sla_efectividad</h3>
+      <table class="ct"><thead><tr><th>Mes</th><th>Año</th><th style="text-align:right">Efectividad en Punto</th><th style="text-align:right">Vencidos en Punto</th></tr></thead>
+      <tbody>${chartRows.map(r=>{
+        const pp=r.efectividad_en_pp!=null&&r.efectividad_en_pp!==''?Number(r.efectividad_en_pp):null;
+        const vc=r.vencidos_en_pp!=null&&r.vencidos_en_pp!==''?Number(r.vencidos_en_pp):null;
+        const cPP=pp!==null?(pp>=90?'#97BF0D':pp>=80?'#F29400':'#E74C3C'):'#ccc';
+        const cVC=vc!==null?(vc<5?'#97BF0D':'#E74C3C'):'#ccc';
+        return `<tr><td>${(r.mes||'').charAt(0)+(r.mes||'').slice(1).toLowerCase()}</td><td>${r.anio}</td><td style="text-align:right;font-weight:600;color:${cPP}">${pp!==null?pp.toFixed(1)+'%':'—'}</td><td style="text-align:right;font-weight:600;color:${cVC}">${vc!==null?vc.toFixed(1)+'%':'—'}</td></tr>`;
+      }).join('')}</tbody></table>`;
+    if(hasPP) pc.appendChild(ppTbl);
+  }
+
   // footer
   const foot=document.createElement('div');
   foot.style.cssText='background:#fff;border:1.5px solid rgba(0,156,163,.3);border-radius:10px;padding:9px 14px;font-size:11px;color:var(--gray);';
@@ -2003,25 +2036,36 @@ function renderSlaEfec(prod){
   const slaRows=rows.filter(r=>r.sla_pct!=null&&r.sla_pct!==''&&!isNaN(parseFloat(r.sla_pct)));
   const efecRows=rows.filter(r=>r.efectividad_pct!=null&&r.efectividad_pct!==''&&!isNaN(parseFloat(r.efectividad_pct)));
   const efec1Rows=rows.filter(r=>r.efectividad_1ra_vuelta!=null&&r.efectividad_1ra_vuelta!==''&&!isNaN(parseFloat(r.efectividad_1ra_vuelta)));
+  const ppRows=rows.filter(r=>r.efectividad_en_pp!=null&&r.efectividad_en_pp!==''&&!isNaN(parseFloat(r.efectividad_en_pp)));
+  const vcRows=rows.filter(r=>r.vencidos_en_pp!=null&&r.vencidos_en_pp!==''&&!isNaN(parseFloat(r.vencidos_en_pp)));
   const hasSla=slaRows.length>0, hasEfec=efecRows.length>0, hasEfec1=efec1Rows.length>0;
 
   const lastSla=hasSla?Number(slaRows[slaRows.length-1].sla_pct):null;
   const lastEfec=hasEfec?Number(efecRows[efecRows.length-1].efectividad_pct):null;
   const lastEfec1=hasEfec1?Number(efec1Rows[efec1Rows.length-1].efectividad_1ra_vuelta):null;
+  const lastPP=ppRows.length?Number(ppRows[ppRows.length-1].efectividad_en_pp):null;
+  const lastVC=vcRows.length?Number(vcRows[vcRows.length-1].vencidos_en_pp):null;
   const avgSla=hasSla?slaRows.reduce((a,b)=>a+Number(b.sla_pct),0)/slaRows.length:null;
   const avgEfec=hasEfec?efecRows.reduce((a,b)=>a+Number(b.efectividad_pct),0)/efecRows.length:null;
   const avgEfec1=hasEfec1?efec1Rows.reduce((a,b)=>a+Number(b.efectividad_1ra_vuelta),0)/efec1Rows.length:null;
+  const avgPP=ppRows.length?ppRows.reduce((a,b)=>a+Number(b.efectividad_en_pp),0)/ppRows.length:null;
+  const avgVC=vcRows.length?vcRows.reduce((a,b)=>a+Number(b.vencidos_en_pp),0)/vcRows.length:null;
   const minSla=hasSla?Math.min(...slaRows.map(r=>Number(r.sla_pct))):null;
+  function mesLbl2(arr){const r=arr[arr.length-1];return r.mes.charAt(0)+r.mes.slice(1).toLowerCase()+' '+r.anio;}
 
   // KPIs
   const kpis=document.createElement('div');kpis.className='sla-kpis';
-  if(lastSla!==null) kpis.innerHTML+=`<div class="sla-k"><div class="sla-kl">SLA último mes</div><div class="sla-kv" style="color:${slaColor(lastSla)}">${lastSla.toFixed(1)}%</div><div class="sla-kt">${slaRows[slaRows.length-1].mes.charAt(0)+slaRows[slaRows.length-1].mes.slice(1).toLowerCase()} ${slaRows[slaRows.length-1].anio}</div></div>`;
+  if(lastSla!==null) kpis.innerHTML+=`<div class="sla-k"><div class="sla-kl">SLA último mes</div><div class="sla-kv" style="color:${slaColor(lastSla)}">${lastSla.toFixed(1)}%</div><div class="sla-kt">${mesLbl2(slaRows)}</div></div>`;
   if(avgSla!==null) kpis.innerHTML+=`<div class="sla-k"><div class="sla-kl">SLA promedio</div><div class="sla-kv" style="color:${slaColor(avgSla)}">${avgSla.toFixed(1)}%</div><div class="sla-kt">${slaRows.length} meses</div></div>`;
   if(minSla!==null) kpis.innerHTML+=`<div class="sla-k"><div class="sla-kl">SLA mínimo</div><div class="sla-kv" style="color:${slaColor(minSla)}">${minSla.toFixed(1)}%</div><div class="sla-kt">peor mes</div></div>`;
-  if(lastEfec!==null) kpis.innerHTML+=`<div class="sla-k"><div class="sla-kl">Efectividad último mes</div><div class="sla-kv" style="color:${slaColor(lastEfec)}">${lastEfec.toFixed(1)}%</div><div class="sla-kt">${efecRows[efecRows.length-1].mes.charAt(0)+efecRows[efecRows.length-1].mes.slice(1).toLowerCase()} ${efecRows[efecRows.length-1].anio}</div></div>`;
+  if(lastEfec!==null) kpis.innerHTML+=`<div class="sla-k"><div class="sla-kl">Efectividad último mes</div><div class="sla-kv" style="color:${slaColor(lastEfec)}">${lastEfec.toFixed(1)}%</div><div class="sla-kt">${mesLbl2(efecRows)}</div></div>`;
   if(avgEfec!==null) kpis.innerHTML+=`<div class="sla-k"><div class="sla-kl">Efectividad promedio</div><div class="sla-kv" style="color:${slaColor(avgEfec)}">${avgEfec.toFixed(1)}%</div><div class="sla-kt">${efecRows.length} meses</div></div>`;
-  if(lastEfec1!==null) kpis.innerHTML+=`<div class="sla-k"><div class="sla-kl">Efectividad 1ª vuelta último mes</div><div class="sla-kv" style="color:${slaColor(lastEfec1)}">${lastEfec1.toFixed(1)}%</div><div class="sla-kt">${efec1Rows[efec1Rows.length-1].mes.charAt(0)+efec1Rows[efec1Rows.length-1].mes.slice(1).toLowerCase()} ${efec1Rows[efec1Rows.length-1].anio}</div></div>`;
+  if(lastEfec1!==null) kpis.innerHTML+=`<div class="sla-k"><div class="sla-kl">Efectividad 1ª vuelta último mes</div><div class="sla-kv" style="color:${slaColor(lastEfec1)}">${lastEfec1.toFixed(1)}%</div><div class="sla-kt">${mesLbl2(efec1Rows)}</div></div>`;
   if(avgEfec1!==null) kpis.innerHTML+=`<div class="sla-k"><div class="sla-kl">Efectividad 1ª vuelta promedio</div><div class="sla-kv" style="color:${slaColor(avgEfec1)}">${avgEfec1.toFixed(1)}%</div><div class="sla-kt">${efec1Rows.length} meses</div></div>`;
+  if(lastPP!==null) kpis.innerHTML+=`<div class="sla-k"><div class="sla-kl">Efectividad en punto</div><div class="sla-kv" style="color:${slaColor(lastPP)}">${lastPP.toFixed(1)}%</div><div class="sla-kt">${mesLbl2(ppRows)}</div></div>`;
+  if(avgPP!==null) kpis.innerHTML+=`<div class="sla-k"><div class="sla-kl">Efectividad en punto promedio</div><div class="sla-kv" style="color:${slaColor(avgPP)}">${avgPP.toFixed(1)}%</div><div class="sla-kt">${ppRows.length} meses</div></div>`;
+  if(lastVC!==null) kpis.innerHTML+=`<div class="sla-k"><div class="sla-kl">Vencidos en punto</div><div class="sla-kv" style="color:${slaColor(100-lastVC)}">${lastVC.toFixed(1)}%</div><div class="sla-kt">${mesLbl2(vcRows)}</div></div>`;
+  if(avgVC!==null) kpis.innerHTML+=`<div class="sla-k"><div class="sla-kl">Vencidos en punto promedio</div><div class="sla-kv" style="color:${slaColor(100-avgVC)}">${avgVC.toFixed(1)}%</div><div class="sla-kt">${vcRows.length} meses</div></div>`;
   pc.appendChild(kpis);
 
   // Gráfico SLA
