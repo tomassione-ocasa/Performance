@@ -541,6 +541,7 @@ const ID_SLA='14oWS4N8_r8tYWi93nnsQ6HwD2LfM0yb7-O25kjMaUKc';
 const ID_KPIS='1xjh0quAo6y7ZCjWL5-qI1N2mgE7yq2lwGYT6iBhPnvI';
 const ID_MOTIVOS='1-VccjQJTRR16fL_JqlIiyRoBIQw9LmZlizFCLp-Qqu0';
 const ID_PICKIT_VOL='16TWKmyh55EeyPIBxNWI0TGNFytRKgS1kHFu6gVJ-to4';
+const ID_PICKIT_FAC='1L25cfqlFXdVKTIrcVguAJuYyaYEoiTbIz5uHMTkXUOo';
 const PBI_REPORT_URL='https://app.powerbi.com/groups/me/reports/2ea1b575-1feb-4464-8a24-dac0ac0387e1/d050495042d3d060d741?ctid=91a5b5c8-673e-4a80-871c-5ed3412dd451&experience=power-bi';
 const PBI_MARGEN_URL='https://app.powerbi.com/reportEmbed?reportId=14350c8e-8242-4d38-91b6-738e082417de&autoAuth=true&ctid=91a5b5c8-673e-4a80-871c-5ed3412dd451';
 const MO=['ENERO','FEBRERO','MARZO','ABRIL','MAYO','JUNIO','JULIO','AGOSTO','SEPTIEMBRE','OCTUBRE','NOVIEMBRE','DICIEMBRE'];
@@ -835,7 +836,7 @@ let META_NUMS={
 };
 
 // ── STATE ──
-let allVentas=[], allSlaEfec=[], allKpisAd=[], allMotivos=[], allPickitVol=[], cur='overview', prodActual='', allProductos=[], cliActual='', allClientes=[];
+let allVentas=[], allSlaEfec=[], allKpisAd=[], allMotivos=[], allPickitVol=[], allPickitFac=[], cur='overview', prodActual='', allProductos=[], cliActual='', allClientes=[];
 
 // Normaliza: minúsculas, sin tildes, espacios colapsados, trim
 function norm(s){
@@ -1063,6 +1064,26 @@ async function loadAll(){
     }
     catch(e){ console.warn('pickit_volumen error:',e.message); }
 
+    let pickitFacData=[];
+    try{
+      pickitFacData=await sheetFetch(ID_PICKIT_FAC,'pickit_facturacion');
+      // Normalizar: buscar columnas por nombre flexible, parsear monto string o número
+      pickitFacData=pickitFacData.map(r=>{
+        const keys=Object.keys(r);
+        const kMes=keys.find(k=>k.toLowerCase().trim()==='mes')||keys[0]||'';
+        const kMonto=keys.find(k=>k.toLowerCase().trim()==='monto')||keys[1]||'';
+        const rawMes=String(r[kMes]||'').trim().toLowerCase();
+        const rawMonto=r[kMonto];
+        let monto=0;
+        if(typeof rawMonto==='number'){monto=rawMonto;}
+        else{const s=String(rawMonto||'').replace(/\$\s*/,'').trim();
+          monto=parseFloat(s.replace(/\./g,'').replace(',','.'))||0;}
+        return {mes:rawMes, monto};
+      }).filter(r=>r.mes&&r.mes!=='total general'&&r.monto>0);
+      console.log('pickit_facturacion cargado: '+pickitFacData.length+' filas',pickitFacData);
+    }
+    catch(e){ console.warn('pickit_facturacion error:',e.message); }
+
     const PROD_ALIAS={
       'Entrega en un Punto':'Entrega en Punto Pickit',
       'Entrega en Un Punto':'Entrega en Punto Pickit',
@@ -1091,6 +1112,7 @@ async function loadAll(){
     allKpisAd=kpisData;
     allMotivos=motivosData;
     allPickitVol=pickitVolData;
+    allPickitFac=pickitFacData;
     allProductos=[...new Set(ventas.map(v=>v.producto).filter(p=>p&&p!=='Otros'))].sort();
     allClientes=[...new Set(ventas.map(v=>v.cliente).filter(Boolean))].sort();
     buildSidebar(mats);
@@ -1261,6 +1283,12 @@ function buildOverview(){
 
   const byUN={};
   v.filter(x=>x.producto!=='Entrega en Punto Pickit').forEach(x=>{byUN[x.unidad_negocio||'Otros']=(byUN[x.unidad_negocio||'Otros']||0)+(Number(x.venta_norm)||0);});
+  // Agregar facturación Pickit a Última Milla
+  const MES_MAP_OV={ene:'ENERO',feb:'FEBRERO',mar:'MARZO',abr:'ABRIL',may:'MAYO',jun:'JUNIO',jul:'JULIO',ago:'AGOSTO',sep:'SEPTIEMBRE',oct:'OCTUBRE',nov:'NOVIEMBRE',dic:'DICIEMBRE'};
+  const fMesOV=(document.getElementById('fMes')?.value||'').toUpperCase();
+  const pickitFacFilt=allPickitFac.filter(r=>!fMesOV||(MES_MAP_OV[r.mes]||r.mes.toUpperCase())===fMesOV);
+  const pickitFacTotal=pickitFacFilt.length?pickitFacFilt.reduce((a,b)=>a+b.monto,0):allPickitFac.reduce((a,b)=>a+b.monto,0);
+  byUN['Ultima Milla']=(byUN['Ultima Milla']||0)+pickitFacTotal;
   const statsEl=document.getElementById('ovStats');
   statsEl.innerHTML='';
   let total=0; Object.values(byUN).forEach(x=>total+=x);
@@ -1296,7 +1324,6 @@ function buildOverview(){
   prodsSorted.forEach(([prod,num])=>{
     const d=byP[prod]||{fac:0,vol:0,cli:new Set(),anio:2025};
     const bc=colorAnio(d.anio);
-    // SLA from supabase
     const slaRows=allSlaEfec.filter(r=>(r.producto||'').trim()===prod.trim()&&r.sla_pct!=null&&r.sla_pct!=='');
     const lastSla=slaRows.length?Number(slaRows[slaRows.length-1].sla_pct):null;
     const slaBadge=lastSla!==null?`<span style="font-size:9px;font-weight:700;padding:1px 6px;border-radius:6px;background:${slaColor(lastSla)}22;color:${slaColor(lastSla)}">SLA ${lastSla.toFixed(1)}%</span>`:'';
@@ -1309,6 +1336,22 @@ function buildOverview(){
     card.onclick=()=>go(prod,document.querySelector(`.ni[data-id="${prod}"]`));
     grid.appendChild(card);
   });
+  // Card de Entrega en Punto Pickit (facturación desde sheet propio)
+  if(!prodActual||prodActual==='Entrega en Punto Pickit'){
+    const pickitNum=getNum('Entrega en Punto Pickit');
+    const pickitSlaRows=allSlaEfec.filter(r=>(r.producto||'').trim()==='Entrega en Punto Pickit'&&r.sla_pct!=null&&r.sla_pct!=='');
+    const pickitLastSla=pickitSlaRows.length?Number(pickitSlaRows[pickitSlaRows.length-1].sla_pct):null;
+    const pickitSlaBadge=pickitLastSla!==null?`<span style="font-size:9px;font-weight:700;padding:1px 6px;border-radius:6px;background:${slaColor(pickitLastSla)}22;color:${slaColor(pickitLastSla)}">SLA ${pickitLastSla.toFixed(1)}%</span>`:'';
+    const bc2=colorAnio(2026);
+    const pkCard=document.createElement('div');pkCard.className='ocard';pkCard.style.borderTopColor=bc2;
+    pkCard.innerHTML=`<div class="oc-num">${pickitNum} <span style="font-size:9px;font-weight:700;padding:1px 5px;border-radius:6px;background:${bc2}22;color:${bc2}">2026</span> ${pickitSlaBadge}</div>
+<div class="oc-name">Entrega en Punto Pickit</div>
+<div class="oc-owner">👤 ${OWNERS['Entrega en Punto Pickit']||'—'}</div>
+<div><span class="oc-v">${fmtARS(pickitFacTotal)}</span></div>
+<div style="font-size:10px;color:var(--gray);margin-top:2px">Adidas que entrega en punto</div>`;
+    pkCard.onclick=()=>go('Entrega en Punto Pickit',document.querySelector('.ni[data-id="Entrega en Punto Pickit"]'));
+    grid.appendChild(pkCard);
+  }
   updateHeader();
 }
 
@@ -1469,7 +1512,12 @@ function renderResumen(prod,v,fac,vol,clis){
     const pvLast=pvAll[pvAll.length-1];
     const pvVolTotal=pvFiltered.length?pvFiltered.reduce((a,b)=>a+(Number(b['Volumen'])||0),0):(pvLast?Number(pvLast['Volumen'])||0:0);
     const pvLbl=pvLast?String(pvLast['Mes ']||pvLast['Mes']||'').trim():'';
+    // Facturación desde sheet propio
+    const pfFilt=allPickitFac.filter(r=>!fMesFilt||(MES_MAP_R[r.mes]||r.mes.toUpperCase())===fMesFilt);
+    const pfTotal=pfFilt.length?pfFilt.reduce((a,b)=>a+b.monto,0):allPickitFac.reduce((a,b)=>a+b.monto,0);
+    const pfLbl=pfFilt.length?pfFilt[pfFilt.length-1].mes:(allPickitFac.length?allPickitFac[allPickitFac.length-1].mes:'');
     mrow.innerHTML=`
+      <div class="mc"><div class="mc-l">Facturación</div><div class="mc-v">${fmtARS(pfTotal)}</div><div class="mc-s">${pfLbl||'Total acumulado'}</div></div>
       <div class="mc"><div class="mc-l">Volumen</div><div class="mc-v">${Math.round(pvVolTotal).toLocaleString()}</div><div class="mc-s">Envíos en punto Pick It · ${pvLbl}</div></div>
       ${slaDisp!==null?`<div class="mc" style="border-top-color:${slaColor(slaDisp)}"><div class="mc-l">SLA</div><div class="mc-v" style="color:${slaColor(slaDisp)}">${slaDisp.toFixed(1)}%</div><div class="mc-s">${slaSubCard}</div></div>`:''}
       ${efecDisp!==null?`<div class="mc" style="border-top-color:${slaColor(efecDisp)}"><div class="mc-l">Efectividad</div><div class="mc-v" style="color:${slaColor(efecDisp)}">${efecDisp.toFixed(1)}%</div><div class="mc-s">${efecSubCard}</div></div>`:''}`;
@@ -1542,16 +1590,28 @@ function renderResumen(prod,v,fac,vol,clis){
   const sorted=Object.entries(byAM).map(([k,val])=>({anio:parseInt(k),mes:k.split('|')[1],val})).filter(x=>MO.includes(x.mes)).sort((a,b)=>a.anio!==b.anio?a.anio-b.anio:MO.indexOf(a.mes)-MO.indexOf(b.mes));
 
   if(isPickit){
-    // Para Pickit: solo gráfico de volumen mensual desde la planilla Drive
+    // Pickit: gráficos de facturación (allPickitFac) y volumen (allPickitVol)
     const MES_MAP_G={ene:'ENE',feb:'FEB',mar:'MAR',abr:'ABR',may:'MAY',jun:'JUN',jul:'JUL',ago:'AGO',sep:'SEP',oct:'OCT',nov:'NOV',dic:'DIC'};
     const pvRows=allPickitVol.filter(r=>{const m=String(r['Mes ']||r['Mes']||'').trim().toLowerCase();return m&&m!=='total general';});
-    if(pvRows.length){
-      const pvLbls=pvRows.map(r=>MES_MAP_G[String(r['Mes ']||r['Mes']||'').trim().toLowerCase()]||'');
-      const pvVals=pvRows.map(r=>Number(r['Volumen'])||0);
-      const cg=document.createElement('div');cg.style.cssText='background:#fff;border:1px solid rgba(0,0,0,.07);border-radius:10px;padding:14px;';
-      cg.innerHTML=`<div style="font-family:Barlow Condensed,sans-serif;font-size:13px;font-weight:700;margin-bottom:3px">Volumen mensual 2026</div><div style="font-size:10px;color:var(--gray);margin-bottom:8px">Envíos en punto Pick It</div><div style="position:relative;height:200px"><canvas id="cv-pickit"></canvas></div>`;
+    const pfRows=allPickitFac.filter(r=>r.mes&&r.mes!=='total general');
+    if(pvRows.length||pfRows.length){
+      const cg=document.createElement('div');cg.className='cgrid';
+      const facHtml=pfRows.length?`<div class="cb"><div class="cb-t">Facturación mensual</div><div class="cb-s">ARS · Entrega en Punto Pickit</div><div class="cw"><canvas id="cf-pickit"></canvas></div></div>`:'';
+      const volHtml=pvRows.length?`<div class="cb"><div class="cb-t">Volumen mensual</div><div class="cb-s">Envíos en punto Pick It</div><div class="cw"><canvas id="cv-pickit"></canvas></div></div>`:'';
+      cg.innerHTML=facHtml+volHtml;
       pc.appendChild(cg);
-      requestAnimationFrame(()=>mkChart('cv-pickit','bar',pvLbls,[{data:pvVals,backgroundColor:'rgba(0,156,163,.75)',borderRadius:4}],{}));
+      requestAnimationFrame(()=>{
+        if(pfRows.length){
+          const pfLbls=pfRows.map(r=>MES_MAP_G[r.mes]||r.mes.toUpperCase().slice(0,3));
+          const pfVals=pfRows.map(r=>+(r.monto/1e6).toFixed(1));
+          mkChart('cf-pickit','bar',pfLbls,[{data:pfVals,backgroundColor:'rgba(151,191,13,.8)',borderRadius:4}],{yf:v=>'$'+v+'M'});
+        }
+        if(pvRows.length){
+          const pvLbls=pvRows.map(r=>MES_MAP_G[String(r['Mes ']||r['Mes']||'').trim().toLowerCase()]||'');
+          const pvVals=pvRows.map(r=>Number(r['Volumen'])||0);
+          mkChart('cv-pickit','bar',pvLbls,[{data:pvVals,backgroundColor:'rgba(0,156,163,.75)',borderRadius:4}],{});
+        }
+      });
     }
   } else if(sorted.length){
     const lbls=sorted.map(x=>MS[MO.indexOf(x.mes)]+"'"+String(x.anio).slice(-2));
@@ -1577,10 +1637,9 @@ function renderResumen(prod,v,fac,vol,clis){
   const topC=Object.entries(byC).sort((a,b)=>b[1]-a[1]).slice(0,8);
   if(topC.length){
     const ct=document.createElement('div');ct.className='ctb';
-    const colHdr=isPickit?'Volumen':'Facturación';
-    const pickitTotalVol=isPickit?allPickitVol.filter(r=>{const m=String(r['Mes ']||r['Mes']||'').trim().toLowerCase();return m&&m!=='total general';}).reduce((a,b)=>a+(Number(b['Volumen'])||0),0):0;
-    ct.innerHTML=`<h3>Top Clientes</h3><table class="ct"><thead><tr><th>Cliente</th><th style="text-align:right">${colHdr}</th></tr></thead><tbody>
-      ${topC.map(([n,f],i)=>`<tr><td>${i+1}. ${n}</td><td style="text-align:right;font-weight:600;color:var(--teal)">${isPickit?Math.round(pickitTotalVol).toLocaleString('es-AR'):fmtARS(f)}</td></tr>`).join('')}</tbody></table>`;
+    const pickitFacTot=isPickit?allPickitFac.reduce((a,b)=>a+b.monto,0):0;
+    ct.innerHTML=`<h3>Top Clientes</h3><table class="ct"><thead><tr><th>Cliente</th><th style="text-align:right">Facturación</th></tr></thead><tbody>
+      ${topC.map(([n,f],i)=>`<tr><td>${i+1}. ${n}</td><td style="text-align:right;font-weight:600;color:var(--teal)">${isPickit?fmtARS(pickitFacTot):fmtARS(f)}</td></tr>`).join('')}</tbody></table>`;
     pc.appendChild(ct);
   }
 
