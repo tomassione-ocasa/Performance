@@ -739,7 +739,7 @@ const OWNERS={
   'Warehousing':'Victoria Duque','Distribución de Tarjetas Valoradas':'Victoria Duque',
   'Postal':'Victoria Duque','Salud Warehousing':'German Gallarini',
   'Salud Distribucion':'German Gallarini','Carta Documento Digital':'Victoria Duque',
-  'Entrega en Punto Pickit':'Victoria Duque','Paqueteria E-Commerce B2C':'Victoria Duque',
+  'Logística a Punto Pickit (cliente Pickit)':'Victoria Duque','Entrega en Punto Pickit':'Victoria Duque','Paqueteria E-Commerce B2C':'Victoria Duque',
   'Distribucion Consumo Masivo y Palletizado':'German Gallarini',
 };
 let META_NUMS={
@@ -829,6 +829,7 @@ let META_NUMS={
   'Colecta en Punto Drop off (cliente Pickit)':'30',
   'Colecta en Punto Drop off':'30',
   'Colecta en Punto Drop Off':'30',
+  'Logística a Punto Pickit (cliente Pickit)':'31.1',
   'Entrega en Punto Pickit':'31',
   'Entrega en un Punto':'31',
   'Entrega en Un Punto':'31',
@@ -940,7 +941,7 @@ function buildSidebar(mats){
     'Cross Docking':'📦','Paqueteria E-Commerce B2C':'🛍️','Warehousing':'🏭',
     'Distribución de Tarjetas Valoradas':'💳','Postal':'✉️',
     'Salud Warehousing':'🏥','Salud Distribucion':'💊',
-    'Carta Documento Digital':'📄','Entrega en Punto Pickit':'📍',
+    'Carta Documento Digital':'📄','Logística a Punto Pickit (cliente Pickit)':'📦','Entrega en Punto Pickit':'📍',
     'Distribucion Consumo Masivo y Palletizado':'🏗️','Fulfillment':'📫',
     'Courier':'🚚','Check Mail':'📬','Mail Room':'🗂️',
     'Colecta en Punto Drop off (cliente Pickit)':'📥','Distribucion de Biggers':'📦',
@@ -985,9 +986,9 @@ function buildSidebar(mats){
     .sort((a,b)=>(MO_SB[a]||0)-(MO_SB[b]||0));
   const ultMsb=meses26sb[meses26sb.length-1]||null;
   function facInterSB(prod){
+    if(prod==='Entrega en Punto Pickit') return allPickitFac.reduce((a,b)=>a+b.monto,0);
     if(!allVentas) return 0;
-    // Suma total del período interanual: todos los meses de 2025 + 2026 disponibles
-    return (allVentas||[]).filter(x=>x.producto===prod)
+    return (allVentas||[]).filter(x=>x.producto===prod&&(!x.anio||x.anio>=2025))
       .reduce((a,b)=>a+(Number(b.venta_norm)||0),0);
   }
   unicos.sort((a,b)=>facInterSB(b.producto)-facInterSB(a.producto));
@@ -1082,13 +1083,15 @@ async function loadAll(){
         return {mes:rawMes, monto};
       }).filter(r=>r.mes&&r.mes!=='total general'&&r.monto>0);
       console.log('pickit_facturacion cargado: '+pickitFacData.length+' filas',pickitFacData);
+      if(pickitFacData.length===0) console.warn('pickit_facturacion: hoja vacía o columnas no reconocidas. Verificar que la hoja esté pública y que tenga columnas "Mes" y "Monto".');
     }
-    catch(e){ console.warn('pickit_facturacion error:',e.message); }
+    catch(e){ console.warn('pickit_facturacion error:',e.message,'– Verificar que ID_PICKIT_FAC esté compartido públicamente'); }
 
     const PROD_ALIAS={
-      'Entrega en un Punto':'Entrega en Punto Pickit',
-      'Entrega en Un Punto':'Entrega en Punto Pickit',
-      'entrega en un punto':'Entrega en Punto Pickit',
+      'Entrega en un Punto':'Logística a Punto Pickit (cliente Pickit)',
+      'Entrega en Un Punto':'Logística a Punto Pickit (cliente Pickit)',
+      'entrega en un punto':'Logística a Punto Pickit (cliente Pickit)',
+      'Entrega en Punto Pickit':'Logística a Punto Pickit (cliente Pickit)',
       'Distribucion Consumo Masivo y Paletizado':'Distribucion Consumo Masivo y Palletizado',
       'Distribucion Salud':'Salud Distribucion',
       'Distribucion Salud ':'Salud Distribucion',
@@ -1102,6 +1105,10 @@ async function loadAll(){
     };
     // Normalizar nombres en materiales (afecta sidebar + matMap)
     mats.forEach(m=>{ m.producto=PROD_ALIAS[m.producto]||m.producto; });
+    // Inyectar "Entrega en Punto Pickit" como producto virtual (usa sheets propios, no ventas)
+    if(!mats.find(m=>m.producto==='Entrega en Punto Pickit')){
+      mats.push({cod_material:'virtual_pickit',producto:'Entrega en Punto Pickit',owner:'Victoria Duque',unidad_negocio:'Ultima Milla'});
+    }
     const matMap={};
     mats.forEach(m=>{matMap[m.cod_material]={producto:m.producto,owner:m.owner,unidad_negocio:m.unidad_negocio};});
     ventas.forEach(v=>{
@@ -1300,8 +1307,8 @@ function buildOverview(){
   });
   statsEl.innerHTML+=`<div class="osc"><div class="osc-l">Total</div><div class="osc-v">${fmtARS(total)}</div><div class="osc-s">${Object.keys(META_NUMS).length} productos</div></div>`;
 
-  // Para ordenar por facturación interanual: tomar TODOS los datos sin filtro de año/mes
-  let vTodos=allVentas;
+  // Para ordenar por facturación: usar solo 2025+2026 para comparar en igualdad con Pickit
+  let vTodos=allVentas.filter(x=>!x.anio||x.anio>=2025);
   if(prodActual) vTodos=vTodos.filter(x=>x.producto===prodActual);
   const byP={};
   vTodos.forEach(x=>{
@@ -1322,39 +1329,34 @@ function buildOverview(){
   }
 
   const grid=document.getElementById('og');grid.innerHTML='';
-  // Ordenar por facturación interanual (último mes 2026 + mismo mes 2025)
-  const prodsSorted=Object.keys(byP).filter(prod=>byP[prod]&&byP[prod].fac>0&&prod!=='Entrega en Punto Pickit'&&(!prodActual||prod===prodActual)).map(prod=>[prod,getNum(prod)]).sort((a,b)=>facInteranual(b[0])-facInteranual(a[0]));
-  prodsSorted.forEach(([prod,num])=>{
-    const d=byP[prod]||{fac:0,vol:0,cli:new Set(),anio:2025};
+  // Agregar Entrega en Punto Pickit a byP con su facturación propia para ordenar junto a todos
+  const pickitFacOrden=allPickitFac.reduce((a,b)=>a+b.monto,0);
+  // Si allPickitFac no cargó, usar el top de byP como referencia para no quedarse al fondo
+  const facParaOrden=pickitFacOrden>0?pickitFacOrden:(Object.values(byP).map(d=>d.fac).sort((a,b)=>b-a)[0]||1e9);
+  byP['Entrega en Punto Pickit']={fac:facParaOrden,vol:0,cli:new Set(['Adidas que entrega en punto']),anio:2026};
+
+  const allSorted=Object.keys(byP)
+    .filter(prod=>(byP[prod].fac>0||prod==='Entrega en Punto Pickit')&&(!prodActual||prod===prodActual))
+    .sort((a,b)=>byP[b].fac-byP[a].fac);
+
+  allSorted.forEach(prod=>{
+    const num=getNum(prod);
+    const d=byP[prod];
     const bc=colorAnio(d.anio);
+    const fac=prod==='Entrega en Punto Pickit'?pickitFacTotal:d.fac;
     const slaRows=allSlaEfec.filter(r=>(r.producto||'').trim()===prod.trim()&&r.sla_pct!=null&&r.sla_pct!=='');
     const lastSla=slaRows.length?Number(slaRows[slaRows.length-1].sla_pct):null;
     const slaBadge=lastSla!==null?`<span style="font-size:9px;font-weight:700;padding:1px 6px;border-radius:6px;background:${slaColor(lastSla)}22;color:${slaColor(lastSla)}">SLA ${lastSla.toFixed(1)}%</span>`:'';
     const card=document.createElement('div');card.className='ocard';card.style.borderTopColor=bc;
+    const subLine=prod==='Entrega en Punto Pickit'?'Adidas que entrega en punto':`${Math.round(d.vol).toLocaleString()} unid. · ${d.cli.size} clientes`;
     card.innerHTML=`<div class="oc-num">${num} <span style="font-size:9px;font-weight:700;padding:1px 5px;border-radius:6px;background:${bc}22;color:${bc}">${d.anio}</span> ${slaBadge}</div>
 <div class="oc-name">${prod}</div>
 <div class="oc-owner">👤 ${OWNERS[prod]||'—'}</div>
-<div><span class="oc-v">${fmtARS(d.fac)}</span></div>
-<div style="font-size:10px;color:var(--gray);margin-top:2px">${Math.round(d.vol).toLocaleString()} unid. · ${d.cli.size} clientes</div>`;
+<div><span class="oc-v">${fmtARS(fac)}</span></div>
+<div style="font-size:10px;color:var(--gray);margin-top:2px">${subLine}</div>`;
     card.onclick=()=>go(prod,document.querySelector(`.ni[data-id="${prod}"]`));
     grid.appendChild(card);
   });
-  // Card de Entrega en Punto Pickit (facturación desde sheet propio)
-  if(!prodActual||prodActual==='Entrega en Punto Pickit'){
-    const pickitNum=getNum('Entrega en Punto Pickit');
-    const pickitSlaRows=allSlaEfec.filter(r=>(r.producto||'').trim()==='Entrega en Punto Pickit'&&r.sla_pct!=null&&r.sla_pct!=='');
-    const pickitLastSla=pickitSlaRows.length?Number(pickitSlaRows[pickitSlaRows.length-1].sla_pct):null;
-    const pickitSlaBadge=pickitLastSla!==null?`<span style="font-size:9px;font-weight:700;padding:1px 6px;border-radius:6px;background:${slaColor(pickitLastSla)}22;color:${slaColor(pickitLastSla)}">SLA ${pickitLastSla.toFixed(1)}%</span>`:'';
-    const bc2=colorAnio(2026);
-    const pkCard=document.createElement('div');pkCard.className='ocard';pkCard.style.borderTopColor=bc2;
-    pkCard.innerHTML=`<div class="oc-num">${pickitNum} <span style="font-size:9px;font-weight:700;padding:1px 5px;border-radius:6px;background:${bc2}22;color:${bc2}">2026</span> ${pickitSlaBadge}</div>
-<div class="oc-name">Entrega en Punto Pickit</div>
-<div class="oc-owner">👤 ${OWNERS['Entrega en Punto Pickit']||'—'}</div>
-<div><span class="oc-v">${fmtARS(pickitFacTotal)}</span></div>
-<div style="font-size:10px;color:var(--gray);margin-top:2px">Adidas que entrega en punto</div>`;
-    pkCard.onclick=()=>go('Entrega en Punto Pickit',document.querySelector('.ni[data-id="Entrega en Punto Pickit"]'));
-    grid.appendChild(pkCard);
-  }
   updateHeader();
 }
 
