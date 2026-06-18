@@ -826,6 +826,7 @@ let META_NUMS={
   'Servicio Electoral':'28',
   'Distribución de Tarjetas Valoradas':'29',
   'Distribucion de Tarjetas Valoradas':'29',
+  'Colecta en Punto Drop off (cliente Pickit)':'30',
   'Colecta en Punto Drop off':'30',
   'Colecta en Punto Drop Off':'30',
   'Entrega en Punto Pickit':'31',
@@ -942,7 +943,7 @@ function buildSidebar(mats){
     'Carta Documento Digital':'📄','Entrega en Punto Pickit':'📍',
     'Distribucion Consumo Masivo y Palletizado':'🏗️','Fulfillment':'📫',
     'Courier':'🚚','Check Mail':'📬','Mail Room':'🗂️',
-    'Colecta en Punto Drop Off':'📥','Distribucion de Biggers':'📦',
+    'Colecta en Punto Drop off (cliente Pickit)':'📥','Distribucion de Biggers':'📦',
     'Distribucion de Bolsines':'📮','Paqueteria y Mobiliario Corporativo':'🪑',
     'Servicio Electoral':'🗳️','Servicio de Destruccion':'🔒',
     'Transporte Aereo':'✈️','Transporte Marítimo':'🚢',
@@ -1096,6 +1097,8 @@ async function loadAll(){
       'Checkmail':'Check Mail',
       'Distribucion de Biggers B2C':'Distribucion de Biggers',
       'Courier Personas':'Courier Personas (Customs Clearance)',
+      'Colecta en Punto Drop off':'Colecta en Punto Drop off (cliente Pickit)',
+      'Colecta en Punto Drop Off':'Colecta en Punto Drop off (cliente Pickit)',
     };
     // Normalizar nombres en materiales (afecta sidebar + matMap)
     mats.forEach(m=>{ m.producto=PROD_ALIAS[m.producto]||m.producto; });
@@ -2330,24 +2333,27 @@ function renderComparativa(prod){
 function renderRanking(prod){
   const pc=document.getElementById('tab-ranking');
   if(prod==='Entrega en Punto Pickit'){pc.innerHTML='<div class="nodatabadge">Sin datos de facturación para ranking.</div>';return;}
+  const fMes=(document.getElementById('fMes')?.value||'').toUpperCase();
+  const fAnio=document.getElementById('fAnio')?.value||'';
   const v=allVentas.filter(x=>x.producto===prod&&x.escenario==='Actual'&&(!cliActual||x.cliente===cliActual));
   if(!v.length){pc.innerHTML='<div class="nodatabadge">Sin datos.</div>';return;}
   const years=[...new Set(v.map(x=>x.anio))].sort();
-  const yr2=years[years.length-1];
-  const CLI_ALIAS_RANK=prod==='Entrega en Punto Pickit'?{'PICK IT ARGENTINA':'Adidas entrega en punto'}:{};
+  const yr2=fAnio?Number(fAnio):years[years.length-1];
+  const CLI_ALIAS_RANK={};
   const byC2={};
-  v.filter(x=>x.anio===yr2).forEach(x=>{if(!x.cliente)return;const cn=CLI_ALIAS_RANK[x.cliente]||x.cliente;byC2[cn]=(byC2[cn]||0)+(Number(x.venta_norm)||0);});
+  v.filter(x=>x.anio===yr2&&(!fMes||x.mes===fMes)).forEach(x=>{if(!x.cliente)return;const cn=CLI_ALIAS_RANK[x.cliente]||x.cliente;byC2[cn]=(byC2[cn]||0)+(Number(x.venta_norm)||0);});
   const sorted=Object.entries(byC2).sort((a,b)=>b[1]-a[1]).filter(([,x])=>x>0);
-  if(!sorted.length){pc.innerHTML='<div class="nodatabadge">Sin datos para '+yr2+'.</div>';return;}
+  const periodoLbl=fMes?(fMes.charAt(0)+fMes.slice(1).toLowerCase()+' '+yr2):String(yr2);
+  if(!sorted.length){pc.innerHTML='<div class="nodatabadge">Sin datos para '+periodoLbl+'.</div>';return;}
   const top20=sorted.slice(0,20),maxF=top20[0][1];
   const totalF=sorted.reduce((a,b)=>a+b[1],0);
   const top3p=top20.slice(0,3).reduce((a,b)=>a+b[1],0)/totalF*100;
   const rsm=document.createElement('div');rsm.className='comp-row';
   rsm.innerHTML=`<div class="comp-card"><h4>Concentración Top 3</h4><div style="font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:700;color:${T}">${top3p.toFixed(1)}%</div><div style="font-size:10px;color:var(--gray);margin-top:2px">del total</div></div>
-    <div class="comp-card"><h4>Clientes activos ${yr2}</h4><div style="font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:700">${sorted.length}</div><div style="font-size:10px;color:var(--gray);margin-top:2px">con facturación &gt; $0</div></div>`;
+    <div class="comp-card"><h4>Clientes activos · ${periodoLbl}</h4><div style="font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:700">${sorted.length}</div><div style="font-size:10px;color:var(--gray);margin-top:2px">con facturación &gt; $0</div></div>`;
   pc.appendChild(rsm);
   const rb=document.createElement('div');rb.className='rank-box';
-  rb.innerHTML=`<h4>Top 20 Clientes · ${yr2}</h4><div class="rank-sub">Facturación acumulada</div>`;
+  rb.innerHTML=`<h4>Top 20 Clientes · ${periodoLbl}</h4><div class="rank-sub">Facturación del período</div>`;
   top20.forEach(([name,fac],i)=>{
     const row=document.createElement('div');row.className='rank-item';
     row.innerHTML=`<span class="rank-pos">${i+1}</span><span class="rank-name" title="${name}">${name}</span>
