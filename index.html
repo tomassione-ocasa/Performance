@@ -1614,7 +1614,7 @@ function renderResumen(prod,v,fac,vol,clis){
         if(pvRows.length){
           const pvLbls=pvRows.map(r=>MES_MAP_G[String(r['Mes ']||r['Mes']||'').trim().toLowerCase()]||'');
           const pvVals=pvRows.map(r=>Number(r['Volumen'])||0);
-          mkChart('cv-pickit','bar',pvLbls,[{data:pvVals,backgroundColor:'rgba(0,156,163,.75)',borderRadius:4}],{});
+          mkChart('cv-pickit','bar',pvLbls,[{data:pvVals,backgroundColor:'rgba(0,156,163,.75)',borderRadius:4}],{yf:v=>v>=1e6?(v/1e6).toFixed(1)+'M':v>=1e3?Math.round(v/1e3)+'K':v});
         }
       });
     }
@@ -1631,7 +1631,7 @@ function renderResumen(prod,v,fac,vol,clis){
     pc.appendChild(cg);
     requestAnimationFrame(()=>{
       mkChart('cf','bar',lbls,[{data:vals,backgroundColor:cols,borderRadius:4}],{yf:v=>'$'+v+'M'});
-      mkChart('cv','line',lbls,[{data:vols,borderColor:T,backgroundColor:'rgba(0,156,163,.08)',tension:.4,fill:true,pointRadius:3}]);
+      mkChart('cv','line',lbls,[{data:vols,borderColor:T,backgroundColor:'rgba(0,156,163,.08)',tension:.4,fill:true,pointRadius:3}],{yf:v=>v>=1e6?(v/1e6).toFixed(1)+'M':v>=1e3?Math.round(v/1e3)+'K':v});
     });
   }
 
